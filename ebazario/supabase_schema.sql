@@ -566,7 +566,7 @@ ALTER TABLE seller_documents ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users read own profile" ON profiles FOR SELECT USING (auth.uid() = id);
 CREATE POLICY "Users update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
 CREATE POLICY "Admin read all profiles" ON profiles FOR SELECT USING (
-  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid() AND (raw_user_meta_data->>'role') = 'admin')
 );
 CREATE POLICY "Insert on signup" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
 
