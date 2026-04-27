@@ -10,3 +10,4 @@ build/
 
 scratch/
 *.zip
+credentials.txt
