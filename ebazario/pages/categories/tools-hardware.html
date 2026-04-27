@@ -1,0 +1,306 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Tools & Hardware — Ebazario Trading</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/style.css">
+</head>
+<body><div class="topbar"><div class="inner"><span>🌐 Connecting buyers &amp; suppliers worldwide — 190+ countries</span><div><a href="#">Help Center</a><a href="#">Sell on Ebazario</a><a href="#">English ▾</a></div></div></div><nav>
+<div class="nav-inner">
+  <a href="../../index.html" class="logo-wrap"><img src="../../logo.png" alt="Ebazario Trading"></a>
+  <div class="search-bar">
+    <select><option>All Categories</option><option>Electronics</option><option>Machinery</option><option>Apparel</option><option>Food</option><option>Chemicals</option></select>
+    <input type="text" id="nav-search" placeholder="Search products, suppliers...">
+    <button onclick="doSearch()">Search</button>
+  </div>
+  <div class="nav-actions" id="nav-auth">
+    <div class="btn-login-menu">
+      <a href="../../pages/login-customer.html" class="nav-btn btn-outline">Log In ▾</a>
+      <div class="login-dropdown">
+        <a href="../../pages/login-customer.html">👤 Customer Login</a>
+        <a href="../../pages/login-seller.html">🏪 Seller Login</a>
+        <div class="divider"></div>
+        <a href="../../pages/login-admin.html">🔒 Admin Login</a>
+      </div>
+    </div>
+    <a href="../../pages/login-seller.html" class="nav-btn btn-gold">Start Selling</a>
+  </div>
+</div>
+</nav>
+<div class="cat-nav"><div class="cat-nav-inner">
+    <a href="../../pages/categories/electronics.html" class="cat-link">Electronics</a>
+    <a href="../../pages/categories/machinery.html" class="cat-link">Machinery</a>
+    <a href="../../pages/categories/apparel.html" class="cat-link">Apparel</a>
+    <a href="../../pages/categories/food-agriculture.html" class="cat-link">Food & Agriculture</a>
+    <a href="../../pages/categories/chemicals.html" class="cat-link">Chemicals</a>
+    <a href="../../pages/categories/construction.html" class="cat-link">Construction</a>
+    <a href="../../pages/categories/auto-parts.html" class="cat-link">Auto Parts</a>
+    <a href="../../pages/categories/healthcare.html" class="cat-link">Healthcare</a>
+    <a href="../../pages/categories/furniture.html" class="cat-link">Furniture & Home</a>
+    <a href="../../pages/categories/tools-hardware.html" class="cat-link">Tools & Hardware</a></div></div>
+<div class="cat-hero">
+  <div class="cat-hero-inner">
+    <div class="breadcrumb" style="padding:0 0 14px;color:rgba(255,255,255,.6)">
+      <a href="../../index.html" style="color:rgba(255,255,255,.6)">Home</a><span class="sep">›</span><span style="color:#fff">Tools & Hardware</span>
+    </div>
+    <div class="cat-hero-tag">Category</div>
+    <h1>Tools & Hardware</h1>
+    <p>Professional tools and hardware supplies — browse 94,700+ verified products from global manufacturers.</p>
+    <div class="cat-stats">
+      <div class="cat-stat"><strong>94,700+</strong><span>Products</span></div>
+      <div class="cat-stat"><strong>8,400+</strong><span>Suppliers</span></div>
+      <div class="cat-stat"><strong>190+</strong><span>Countries</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="breadcrumb" style="padding-top:16px">
+    <a href="../../index.html">Home</a><span class="sep">›</span><span class="current">Tools & Hardware</span>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px"><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Power Tools</a><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Hand Tools</a><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Fasteners</a><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Safety Equipment</a><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Measuring Tools</a><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Workshop Equipment</a><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Garden Tools</a><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Welding Supplies</a></div>
+
+  <div class="listing-layout">
+    <div class="filters-panel">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h4 style="font-size:15px;font-weight:700">Filters</h4><span style="font-size:12px;color:var(--primary);cursor:pointer;font-weight:600">Clear All</span></div>
+  <div class="filter-group"><h5>Supplier Country</h5>
+    <div class="filter-option"><input type="checkbox" checked><label>🇨🇳 China (142,380)</label></div>
+    <div class="filter-option"><input type="checkbox"><label>🇩🇪 Germany (18,240)</label></div>
+    <div class="filter-option"><input type="checkbox"><label>🇯🇵 Japan (14,100)</label></div>
+    <div class="filter-option"><input type="checkbox"><label>🇰🇷 South Korea (12,880)</label></div>
+    <div class="filter-option"><input type="checkbox"><label>🇮🇳 India (9,450)</label></div>
+  </div>
+  <div class="filter-group"><h5>Price Range (USD)</h5>
+    <div class="price-range"><input type="number" placeholder="Min" value="0"><span>–</span><input type="number" placeholder="Max" value="50000"></div>
+    <button style="width:100%;margin-top:8px;padding:8px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-family:Sora,sans-serif;font-size:13px;font-weight:600;cursor:pointer">Apply</button>
+  </div>
+  <div class="filter-group"><h5>Min. Order Qty</h5>
+    <div class="filter-option"><input type="radio" name="moq"><label>Any quantity</label></div>
+    <div class="filter-option"><input type="radio" name="moq"><label>≤ 100 units</label></div>
+    <div class="filter-option"><input type="radio" name="moq" checked><label>≤ 500 units</label></div>
+  </div>
+  <div class="filter-group"><h5>Certifications</h5>
+    <div class="filter-option"><input type="checkbox"><label>ISO 9001</label></div>
+    <div class="filter-option"><input type="checkbox"><label>CE Certified</label></div>
+    <div class="filter-option"><input type="checkbox"><label>RoHS Compliant</label></div>
+  </div>
+  <div class="filter-group"><h5>Supplier Type</h5>
+    <div class="filter-option"><input type="checkbox" checked><label>Manufacturer</label></div>
+    <div class="filter-option"><input type="checkbox"><label>Trading Company</label></div>
+    <div class="filter-option"><input type="checkbox"><label>OEM/ODM Factory</label></div>
+  </div>
+  <div class="filter-group"><h5>Trade Assurance</h5>
+    <div class="filter-option"><input type="checkbox" checked><label>Trade Assurance only</label></div>
+    <div class="filter-option"><input type="checkbox"><label>Verified Seller only</label></div>
+  </div>
+</div>
+    <div>
+      <div class="active-filters">
+        <span style="font-size:13px;color:var(--text-muted);margin-right:4px">Active:</span>
+        <span class="active-filter">All Countries ✕</span>
+        <span class="active-filter">Manufacturer ✕</span>
+        <span class="active-filter">Trade Assurance ✕</span>
+      </div>
+      <div class="listing-header">
+        <div class="listing-count"><strong>94,700+</strong> products in Tools & Hardware</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <label style="font-size:13px;color:var(--text-muted)">Sort by:</label>
+          <select class="listing-sort"><option>Best Match</option><option>Newest First</option><option>Price: Low to High</option><option>Price: High to Low</option><option>Most Orders</option></select>
+        </div>
+      </div>
+      <div class="listing-grid"><div class="product-card">
+  <a href="../../pages/products/tools-hardware-p1.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"><span class="product-badge">HOT</span></div>
+    <div class="product-body">
+      <div class="product-name">Angle Grinder 125mm 1400W Variable Speed</div>
+      <div class="product-moq">Min. Order: 50 units</div>
+      <div class="product-price">$24.50 <span>/ unit</span></div>
+      <div class="product-supplier">🇨🇳 ToolMaster Pro <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/tools-hardware-p2.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"></div>
+    <div class="product-body">
+      <div class="product-name">Cordless Drill 20V Li-Ion 2-Speed Torque</div>
+      <div class="product-moq">Min. Order: 50 units</div>
+      <div class="product-price">$38 <span>/ unit</span></div>
+      <div class="product-supplier">🇺🇸 PowerDrill Co. <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/tools-hardware-p3.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"><span class="product-badge new">NEW</span></div>
+    <div class="product-body">
+      <div class="product-name">Stainless Steel Fasteners M8 Bolt Nut Set</div>
+      <div class="product-moq">Min. Order: 5000 pieces</div>
+      <div class="product-price">$0.08 <span>/ piece</span></div>
+      <div class="product-supplier">🇮🇳 FastenerKing <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/tools-hardware-p4.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"></div>
+    <div class="product-body">
+      <div class="product-name">Digital Vernier Caliper 150mm 0.01mm</div>
+      <div class="product-moq">Min. Order: 200 units</div>
+      <div class="product-price">$8.50 <span>/ unit</span></div>
+      <div class="product-supplier">🇨🇳 MeasurePro <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/tools-hardware-p5.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"><span class="product-badge">HOT</span></div>
+    <div class="product-body">
+      <div class="product-name">Safety Helmet EN397 Hard Hat ABS Shell</div>
+      <div class="product-moq">Min. Order: 500 units</div>
+      <div class="product-price">$3.80 <span>/ unit</span></div>
+      <div class="product-supplier">🇨🇳 SafeHead PPE <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/tools-hardware-p6.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"></div>
+    <div class="product-body">
+      <div class="product-name">Welding Machine MIG 250A Industrial</div>
+      <div class="product-moq">Min. Order: 20 units</div>
+      <div class="product-price">$285 <span>/ unit</span></div>
+      <div class="product-supplier">🇩🇪 WeldTech Pro <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/tools-hardware-p7.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"></div>
+    <div class="product-body">
+      <div class="product-name">Circular Saw 7-1/4" Carbide Blade 2400W</div>
+      <div class="product-moq">Min. Order: 50 units</div>
+      <div class="product-price">$48 <span>/ unit</span></div>
+      <div class="product-supplier">🇨🇳 CutMaster Tools <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/tools-hardware-p8.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"></div>
+    <div class="product-body">
+      <div class="product-name">Pipe Wrench Heavy Duty 24" Chrome Vanadium</div>
+      <div class="product-moq">Min. Order: 200 units</div>
+      <div class="product-price">$18 <span>/ unit</span></div>
+      <div class="product-supplier">🇮🇳 GripTech Tools <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/tools-hardware-p9.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"><span class="product-badge new">NEW</span></div>
+    <div class="product-body">
+      <div class="product-name">Laser Level Self-Leveling 3D 360° Green</div>
+      <div class="product-moq">Min. Order: 50 units</div>
+      <div class="product-price">$68 <span>/ unit</span></div>
+      <div class="product-supplier">🇨🇳 LevelPro Tools <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/tools-hardware-p10.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"><span class="product-badge">HOT</span></div>
+    <div class="product-body">
+      <div class="product-name">Industrial Toolbox Cabinet 7-Drawer Steel</div>
+      <div class="product-moq">Min. Order: 10 units</div>
+      <div class="product-price">$285 <span>/ unit</span></div>
+      <div class="product-supplier">🇩🇪 ToolStorage Co. <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/tools-hardware-p11.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"></div>
+    <div class="product-body">
+      <div class="product-name">Pressure Washer 250Bar 3500PSI Professional</div>
+      <div class="product-moq">Min. Order: 20 units</div>
+      <div class="product-price">$185 <span>/ unit</span></div>
+      <div class="product-supplier">🇨🇳 WashPro Power <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/tools-hardware-p12.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"></div>
+    <div class="product-body">
+      <div class="product-name">Garden Chainsaw 18" Bar 62cc Petrol</div>
+      <div class="product-moq">Min. Order: 50 units</div>
+      <div class="product-price">$128 <span>/ unit</span></div>
+      <div class="product-supplier">🇩🇪 GardenPower <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div></div>
+      <div class="pagination">
+        <span class="page-btn active">1</span><span class="page-btn">2</span><span class="page-btn">3</span><span class="page-btn">4</span><span class="page-btn">5</span><span class="page-btn">...</span><span class="page-btn">›</span>
+      </div>
+    </div>
+  </div>
+</div>
+<footer>
+<div class="container">
+  <div class="footer-grid">
+    <div class="footer-brand"><img src="../../logo.png" alt="Ebazario"><p>The global B2B marketplace connecting buyers and suppliers with secure, door-to-door trade solutions.</p></div>
+    <div class="footer-col"><h5>Marketplace</h5>
+      <a href="../../pages/categories/electronics.html">Electronics</a>
+      <a href="../../pages/categories/machinery.html">Machinery</a>
+      <a href="../../pages/categories/apparel.html">Apparel</a>
+      <a href="../../pages/categories/food-agriculture.html">Food & Agriculture</a>
+      <a href="../../pages/categories/healthcare.html">Healthcare</a>
+    </div>
+    <div class="footer-col"><h5>Services</h5><a href="#">Trade Assurance</a><a href="#">Air Freight</a><a href="#">Sea Freight</a><a href="#">Door-to-Door</a><a href="#">Track Shipment</a></div>
+    <div class="footer-col"><h5>Company</h5><a href="#">About Ebazario</a><a href="#">Careers</a><a href="#">Press</a><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 Ebazario Trading. All rights reserved.</span><div style="display:flex;gap:8px"><span class="pay-badge">VISA</span><span class="pay-badge">Mastercard</span><span class="pay-badge">PayPal</span><span class="pay-badge">T/T</span><span class="pay-badge">L/C</span></div></div>
+</div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../../js/supabase.js"></script><script src="../../js/main.js"></script>
+</body></html>

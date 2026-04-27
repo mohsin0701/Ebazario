@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Document Verification — Ebazario Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--p:#1e1b4b;--pl:#4338ca;--ok:#10b981;--okl:#d1fae5;--okd:#065f46;--danger:#ef4444;--dangerl:#fee2e2;--dangerd:#991b1b;--warn:#f59e0b;--warnl:#fef3c7;--warnd:#92400e;--blue:#3b82f6;--bluel:#dbeafe;--bg:#f8fafc;--white:#fff;--text:#0f172a;--sub:#475569;--muted:#94a3b8;--border:#e2e8f0;--r:8px;--rl:12px}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+h1,h2,h3,h4{font-family:'Sora',sans-serif}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tb-back{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sub);text-decoration:none;padding:6px 10px;border-radius:var(--r);border:1.5px solid var(--border);transition:all .15s}
+.tb-back:hover{border-color:var(--pl);color:var(--pl)}
+.tb-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:700}
+.content{padding:24px;max-width:1100px;margin:0 auto}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.ph h1{font-size:20px;font-weight:700}.ph p{font-size:13px;color:var(--sub);margin-top:3px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:var(--rl);padding:16px;position:relative;overflow:hidden}
+.stat-bar{position:absolute;top:0;left:0;right:0;height:3px}
+.stat-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px}
+.stat-val{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;margin-bottom:3px}
+/* DOCUMENT CARD */
+.doc-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--rl);padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:10px;transition:all .2s}
+.doc-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08);border-color:#c7d2fe}
+.doc-card.priority{border-color:#fca5a5;background:#fff8f8}
+.doc-card.approved{border-color:#86efac;background:#f0fdf4}
+.doc-ico{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.dic-pending{background:#ede9fe}
+.dic-approved{background:var(--okl)}
+.dic-rejected{background:var(--dangerl)}
+.dic-priority{background:#fee2e2}
+.doc-info{flex:1;min-width:0}
+.doc-info h4{font-size:13px;font-weight:700;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.doc-info .meta{font-size:12px;color:var(--sub)}
+.doc-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+/* PILLS */
+.pill{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.p-ok{background:var(--okl);color:var(--okd)}.p-warn{background:var(--warnl);color:var(--warnd)}.p-danger{background:var(--dangerl);color:var(--dangerd)}.p-blue{background:var(--bluel);color:#1d4ed8}.p-indigo{background:#ede9fe;color:#5b21b6}.p-muted{background:#f1f5f9;color:var(--sub)}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:8px 16px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.btn-ok{background:var(--ok);color:#fff}.btn-ok:hover{background:#059669}
+.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{background:#dc2626}
+.btn-ghost{background:transparent;color:var(--sub);border:1.5px solid var(--border)}.btn-ghost:hover{border-color:var(--pl);color:var(--pl)}
+.btn-p{background:var(--pl);color:#fff}.btn-p:hover{background:#3730a3}
+.btn-sm{padding:5px 12px;font-size:12px;border-radius:6px}
+.tab-bar{display:flex;border-bottom:2px solid var(--border);margin-bottom:18px;overflow-x:auto}
+.tab-btn{padding:10px 18px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif}
+.tab-btn.on{color:var(--pl);border-bottom-color:var(--pl)}
+.tabpane{display:none}.tabpane.on{display:block}
+.notice{padding:12px 15px;border-radius:var(--r);font-size:13px;line-height:1.6;margin-bottom:16px;display:flex;align-items:flex-start;gap:9px}
+.n-warn{background:var(--warnl);border:1px solid #fde68a;color:var(--warnd)}
+.n-blue{background:var(--bluel);border:1px solid #bfdbfe;color:#1e40af}
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;padding:9px 12px;background:#f8fafc;font-weight:700;font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl td{padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#fafbff}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:1000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px)}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,.15)}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:1}
+.modal-head h3{font-size:15px;font-weight:700}
+.modal-close{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.modal-close:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
+.modal-body{padding:22px}
+.modal-foot{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:#fff;position:sticky;bottom:0}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
+.fg select,.fg textarea,.fg input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;color:var(--text);transition:border .2s;background:#fff}
+.fg select:focus,.fg textarea:focus,.fg input:focus{border-color:var(--pl)}
+.fg textarea{resize:vertical;min-height:80px;line-height:1.6}
+.hbar{margin-bottom:10px}
+.hbar-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
+.bar-track{height:7px;background:#f1f5f9;border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px}
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-state .es-icon{font-size:48px;margin-bottom:14px}
+.empty-state h3{font-size:16px;font-weight:700;color:var(--sub);margin-bottom:6px}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--pl);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:14px">
+    <a href="admin-dashboard.html" class="tb-back">? Admin Panel</a>
+    <div class="tb-title">?? Document Verification</div>
+  </div>
+  <div style="display:flex;gap:10px">
+    <select id="filter-type" class="btn btn-ghost btn-sm" onchange="loadDocs()" style="cursor:pointer">
+      <option value="">All Types</option>
+      <option value="business_license">Business License</option>
+      <option value="ce_certificate">CE Certificate</option>
+      <option value="fda_approval">FDA Approval</option>
+      <option value="iso_9001">ISO 9001</option>
+      <option value="other">Other</option>
+    </select>
+    <button class="btn btn-ghost btn-sm" onclick="loadDocs()">?? Refresh</button>
+  </div>
+</div>
+
+<div class="content">
+  <div class="ph">
+    <div><h1>Document Verification</h1><p>Review and approve seller compliance certifications</p></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div><div class="stat-lbl">Pending Review</div><div class="stat-val" id="count-pending">—</div><div style="font-size:12px;color:var(--warn)">Needs review</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#10b981,#4ade80)"></div><div class="stat-lbl">Approved (Month)</div><div class="stat-val" id="count-approved">—</div><div style="font-size:12px;color:var(--ok)">Verified</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#ef4444,#f87171)"></div><div class="stat-lbl">Rejected (Month)</div><div class="stat-val" id="count-rejected">—</div><div style="font-size:12px;color:var(--muted)">Notified</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#4338ca,#6366f1)"></div><div class="stat-lbl">Avg Review Time</div><div class="stat-val">4.2h</div><div style="font-size:12px;color:var(--muted)">This month</div></div>
+  </div>
+
+  <div data-tabs>
+    <div class="tab-bar">
+      <button class="tab-btn on" onclick="switchTab('pending',this)">? Pending (<span id="tab-count">0</span>)</button>
+      <button class="tab-btn" onclick="switchTab('approved',this)">? Approved</button>
+      <button class="tab-btn" onclick="switchTab('rejected',this)">? Rejected</button>
+      <button class="tab-btn" onclick="switchTab('all',this)">?? All Documents</button>
+    </div>
+
+    <div id="tab-pending" class="tabpane on">
+      <div class="notice n-warn"><span>??</span><div>Medical and electronics certifications are <strong>high priority</strong>. Approved documents unlock product listing in restricted categories. Expired documents must be rejected.</div></div>
+      <div id="pending-list"><div class="empty-state"><div class="spinner"></div></div></div>
+    </div>
+    <div id="tab-approved" class="tabpane">
+      <div id="approved-list"><div class="empty-state"><div class="es-icon">?</div><h3>Loading…</h3></div></div>
+    </div>
+    <div id="tab-rejected" class="tabpane">
+      <div id="rejected-list"><div class="empty-state"><div class="es-icon">?</div><h3>Loading…</h3></div></div>
+    </div>
+    <div id="tab-all" class="tabpane">
+      <div id="all-list"><div class="empty-state"><div class="es-icon">?</div><h3>Loading…</h3></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: View Document -->
+<div id="modal-doc-view" class="modal-bg" onclick="if(event.target===this)closeModal('modal-doc-view')">
+  <div class="modal">
+    <div class="modal-head"><h3>?? Document Review</h3><button class="modal-close" onclick="closeModal('modal-doc-view')">?</button></div>
+    <div class="modal-body" id="modal-doc-body">Loading…</div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-doc-view')">Cancel</button>
+      <button class="btn btn-danger btn-sm" onclick="closeModal('modal-doc-view');openModal('modal-doc-reject')">? Reject</button>
+      <button class="btn btn-ok" onclick="doApproveCurrentDoc();closeModal('modal-doc-view')">? Approve Document</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Reject Document -->
+<div id="modal-doc-reject" class="modal-bg" onclick="if(event.target===this)closeModal('modal-doc-reject')">
+  <div class="modal">
+    <div class="modal-head"><h3>? Reject Document</h3><button class="modal-close" onclick="closeModal('modal-doc-reject')">?</button></div>
+    <div class="modal-body">
+      <div class="fg"><label>Rejection Reason *</label>
+        <select id="doc-reject-reason">
+          <option value="expired">Document is expired</option>
+          <option value="not_authentic">Document not authentic / unverifiable</option>
+          <option value="wrong_type">Wrong document type uploaded</option>
+          <option value="not_legible">Document not legible / poor quality scan</option>
+          <option value="name_mismatch">Company name does not match application</option>
+          <option value="other">Other reason</option>
+        </select>
+      </div>
+      <div class="fg"><label>Notes to Seller</label>
+        <textarea id="doc-reject-notes" placeholder="Explain specifically what is wrong and what they need to reupload…"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-doc-reject')">Cancel</button>
+      <button class="btn btn-danger" onclick="doRejectCurrentDoc()">Confirm Rejection</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script>
+var currentDocId = null;
+
+var DEMO_DOCS = [
+  { id: 'd1', name: 'CE_Certificate_Electronics_2024.pdf', type: 'ce_certificate', type_label: 'CE Certificate', status: 'pending', file_size_bytes: 2516582, created_at: new Date(Date.now()-7200000).toISOString(), expiry_date: '2026-12-31', seller: 'Shenzhen TechPro Electronics', category: 'Electronics', priority: false },
+  { id: 'd2', name: 'Business_License_GlobalTech_Vietnam.pdf', type: 'business_license', type_label: 'Business License', status: 'pending', file_size_bytes: 1887437, created_at: new Date(Date.now()-18000000).toISOString(), expiry_date: null, seller: 'GlobalTech Vietnam', category: 'All Categories', priority: false },
+  { id: 'd3', name: 'FDA_Approval_KN95_Medical_Masks.pdf', type: 'fda_approval', type_label: 'FDA Approval', status: 'pending', file_size_bytes: 3251110, created_at: new Date(Date.now()-86400000).toISOString(), expiry_date: '2025-06-30', seller: 'MedSupply Co.', category: 'Healthcare', priority: true },
+  { id: 'd4', name: 'ISO_9001_AutoParts_Korea_2024.pdf', type: 'iso_9001', type_label: 'ISO 9001', status: 'pending', file_size_bytes: 1254400, created_at: new Date(Date.now()-172800000).toISOString(), expiry_date: '2025-09-30', seller: 'AutoParts Korea Ltd.', category: 'Auto Parts', priority: false },
+  { id: 'd5', name: 'ISO9001_Certificate_TechPro_2024.pdf', type: 'iso_9001', type_label: 'ISO 9001', status: 'approved', file_size_bytes: 1258291, created_at: new Date(Date.now()-259200000).toISOString(), expiry_date: '2025-12-31', seller: 'Shenzhen TechPro', category: 'All', reviewed_at: new Date(Date.now()-172800000).toISOString() },
+  { id: 'd6', name: 'Safety_Cert_EXPIRED_2022.pdf', type: 'other', type_label: 'Safety Certificate', status: 'rejected', rejection_reason: 'expired', rejection_notes: 'Certificate expired December 2022. Please upload current certification.', file_size_bytes: 840000, created_at: new Date(Date.now()-432000000).toISOString(), seller: 'BadActor Trading', reviewed_at: new Date(Date.now()-345600000).toISOString() }
+];
+
+function formatBytes(b){ if(!b) return '—'; if(b<1024)return b+'B'; if(b<1048576)return (b/1024).toFixed(1)+'KB'; return (b/1048576).toFixed(1)+'MB'; }
+function timeAgo(d){ var s=(Date.now()-new Date(d))/1000; return s<3600?Math.floor(s/60)+'m ago':s<86400?Math.floor(s/3600)+'h ago':Math.floor(s/86400)+'d ago'; }
+
+function makeDocCard(d) {
+  var icoClass = d.status === 'approved' ? 'dic-approved' : d.status === 'rejected' ? 'dic-rejected' : d.priority ? 'dic-priority' : 'dic-pending';
+  var statusPill = d.status === 'approved' ? '<span class="pill p-ok">Approved ?</span>' : d.status === 'rejected' ? '<span class="pill p-danger">Rejected ?</span>' : d.priority ? '<span class="pill p-danger">High Priority !</span>' : '<span class="pill p-warn">Pending</span>';
+  var actions = '';
+  if (d.status === 'pending') {
+    actions = '<button class="btn btn-ghost btn-sm" onclick="openDocView(\''+d.id+'\')">?? View</button>'
+      + '<button class="btn btn-ok btn-sm" onclick="doApproveDoc(\''+d.id+'\')">? Approve</button>'
+      + '<button class="btn btn-danger btn-sm" onclick="currentDocId=\''+d.id+'\';openModal(\'modal-doc-reject\')">? Reject</button>';
+  } else {
+    actions = '<button class="btn btn-ghost btn-sm" onclick="openDocView(\''+d.id+'\')">?? View</button>';
+  }
+  return '<div class="doc-card'+(d.status==='approved'?' approved':d.priority?' priority':'')+'" id="dc-'+d.id+'">'
+    +'<div class="doc-ico '+icoClass+'">??</div>'
+    +'<div class="doc-info"><h4>'+d.name+'</h4>'
+      +'<div class="meta">'+d.seller+' · '+d.type_label+' · '+formatBytes(d.file_size_bytes)+' · '+timeAgo(d.created_at)+(d.expiry_date?' · Expires: '+d.expiry_date:'')+'</div>'
+    +'</div>'
+    +statusPill
+    +'<div class="doc-actions">'+actions+'</div>'
+  +'</div>';
+}
+
+function renderDocs(list, containerId, filter) {
+  var el = document.getElementById(containerId);
+  var filtered = filter ? list.filter(function(d){ return d.status === filter; }) : list;
+  if (!filtered || filtered.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="es-icon">??</div><h3>No documents in this category</h3></div>'; return;
+  }
+  el.innerHTML = filtered.map(makeDocCard).join('');
+  if (filter === 'pending') {
+    document.getElementById('tab-count').textContent = filtered.length;
+    document.getElementById('count-pending').textContent = filtered.length;
+  }
+}
+
+async function loadDocs() {
+  if (!_configured) {
+    renderDocs(DEMO_DOCS, 'pending-list', 'pending');
+    renderDocs(DEMO_DOCS, 'approved-list', 'approved');
+    renderDocs(DEMO_DOCS, 'rejected-list', 'rejected');
+    renderDocs(DEMO_DOCS, 'all-list', null);
+    document.getElementById('count-approved').textContent = DEMO_DOCS.filter(function(d){ return d.status === 'approved'; }).length;
+    document.getElementById('count-rejected').textContent = DEMO_DOCS.filter(function(d){ return d.status === 'rejected'; }).length;
+    return;
+  }
+  document.getElementById('pending-list').innerHTML = '<div class="empty-state"><div class="spinner"></div></div>';
+  try {
+    var q = sb.from('seller_documents').select('*, seller_profiles(company_name)').order('created_at', {ascending:true});
+    var typeFilter = document.getElementById('filter-type').value;
+    if (typeFilter) q = q.eq('type', typeFilter);
+    var r = await q;
+    var docs = (r.data || []).map(function(d){ return Object.assign(d, { seller: d.seller_profiles ? d.seller_profiles.company_name : '—', type_label: d.type.replace(/_/g,' ').replace(/\b\w/g,function(c){ return c.toUpperCase(); }) }); });
+    renderDocs(docs, 'pending-list', 'pending');
+    renderDocs(docs, 'approved-list', 'approved');
+    renderDocs(docs, 'rejected-list', 'rejected');
+    renderDocs(docs, 'all-list', null);
+    document.getElementById('count-approved').textContent = docs.filter(function(d){ return d.status==='approved'; }).length;
+    document.getElementById('count-rejected').textContent = docs.filter(function(d){ return d.status==='rejected'; }).length;
+  } catch(e) { showToast('Error: ' + e.message, 'danger'); }
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('on'); });
+  document.querySelectorAll('.tabpane').forEach(function(p){ p.classList.remove('on'); });
+  btn.classList.add('on');
+  document.getElementById('tab-'+tab).classList.add('on');
+}
+
+function openDocView(id) {
+  currentDocId = id;
+  var allDocs = DEMO_DOCS;
+  var d = allDocs.find(function(x){ return x.id === id; });
+  if (d) {
+    document.getElementById('modal-doc-body').innerHTML =
+      '<div style="background:#e6f6fc;border-radius:12px;padding:36px 20px;text-align:center;margin-bottom:16px;border:2px dashed #c7d2fe">'
+        +'<div style="font-size:48px;margin-bottom:8px">??</div>'
+        +'<div style="font-size:14px;font-weight:700;margin-bottom:4px">'+d.name+'</div>'
+        +'<div style="font-size:12px;color:var(--muted)">'+formatBytes(d.file_size_bytes)+' · Uploaded by '+d.seller+' · '+timeAgo(d.created_at)+'</div>'
+        +'<button class="btn btn-ghost btn-sm" style="margin-top:12px" onclick="showToast(\'Opening document…\',\'ok\')">?? Open Full Document</button>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">'
+        +'<div class="fg"><label>Document Type</label><select><option>'+(d.type_label)+'</option><option>Business License</option><option>CE Certificate</option><option>FDA Approval</option><option>ISO 9001</option></select></div>'
+        +'<div class="fg"><label>Expiry Date</label><input type="date" value="'+(d.expiry_date||'')+'"></div>'
+      +'</div>'
+      +'<div class="fg"><label>Reviewer Notes (optional)</label><textarea id="doc-view-notes" placeholder="Notes about this document…"></textarea></div>';
+  }
+  openModal('modal-doc-view');
+}
+
+async function doApproveDoc(id) {
+  var card = document.getElementById('dc-' + id);
+  if (card) {
+    card.className = 'doc-card approved';
+    var ico = card.querySelector('.doc-ico');
+    if (ico) ico.className = 'doc-ico dic-approved';
+    var pills = card.querySelectorAll('.pill');
+    pills.forEach(function(p){ p.className='pill p-ok'; p.textContent='Approved ?'; });
+    card.querySelectorAll('.doc-actions button').forEach(function(b){
+      if (b.textContent.trim().includes('Approve') || b.textContent.trim().includes('Reject')) b.remove();
+    });
+  }
+  var count = document.getElementById('count-pending');
+  if (count) count.textContent = Math.max(0, parseInt(count.textContent||0) - 1);
+  var tcount = document.getElementById('tab-count');
+  if (tcount) tcount.textContent = Math.max(0, parseInt(tcount.textContent||0) - 1);
+  showToast('Document approved! Seller notified.', 'ok');
+  if (_configured && window._adminId) {
+    try {
+      await sb.from('seller_documents').update({ status: 'approved', reviewed_by: window._adminId, reviewed_at: new Date().toISOString() }).eq('id', id);
+      await sb.from('audit_log').insert({ user_id: window._adminId, action: 'document_approved', entity_type: 'seller_documents', entity_id: id });
+    } catch(e) { console.error(e); }
+  }
+}
+
+function doApproveCurrentDoc() { if (currentDocId) doApproveDoc(currentDocId); }
+
+async function doRejectCurrentDoc() {
+  var reason = document.getElementById('doc-reject-reason').value;
+  var notes = document.getElementById('doc-reject-notes').value;
+  if (!notes.trim()) { alert('Please provide rejection notes for the seller.'); return; }
+  closeModal('modal-doc-reject');
+  var id = currentDocId;
+  var card = document.getElementById('dc-' + id);
+  if (card) {
+    var ico = card.querySelector('.doc-ico');
+    if (ico) ico.className = 'doc-ico dic-rejected';
+    var pills = card.querySelectorAll('.pill');
+    pills.forEach(function(p){ p.className='pill p-danger'; p.textContent='Rejected ?'; });
+    card.querySelectorAll('.doc-actions button').forEach(function(b){
+      if (b.textContent.trim().includes('Approve') || b.textContent.trim().includes('Reject')) b.remove();
+    });
+  }
+  var count = document.getElementById('count-pending');
+  if (count) count.textContent = Math.max(0, parseInt(count.textContent||0) - 1);
+  var tcount = document.getElementById('tab-count');
+  if (tcount) tcount.textContent = Math.max(0, parseInt(tcount.textContent||0) - 1);
+  showToast('Document rejected. Seller notified.', 'warn');
+  if (_configured && window._adminId) {
+    try {
+      await sb.from('seller_documents').update({ status: 'rejected', rejection_reason: reason, reviewer_notes: notes, reviewed_by: window._adminId, reviewed_at: new Date().toISOString() }).eq('id', id);
+    } catch(e) { console.error(e); }
+  }
+}
+
+function openModal(id) { var m=document.getElementById(id); if(m)m.classList.add('show'); }
+function closeModal(id) { var m=document.getElementById(id); if(m)m.classList.remove('show'); }
+
+function showToast(msg, type) {
+  document.querySelectorAll('.da-toast').forEach(function(t){ t.remove(); });
+  var t=document.createElement('div'); t.className='da-toast';
+  var c={ok:['#dcfce7','#86efac','#15803d'],warn:['#fef3c7','#fcd34d','#92400e'],danger:['#fee2e2','#fca5a5','#991b1b']}[type]||['#dcfce7','#86efac','#15803d'];
+  t.style.cssText='position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.12);max-width:360px;font-family:DM Sans,sans-serif;border:1px solid '+c[1]+';background:'+c[0]+';color:'+c[2];
+  t.textContent=(type==='ok'?'? ':type==='warn'?'? ':'? ')+msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ t.style.transition='opacity .3s'; t.style.opacity='0'; setTimeout(function(){ t.remove(); },300); },3000);
+}
+
+(async function(){ if(_configured){ try{ var s=await getSession(); if(!s){window.location.href='login-admin.html';return;} window._adminId=s.user.id; }catch(e){} } loadDocs(); })();
+</script>
+</body>
+</html>
+

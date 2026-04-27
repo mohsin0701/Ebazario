@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin Login — Ebazario Trading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;min-height:100vh;background:linear-gradient(135deg,#0a0514 0%,#130d2a 50%,#0e0820 100%);display:flex;align-items:center;justify-content:center;padding:24px;flex-direction:column;gap:16px}
+.box{width:100%;max-width:420px;background:#14102a;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:36px;box-shadow:0 24px 64px rgba(0,0,0,.5)}
+.logo{text-align:center;margin-bottom:24px}
+.logo img{height:42px;filter:brightness(0) invert(1);opacity:.85}
+.logo-tag{font-size:10px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.25);margin-top:5px;text-transform:uppercase}
+.icon{width:60px;height:60px;border-radius:50%;background:rgba(201,164,60,.12);border:1px solid rgba(201,164,60,.2);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 12px}
+.title{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:#fff;text-align:center;margin-bottom:4px}
+.sub{font-size:13px;color:rgba(255,255,255,.3);text-align:center;margin-bottom:24px}
+.err{background:#200a0a;border:1px solid #7f1d1d;color:#fca5a5;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none;line-height:1.5}
+.inf{background:#0a1f20;border:1px solid #065f46;color:#6ee7b7;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none;line-height:1.5}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,.35);margin-bottom:6px}
+.fg input{width:100%;padding:11px 14px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.08);border-radius:9px;font-size:14px;color:#fff;outline:none;font-family:'DM Sans',sans-serif;transition:border .2s}
+.fg input:focus{border-color:rgba(201,164,60,.5)}
+.fg input::placeholder{color:rgba(255,255,255,.18)}
+.pwd{position:relative}
+.eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:15px;color:rgba(255,255,255,.25)}
+.btn{width:100%;padding:13px;background:linear-gradient(135deg,#c9a43c,#e8c55a);color:#1a0a00;font-family:'Sora',sans-serif;font-weight:700;font-size:14px;border:none;border-radius:10px;cursor:pointer;margin-top:4px;transition:all .2s}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.55;cursor:not-allowed;filter:none}
+.note{display:flex;align-items:center;gap:8px;margin-top:16px;padding:10px;background:rgba(255,255,255,.03);border-radius:7px}
+.note span{font-size:12px;color:rgba(255,255,255,.2);line-height:1.5}
+.back{font-size:13px;color:rgba(255,255,255,.2);text-decoration:none}
+.back:hover{color:rgba(255,255,255,.5)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo">
+    <a href="../index.html"><img src="../logo.png" alt="Ebazario"></a>
+    <div class="logo-tag">Admin Panel</div>
+  </div>
+  <div class="icon">🔒</div>
+  <div class="title">Admin Access</div>
+  <div class="sub">Authorized administrators only</div>
+
+  <div id="err" class="err"></div>
+  <div id="inf" class="inf"></div>
+
+  <div class="fg">
+    <label>Email</label>
+    <input type="email" id="em" placeholder="admin@ebazario.com" autocomplete="email">
+  </div>
+  <div class="fg">
+    <label>Password</label>
+    <div class="pwd">
+      <input type="password" id="pw" placeholder="••••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')go()">
+      <span class="eye" onclick="var i=document.getElementById('pw');i.type=i.type==='password'?'text':'password'">👁</span>
+    </div>
+  </div>
+
+  <button class="btn" id="btn" onclick="go()">Access Admin Panel →</button>
+
+  <div class="note">
+    <span style="font-size:15px;flex-shrink:0">🛡️</span>
+    <span>All admin actions are logged in the audit trail.</span>
+  </div>
+</div>
+<a href="../index.html" class="back">← Back to Marketplace</a>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script>
+var _loggingIn = false;
+
+function showErr(msg) {
+  document.getElementById('inf').style.display = 'none';
+  var el = document.getElementById('err');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.querySelector('.box').style.animation = 'shake .3s ease';
+  setTimeout(function(){ document.querySelector('.box').style.animation=''; }, 300);
+}
+
+function showInf(msg) {
+  document.getElementById('err').style.display = 'none';
+  var el = document.getElementById('inf');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function setBtn(loading) {
+  var b = document.getElementById('btn');
+  b.disabled = loading;
+  b.textContent = loading ? '⏳ Please wait...' : 'Access Admin Panel →';
+}
+
+async function go() {
+  if (_loggingIn) return;
+  var email = document.getElementById('em').value.trim();
+  var pass  = document.getElementById('pw').value;
+  if (!email || !pass) { showErr('Enter your email and password.'); return; }
+
+  // Demo mode
+  if (!_configured) {
+    window.location.href = 'admin-dashboard.html';
+    return;
+  }
+
+  _loggingIn = true;
+  setBtn(true);
+  showInf('Signing in...');
+
+  try {
+    // Sign in
+    var { data, error } = await sb.auth.signInWithPassword({ email: email, password: pass });
+    if (error) throw new Error(error.message);
+
+    showInf('Checking permissions...');
+
+    // Get profile
+    var { data: profile, error: perr } = await sb
+      .from('profiles')
+      .select('id, role, first_name, last_name')
+      .eq('id', data.user.id)
+      .single();
+
+    console.log('Profile:', profile, 'Error:', perr);
+
+    if (perr || !profile) {
+      // No profile - create one as admin and go
+      await sb.from('profiles').upsert({
+        id: data.user.id,
+        email: email,
+        role: 'admin',
+        first_name: 'Super',
+        last_name: 'Admin',
+        is_active: true
+      });
+      showInf('Admin profile created! Loading...');
+      setTimeout(function(){ window.location.href = 'admin-dashboard.html'; }, 600);
+      return;
+    }
+
+    if (profile.role !== 'admin') {
+      await sb.auth.signOut();
+      throw new Error('This account has "' + profile.role + '" role, not admin. Please run the SQL fix first.');
+    }
+
+    // All good - go to dashboard
+    showInf('Welcome ' + (profile.first_name || 'Admin') + '! Loading panel...');
+    setTimeout(function(){ window.location.href = 'admin-dashboard.html'; }, 500);
+
+  } catch(e) {
+    _loggingIn = false;
+    setBtn(false);
+    showErr(e.message || 'Login failed.');
+  }
+}
+// NO auto-redirect - this was causing the loop
+</script>
+</body>
+</html>

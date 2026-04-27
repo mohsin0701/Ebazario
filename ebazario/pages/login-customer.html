@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Customer Login — Ebazario Trading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+<div style="width:100%;max-width:980px">
+  <a href="../index.html" class="back-link">← Back to Ebazario Trading</a>
+  <div class="wrap">
+    <div class="lpanel">
+      <div class="lpanel-logo"><a href="../index.html"><img src="../logo.png" alt="Ebazario Trading"></a></div>
+      <h2>Welcome to <em>Ebazario Trading</em></h2>
+      <p>Your global sourcing hub — connect with verified suppliers, track orders, and manage RFQs.</p>
+      <div class="feat"><div class="feat-icon">🛡️</div><div><strong>Trade Assurance</strong><span>Up to $500K order protection</span></div></div>
+      <div class="feat"><div class="feat-icon">✈️</div><div><strong>Door-to-Door Shipping</strong><span>Air, sea &amp; courier worldwide</span></div></div>
+      <div class="feat"><div class="feat-icon">📦</div><div><strong>Order Tracking</strong><span>Real-time shipment updates</span></div></div>
+      <div class="feat"><div class="feat-icon">💬</div><div><strong>24/7 Support</strong><span>Dedicated trade managers</span></div></div>
+    </div>
+    <div class="rform">
+      <div class="tabs">
+        <div class="tab on" onclick="switchPane('p-login',this)">Sign In</div>
+        <div class="tab" onclick="switchPane('p-reg',this)">Register Free</div>
+      </div>
+
+      <div id="p-login" class="pane on">
+        <div id="msg" style="padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none;line-height:1.5"></div>
+        <div class="fg"><label>Email Address</label>
+          <input type="email" id="em" placeholder="your@email.com" autocomplete="email">
+        </div>
+        <div class="fg"><label>Password</label>
+          <div style="position:relative">
+            <input type="password" id="pw" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')go()">
+            <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#9a90b4" onclick="var i=document.getElementById('pw');i.type=i.type==='password'?'text':'password'">👁</span>
+          </div>
+        </div>
+        <button class="btn btn-p" id="btn" onclick="go()">Sign In →</button>
+        <div class="lfoot" style="margin-top:14px">Seller? <a href="login-seller.html">Seller Login →</a> &nbsp;|&nbsp; Admin? <a href="login-admin.html">Admin Login →</a></div>
+      </div>
+
+      <div id="p-reg" class="pane">
+        <div id="rmsg" style="padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none;line-height:1.5"></div>
+        <div class="frow">
+          <div class="fg"><label>First Name</label><input type="text" id="rfirst" placeholder="James"></div>
+          <div class="fg"><label>Last Name</label><input type="text" id="rlast" placeholder="Wilson"></div>
+        </div>
+        <div class="fg"><label>Email</label><input type="email" id="remail" placeholder="your@email.com"></div>
+        <div class="fg"><label>Password (min 6 chars)</label><input type="password" id="rpass" placeholder="••••••••"></div>
+        <div class="fg"><label>Confirm Password</label><input type="password" id="rpass2" placeholder="••••••••"></div>
+        <button class="btn btn-g" id="rbtn" onclick="reg()">Create Free Account →</button>
+        <div class="lfoot" style="margin-top:14px">Seller? <a href="login-seller.html">Seller Login →</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script>
+function switchPane(id, btn) {
+  document.querySelectorAll('.pane').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
+
+function msg(id, text, isErr) {
+  var el = document.getElementById(id);
+  el.textContent = text;
+  el.style.display = 'block';
+  el.style.background = isErr ? '#fee2e2' : '#dcfce7';
+  el.style.color = isErr ? '#991b1b' : '#15803d';
+  el.style.border = '1px solid ' + (isErr ? '#fca5a5' : '#86efac');
+}
+
+async function go() {
+  var email = document.getElementById('em').value.trim();
+  var pass  = document.getElementById('pw').value;
+  var btn   = document.getElementById('btn');
+
+  if (!email || !pass) { msg('msg','Enter your email and password.',true); return; }
+  if (!_configured)    { window.location.href = 'customer-dashboard.html'; return; }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Signing in...';
+  msg('msg','Connecting to database...', false);
+
+  try {
+    // Step 1: Sign in with Supabase Auth
+    console.log('Step 1: Signing in with', email);
+    var authRes = await sb.auth.signInWithPassword({ email: email, password: pass });
+    
+    if (authRes.error) {
+      console.error('Auth error:', authRes.error);
+      throw new Error(authRes.error.message);
+    }
+    
+    console.log('Step 1 OK - user id:', authRes.data.user.id);
+    msg('msg', 'Authenticated! Checking account type...', false);
+
+    // Step 2: Get profile
+    var uid = authRes.data.user.id;
+    console.log('Step 2: Getting profile for', uid);
+    
+    var profRes = await sb.from('profiles').select('id, email, role').eq('id', uid).single();
+    console.log('Profile response:', profRes);
+
+    if (profRes.error) {
+      console.warn('Profile not found, creating customer profile...');
+      // Create the profile
+      var upsertRes = await sb.from('profiles').upsert({
+        id: uid, email: email, role: 'customer', is_active: true
+      });
+      console.log('Upsert result:', upsertRes);
+      msg('msg', 'Profile created! Loading dashboard...', false);
+      setTimeout(function(){ window.location.href = 'customer-dashboard.html'; }, 600);
+      return;
+    }
+
+    var role = profRes.data.role;
+    console.log('Role:', role);
+
+    if (role === 'customer') {
+      msg('msg', 'Welcome! Loading your dashboard...', false);
+      setTimeout(function(){ window.location.href = 'customer-dashboard.html'; }, 400);
+    } else if (role === 'seller') {
+      await sb.auth.signOut();
+      throw new Error('This is a SELLER account. Please go to Seller Login page.');
+    } else if (role === 'admin') {
+      await sb.auth.signOut();
+      throw new Error('This is an ADMIN account. Please go to Admin Login page.');
+    } else {
+      // Unknown role - send to dashboard anyway
+      msg('msg', 'Loading dashboard...', false);
+      setTimeout(function(){ window.location.href = 'customer-dashboard.html'; }, 400);
+    }
+
+  } catch(e) {
+    console.error('Login error:', e);
+    btn.disabled = false;
+    btn.textContent = 'Sign In →';
+    msg('msg', e.message || 'Login failed. Check your email and password.', true);
+  }
+}
+
+async function reg() {
+  var first = document.getElementById('rfirst').value.trim();
+  var last  = document.getElementById('rlast').value.trim();
+  var email = document.getElementById('remail').value.trim();
+  var pass  = document.getElementById('rpass').value;
+  var pass2 = document.getElementById('rpass2').value;
+  var rbtn  = document.getElementById('rbtn');
+
+  if (!first||!last||!email||!pass) { msg('rmsg','Fill in all fields.',true); return; }
+  if (pass.length < 6)              { msg('rmsg','Password needs 6+ characters.',true); return; }
+  if (pass !== pass2)               { msg('rmsg','Passwords do not match.',true); return; }
+  if (!_configured) { msg('rmsg','Demo mode - Supabase not configured.',false); return; }
+
+  rbtn.disabled = true;
+  rbtn.textContent = '⏳ Creating account...';
+
+  try {
+    console.log('Registering:', email);
+    var res = await sb.auth.signUp({
+      email: email, password: pass,
+      options: { data: { role: 'customer', first_name: first, last_name: last } }
+    });
+    
+    if (res.error) throw new Error(res.error.message);
+    console.log('Signup result:', res.data.user);
+
+    if (res.data.user) {
+      // Manually create profile and customer_profiles rows
+      await sb.from('profiles').upsert({
+        id: res.data.user.id, email: email,
+        role: 'customer', first_name: first, last_name: last, is_active: true
+      });
+      await sb.from('customer_profiles').upsert({
+        user_id: res.data.user.id, total_orders: 0, total_spent_usd: 0
+      });
+    }
+
+    msg('rmsg', 'Account created successfully! Signing you in...', false);
+    
+    // Auto sign in after registration
+    setTimeout(async function(){
+      var signInRes = await sb.auth.signInWithPassword({ email: email, password: pass });
+      if (!signInRes.error) {
+        window.location.href = '../customer-dashboard.html';
+      } else {
+        document.getElementById('em').value = email;
+        switchPane('p-login', document.querySelectorAll('.tab')[0]);
+        msg('msg', 'Account created! Please sign in.', false);
+      }
+    }, 1000);
+
+  } catch(e) {
+    console.error('Register error:', e);
+    rbtn.disabled = false;
+    rbtn.textContent = 'Create Free Account →';
+    msg('rmsg', e.message || 'Registration failed.', true);
+  }
+}
+</script>
+</body>
+</html>

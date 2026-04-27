@@ -1,0 +1,306 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Food & Agriculture — Ebazario Trading</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/style.css">
+</head>
+<body><div class="topbar"><div class="inner"><span>🌐 Connecting buyers &amp; suppliers worldwide — 190+ countries</span><div><a href="#">Help Center</a><a href="#">Sell on Ebazario</a><a href="#">English ▾</a></div></div></div><nav>
+<div class="nav-inner">
+  <a href="../../index.html" class="logo-wrap"><img src="../../logo.png" alt="Ebazario Trading"></a>
+  <div class="search-bar">
+    <select><option>All Categories</option><option>Electronics</option><option>Machinery</option><option>Apparel</option><option>Food</option><option>Chemicals</option></select>
+    <input type="text" id="nav-search" placeholder="Search products, suppliers...">
+    <button onclick="doSearch()">Search</button>
+  </div>
+  <div class="nav-actions" id="nav-auth">
+    <div class="btn-login-menu">
+      <a href="../../pages/login-customer.html" class="nav-btn btn-outline">Log In ▾</a>
+      <div class="login-dropdown">
+        <a href="../../pages/login-customer.html">👤 Customer Login</a>
+        <a href="../../pages/login-seller.html">🏪 Seller Login</a>
+        <div class="divider"></div>
+        <a href="../../pages/login-admin.html">🔒 Admin Login</a>
+      </div>
+    </div>
+    <a href="../../pages/login-seller.html" class="nav-btn btn-gold">Start Selling</a>
+  </div>
+</div>
+</nav>
+<div class="cat-nav"><div class="cat-nav-inner">
+    <a href="../../pages/categories/electronics.html" class="cat-link">Electronics</a>
+    <a href="../../pages/categories/machinery.html" class="cat-link">Machinery</a>
+    <a href="../../pages/categories/apparel.html" class="cat-link">Apparel</a>
+    <a href="../../pages/categories/food-agriculture.html" class="cat-link">Food & Agriculture</a>
+    <a href="../../pages/categories/chemicals.html" class="cat-link">Chemicals</a>
+    <a href="../../pages/categories/construction.html" class="cat-link">Construction</a>
+    <a href="../../pages/categories/auto-parts.html" class="cat-link">Auto Parts</a>
+    <a href="../../pages/categories/healthcare.html" class="cat-link">Healthcare</a>
+    <a href="../../pages/categories/furniture.html" class="cat-link">Furniture & Home</a>
+    <a href="../../pages/categories/tools-hardware.html" class="cat-link">Tools & Hardware</a></div></div>
+<div class="cat-hero">
+  <div class="cat-hero-inner">
+    <div class="breadcrumb" style="padding:0 0 14px;color:rgba(255,255,255,.6)">
+      <a href="../../index.html" style="color:rgba(255,255,255,.6)">Home</a><span class="sep">›</span><span style="color:#fff">Food & Agriculture</span>
+    </div>
+    <div class="cat-hero-tag">Category</div>
+    <h1>Food & Agriculture</h1>
+    <p>Quality food products and raw materials — browse 98,400+ verified products from global manufacturers.</p>
+    <div class="cat-stats">
+      <div class="cat-stat"><strong>98,400+</strong><span>Products</span></div>
+      <div class="cat-stat"><strong>8,400+</strong><span>Suppliers</span></div>
+      <div class="cat-stat"><strong>190+</strong><span>Countries</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="breadcrumb" style="padding-top:16px">
+    <a href="../../index.html">Home</a><span class="sep">›</span><span class="current">Food & Agriculture</span>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px"><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Grains & Cereals</a><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Fruits & Vegetables</a><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Meat & Seafood</a><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Organic Products</a><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Spices & Herbs</a><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Edible Oils</a><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Beverages</a><a href="#" class="tag" style="font-size:12px;padding:5px 14px;cursor:pointer">Animal Feed</a></div>
+
+  <div class="listing-layout">
+    <div class="filters-panel">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h4 style="font-size:15px;font-weight:700">Filters</h4><span style="font-size:12px;color:var(--primary);cursor:pointer;font-weight:600">Clear All</span></div>
+  <div class="filter-group"><h5>Supplier Country</h5>
+    <div class="filter-option"><input type="checkbox" checked><label>🇨🇳 China (142,380)</label></div>
+    <div class="filter-option"><input type="checkbox"><label>🇩🇪 Germany (18,240)</label></div>
+    <div class="filter-option"><input type="checkbox"><label>🇯🇵 Japan (14,100)</label></div>
+    <div class="filter-option"><input type="checkbox"><label>🇰🇷 South Korea (12,880)</label></div>
+    <div class="filter-option"><input type="checkbox"><label>🇮🇳 India (9,450)</label></div>
+  </div>
+  <div class="filter-group"><h5>Price Range (USD)</h5>
+    <div class="price-range"><input type="number" placeholder="Min" value="0"><span>–</span><input type="number" placeholder="Max" value="50000"></div>
+    <button style="width:100%;margin-top:8px;padding:8px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-family:Sora,sans-serif;font-size:13px;font-weight:600;cursor:pointer">Apply</button>
+  </div>
+  <div class="filter-group"><h5>Min. Order Qty</h5>
+    <div class="filter-option"><input type="radio" name="moq"><label>Any quantity</label></div>
+    <div class="filter-option"><input type="radio" name="moq"><label>≤ 100 units</label></div>
+    <div class="filter-option"><input type="radio" name="moq" checked><label>≤ 500 units</label></div>
+  </div>
+  <div class="filter-group"><h5>Certifications</h5>
+    <div class="filter-option"><input type="checkbox"><label>ISO 9001</label></div>
+    <div class="filter-option"><input type="checkbox"><label>CE Certified</label></div>
+    <div class="filter-option"><input type="checkbox"><label>RoHS Compliant</label></div>
+  </div>
+  <div class="filter-group"><h5>Supplier Type</h5>
+    <div class="filter-option"><input type="checkbox" checked><label>Manufacturer</label></div>
+    <div class="filter-option"><input type="checkbox"><label>Trading Company</label></div>
+    <div class="filter-option"><input type="checkbox"><label>OEM/ODM Factory</label></div>
+  </div>
+  <div class="filter-group"><h5>Trade Assurance</h5>
+    <div class="filter-option"><input type="checkbox" checked><label>Trade Assurance only</label></div>
+    <div class="filter-option"><input type="checkbox"><label>Verified Seller only</label></div>
+  </div>
+</div>
+    <div>
+      <div class="active-filters">
+        <span style="font-size:13px;color:var(--text-muted);margin-right:4px">Active:</span>
+        <span class="active-filter">All Countries ✕</span>
+        <span class="active-filter">Manufacturer ✕</span>
+        <span class="active-filter">Trade Assurance ✕</span>
+      </div>
+      <div class="listing-header">
+        <div class="listing-count"><strong>98,400+</strong> products in Food & Agriculture</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <label style="font-size:13px;color:var(--text-muted)">Sort by:</label>
+          <select class="listing-sort"><option>Best Match</option><option>Newest First</option><option>Price: Low to High</option><option>Price: High to Low</option><option>Most Orders</option></select>
+        </div>
+      </div>
+      <div class="listing-grid"><div class="product-card">
+  <a href="../../pages/products/food-agriculture-p1.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"><span class="product-badge">HOT</span></div>
+    <div class="product-body">
+      <div class="product-name">White Rice Long Grain 5% Broken Bulk Export</div>
+      <div class="product-moq">Min. Order: 25 MTs</div>
+      <div class="product-price">$380 <span>/ MT</span></div>
+      <div class="product-supplier">🇧🇷 AgriGlobal Brazil <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/food-agriculture-p2.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"></div>
+    <div class="product-body">
+      <div class="product-name">Extra Virgin Olive Oil 1L Glass Bottle</div>
+      <div class="product-moq">Min. Order: 500 bottles</div>
+      <div class="product-price">$4.20 <span>/ bottle</span></div>
+      <div class="product-supplier">🇬🇷 MedOlive Group <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/food-agriculture-p3.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"><span class="product-badge new">NEW</span></div>
+    <div class="product-body">
+      <div class="product-name">Fresh Ginger Root Grade A Export Quality</div>
+      <div class="product-moq">Min. Order: 5 MTs</div>
+      <div class="product-price">$850 <span>/ MT</span></div>
+      <div class="product-supplier">🇮🇳 SpiceHub India <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/food-agriculture-p4.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"><span class="product-badge">HOT</span></div>
+    <div class="product-body">
+      <div class="product-name">Frozen Chicken Whole Bird Grade A Halal</div>
+      <div class="product-moq">Min. Order: 1000 kgs</div>
+      <div class="product-price">$1.40 <span>/ kg</span></div>
+      <div class="product-supplier">🇧🇷 PoultryPro Brazil <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/food-agriculture-p5.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"></div>
+    <div class="product-body">
+      <div class="product-name">Black Pepper Whole Grade 1 ASTA 600</div>
+      <div class="product-moq">Min. Order: 1 MTs</div>
+      <div class="product-price">$2800 <span>/ MT</span></div>
+      <div class="product-supplier">🇻🇳 VietSpice Co. <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/food-agriculture-p6.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"><span class="product-badge new">NEW</span></div>
+    <div class="product-body">
+      <div class="product-name">Organic Quinoa White Bolivian Premium</div>
+      <div class="product-moq">Min. Order: 1 MTs</div>
+      <div class="product-price">$1850 <span>/ MT</span></div>
+      <div class="product-supplier">🇧🇴 AndeanGrains <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/food-agriculture-p7.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"></div>
+    <div class="product-body">
+      <div class="product-name">Palm Oil Refined Bleached Deodorized RBD</div>
+      <div class="product-moq">Min. Order: 25 MTs</div>
+      <div class="product-price">$880 <span>/ MT</span></div>
+      <div class="product-supplier">🇲🇾 TropicalOil <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/food-agriculture-p8.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"><span class="product-badge">HOT</span></div>
+    <div class="product-body">
+      <div class="product-name">Cashew Nuts W320 Raw Ivory Coast Export</div>
+      <div class="product-moq">Min. Order: 1 MTs</div>
+      <div class="product-price">$3200 <span>/ MT</span></div>
+      <div class="product-supplier">🇨🇮 AfriNuts Export <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/food-agriculture-p9.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"></div>
+    <div class="product-body">
+      <div class="product-name">Frozen Atlantic Salmon Fillet Norwegian</div>
+      <div class="product-moq">Min. Order: 500 kgs</div>
+      <div class="product-price">$8.50 <span>/ kg</span></div>
+      <div class="product-supplier">🇳🇴 NordSea Foods <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/food-agriculture-p10.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"><span class="product-badge new">NEW</span></div>
+    <div class="product-body">
+      <div class="product-name">Arabica Coffee Green Beans Ethiopia Grade 1</div>
+      <div class="product-moq">Min. Order: 1 MTs</div>
+      <div class="product-price">$3800 <span>/ MT</span></div>
+      <div class="product-supplier">🇪🇹 EthioRoast Co. <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/food-agriculture-p11.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"></div>
+    <div class="product-body">
+      <div class="product-name">Organic Turmeric Powder Root Dried Curcumin</div>
+      <div class="product-moq">Min. Order: 1 MTs</div>
+      <div class="product-price">$1200 <span>/ MT</span></div>
+      <div class="product-supplier">🇮🇳 OrganicIndia <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div><div class="product-card">
+  <a href="../../pages/products/food-agriculture-p12.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="product-img"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="Product"></div>
+    <div class="product-body">
+      <div class="product-name">Honey Raw Wildflower Unprocessed Bulk</div>
+      <div class="product-moq">Min. Order: 200 kgs</div>
+      <div class="product-price">$4.80 <span>/ kg</span></div>
+      <div class="product-supplier">🇦🇷 PureBee Farms <span class="verified-badge">✓ Verified</span></div>
+    </div>
+  </a>
+  <div class="product-actions">
+    <button class="btn-inquire" onclick="alert('Inquiry sent!')">Inquire Now</button>
+    <button class="btn-save">♡</button>
+  </div>
+</div></div>
+      <div class="pagination">
+        <span class="page-btn active">1</span><span class="page-btn">2</span><span class="page-btn">3</span><span class="page-btn">4</span><span class="page-btn">5</span><span class="page-btn">...</span><span class="page-btn">›</span>
+      </div>
+    </div>
+  </div>
+</div>
+<footer>
+<div class="container">
+  <div class="footer-grid">
+    <div class="footer-brand"><img src="../../logo.png" alt="Ebazario"><p>The global B2B marketplace connecting buyers and suppliers with secure, door-to-door trade solutions.</p></div>
+    <div class="footer-col"><h5>Marketplace</h5>
+      <a href="../../pages/categories/electronics.html">Electronics</a>
+      <a href="../../pages/categories/machinery.html">Machinery</a>
+      <a href="../../pages/categories/apparel.html">Apparel</a>
+      <a href="../../pages/categories/food-agriculture.html">Food & Agriculture</a>
+      <a href="../../pages/categories/healthcare.html">Healthcare</a>
+    </div>
+    <div class="footer-col"><h5>Services</h5><a href="#">Trade Assurance</a><a href="#">Air Freight</a><a href="#">Sea Freight</a><a href="#">Door-to-Door</a><a href="#">Track Shipment</a></div>
+    <div class="footer-col"><h5>Company</h5><a href="#">About Ebazario</a><a href="#">Careers</a><a href="#">Press</a><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 Ebazario Trading. All rights reserved.</span><div style="display:flex;gap:8px"><span class="pay-badge">VISA</span><span class="pay-badge">Mastercard</span><span class="pay-badge">PayPal</span><span class="pay-badge">T/T</span><span class="pay-badge">L/C</span></div></div>
+</div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../../js/supabase.js"></script><script src="../../js/main.js"></script>
+</body></html>

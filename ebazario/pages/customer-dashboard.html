@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>My Account — Ebazario Trading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p:#1AA6DC;--pm:#0088cc;--pl:#49c5f5;--pa:#1AA6DC;
+  --navy:#003D5C;--navyl:#004e75;
+  --gold:#f59e0b;--gl:#fbbf24;--gd:#b45309;
+  --ok:#10b981;--okl:#ecfdf5;--okd:#064e3b;
+  --warn:#f59e0b;--warnl:#fffbeb;--warnd:#92400e;
+  --danger:#ef4444;--dangerl:#fef2f2;--dangerd:#991b1b;
+  --blue:#3b82f6;--bluel:#eff6ff;
+  --bg:#fbfcfd;--white:#fff;--text:#0f172a;--sub:#475569;--muted:#94a3b8;
+  --border:#edf2f7;--border-strong:#e2e8f0;
+  --r:16px;--rl:24px;--rxl:32px;
+  --shd:0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+  --shd-md:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+  --shd-lg:0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;letter-spacing:-0.01em}
+h1,h2,h3,h4{font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-0.02em}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:#1AA6DC;border-radius:10px}
+/* LAYOUT */
+.dash{display:flex;min-height:100vh}
+/* SIDEBAR */
+.sidebar{width:252px;background:var(--navy);flex-shrink:0;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:50;overflow-y:auto}
+.sb-logo{padding:20px 20px 15px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-logo a{display:flex;align-items:center;gap:10px}
+.sb-logo img{height:38px;filter:brightness(0) invert(1);opacity:.92}
+.sb-logo-lbl{font-size:10px;color:rgba(255,255,255,.35);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+.sb-user{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:11px}
+.sb-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gl));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#1a0a00;flex-shrink:0}
+.sb-user strong{display:block;font-size:13px;font-weight:600;color:#fff}
+.sb-user span{font-size:11px;color:rgba(255,255,255,.45)}
+.sb-nav{flex:1;padding:8px 0}
+.sb-grp{padding:12px 20px 3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.28)}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:13px;font-weight:500;color:rgba(255,255,255,.55);cursor:pointer;transition:all .15s;border-left:3px solid transparent}
+.sb-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.9)}
+.sb-item.active{background:rgba(201,162,39,.14);color:var(--gl);border-left-color:var(--gold);font-weight:600}
+.sb-item .si{width:18px;font-size:15px;text-align:center;flex-shrink:0}
+.sb-label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-bdg{background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center;flex-shrink:0}
+.sb-bdg.g{background:var(--ok)}
+.sb-footer{padding:14px 20px;border-top:1px solid rgba(255,255,255,.08)}
+.sb-footer a{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.38);padding:5px 0;transition:color .15s}
+.sb-footer a:hover{color:rgba(255,255,255,.85)}
+/* MAIN */
+.main{flex:1;margin-left:252px;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 26px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:var(--shd)}
+.tb-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text)}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-search{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);padding:6px 12px;width:210px}
+.tb-search input{border:none;background:transparent;outline:none;font-size:13px;color:var(--text);width:100%;font-family:'DM Sans',sans-serif}
+.tb-search input::placeholder{color:var(--muted)}
+.ibtm{width:36px;height:36px;border-radius:var(--r);border:1.5px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;position:relative;transition:all .15s}
+.ibtm:hover{border-color:var(--pl)}
+.ndot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--danger);border:2px solid #fff}
+.tb-pro{display:flex;align-items:center;gap:8px;padding:5px 11px;border-radius:var(--r);border:1.5px solid var(--border);cursor:pointer;transition:all .15s}
+.tb-pro:hover{border-color:var(--pl)}
+.tb-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gl));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1a0a00}
+/* CONTENT */
+.content{padding:22px 26px;flex:1}
+.sec{display:none}.sec.active{display:block}
+/* PAGE HEADER */
+.ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+.ph h1{font-size:20px;font-weight:700}.ph p{font-size:13px;color:var(--sub);margin-top:2px}
+.ph-r{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:var(--rl);padding:16px;position:relative;overflow:hidden;transition:box-shadow .2s}
+.stat:hover{box-shadow:var(--shd-md)}
+.stat-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--rl) var(--rl) 0 0}
+.stat-ico{font-size:24px;margin-bottom:8px}
+.stat-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:3px}
+.stat-val{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;margin-bottom:3px}
+.stat-ch{font-size:12px;font-weight:500}
+.up{color:var(--ok)}.neu{color:var(--muted)}
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.g14{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--rl);padding:18px;margin-bottom:16px}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.card-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--text)}
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;padding:9px 12px;background:#f8fafc;font-weight:700;font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl td{padding:12px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#f0f9ff}
+/* PILLS */
+.pill{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.p-ok{background:var(--okl);color:var(--okd)}.p-warn{background:var(--warnl);color:var(--warnd)}
+.p-danger{background:var(--dangerl);color:var(--dangerd)}.p-blue{background:var(--bluel);color:#1d4ed8}
+.p-p{background:#ede9fe;color:#5b21b6}.p-muted{background:#f1f5f9;color:var(--sub)}
+.p-gold{background:#fef3c7;color:#92400e}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.btn-p{background:var(--p);color:#fff}.btn-p:hover{background:var(--pm)}
+.btn-g{background:var(--gold);color:#1a0a00}.btn-g:hover{background:var(--gl)}
+.btn-ok{background:var(--ok);color:#fff}.btn-ok:hover{background:#15803d}
+.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{background:#b91c1c}
+.btn-out{background:#fff;color:var(--p);border:1.5px solid var(--p)}.btn-out:hover{background:var(--p);color:#fff}
+.btn-ghost{background:transparent;color:var(--sub);border:1.5px solid var(--border)}.btn-ghost:hover{border-color:var(--p);color:var(--p)}
+.btn-sm{padding:5px 12px;font-size:12px;border-radius:7px}
+/* MODALS */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,61,92,0.4);z-index:1000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:var(--rxl);width:100%;max-width:620px;max-height:90vh;overflow-y:auto;box-shadow:var(--shd-md)}
+.modal-lg{max-width:820px}
+.modal-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:1}
+.modal-head h3{font-size:15px;font-weight:700}
+.modal-close{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.modal-close:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
+.modal-body{padding:22px}
+.modal-foot{padding:13px 22px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:#fff;position:sticky;bottom:0}
+/* FORMS */
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.fg input,.fg select,.fg textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;color:var(--text);transition:border .2s;background:#fff}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--pl);box-shadow:0 0 0 3px rgba(106,42,184,.07)}
+.fg textarea{resize:vertical;min-height:80px;line-height:1.6}
+.frow2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+/* NOTICES */
+.notice{padding:12px 15px;border-radius:var(--r);font-size:13px;line-height:1.6;margin-bottom:16px;display:flex;align-items:flex-start;gap:9px}
+.ni{font-size:16px;flex-shrink:0;margin-top:1px}
+.n-ok{background:var(--okl);border:1px solid #a7f3d0;color:var(--okd)}
+.n-warn{background:var(--warnl);border:1px solid #fde68a;color:var(--warnd)}
+.n-blue{background:var(--bluel);border:1px solid #bfdbfe;color:#1e40af}
+.n-p{background:#ede9fe;border:1px solid #c4b5fd;color:#4c1d95}
+/* TABS */
+.tab-bar{display:flex;border-bottom:2px solid var(--border);margin-bottom:16px;overflow-x:auto}
+.tab-btn{padding:9px 16px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none}
+.tab-btn.on{color:var(--p);border-bottom-color:var(--p)}
+.tabpane{display:none}.tabpane.on{display:block}
+/* ORDER CARD */
+.ord-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:12px;transition:all .2s}
+.ord-card:hover{box-shadow:var(--shd);border-color:#1AA6DC}
+.ord-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.ord-id{font-family:'Sora',sans-serif;font-size:14px;font-weight:700}
+.ord-date{font-size:12px;color:var(--muted)}
+.ord-items{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.ord-item-img{width:56px;height:56px;border-radius:var(--r);background:linear-gradient(135deg,#f0e8ff,#ede4ff);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.ord-item-info h4{font-size:13px;font-weight:700;margin-bottom:2px}
+.ord-item-info p{font-size:12px;color:var(--sub)}
+.ord-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:10px}
+/* TRACK TIMELINE */
+.track-line{display:flex;flex-direction:column;gap:0}
+.track-step{display:flex;gap:14px;padding:12px 0;position:relative}
+.track-step:not(:last-child)::before{content:'';position:absolute;left:15px;top:40px;bottom:0;width:2px;background:var(--border)}
+.track-step.done::before{background:var(--ok)}
+.track-dot{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;border:2px solid var(--border);background:#fff;font-weight:700}
+.track-step.done .track-dot{background:var(--ok);border-color:var(--ok);color:#fff}
+.track-step.act .track-dot{background:var(--p);border-color:var(--p);color:#fff}
+.track-info strong{display:block;font-size:13px;font-weight:700}
+.track-info span{font-size:12px;color:var(--muted)}
+/* WISHLIST CARD */
+.wish-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--rl);overflow:hidden;transition:all .2s}
+.wish-card:hover{box-shadow:var(--shd-md);border-color:#1AA6DC}
+.wish-img{height:120px;background:linear-gradient(135deg,#f0e8ff,#ede4ff);display:flex;align-items:center;justify-content:center;font-size:52px}
+.wish-body{padding:14px}
+.wish-name{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wish-price{font-size:15px;font-weight:700;color:var(--p);margin-bottom:4px}
+.wish-seller{font-size:11px;color:var(--muted);margin-bottom:10px}
+/* RFQ */
+.rfq-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:12px;transition:all .2s}
+.rfq-card:hover{box-shadow:var(--shd)}
+/* ADDRESS CARD */
+.addr-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--rl);padding:16px;position:relative;transition:all .2s}
+.addr-card:hover{border-color:#1AA6DC}
+.addr-card.default-addr{border-color:var(--p);background:#faf8ff}
+.addr-default-badge{position:absolute;top:12px;right:12px}
+/* METRIC BAR */
+.mbar{margin-bottom:12px}
+.mbar-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.mbar-head span{color:var(--sub)}
+.bar-track{height:7px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.bar-fill{height:100%;border-radius:4px}
+/* REVIEW */
+.stars{color:#f59e0b;font-size:16px;letter-spacing:2px}
+/* TOGGLE */
+.toggle{width:40px;height:22px;border-radius:11px;background:#cbd5e1;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;display:inline-block}
+.toggle.on{background:var(--ok)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.toggle.on::after{transform:translateX(18px)}
+.ifield{padding:8px 11px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px;outline:none;color:var(--text);background:#fff;font-family:'DM Sans',sans-serif;transition:border .2s}
+.ifield:focus{border-color:var(--pl)}
+/* RESPONSIVE */
+@media(max-width:1200px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.sidebar{display:none}.main{margin-left:0}.g14,.g2{grid-template-columns:1fr}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+</head>
+<body>
+<div class="dash">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <a href="../index.html">
+      <img src="../logo.png" alt="Ebazario">
+      <div class="sb-logo-lbl">My Account</div>
+    </a>
+  </div>
+  <div class="sb-user">
+    <div class="sb-av">JW</div>
+    <div>
+      <strong>James Wilson</strong>
+      <span>⭐ Gold Buyer</span>
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-grp">Main</div>
+    <div class="sb-item active" data-sec="sec-overview" onclick="nav(this)"><span class="si">🏠</span><span class="sb-label">Overview</span></div>
+    <div class="sb-item" data-sec="sec-orders" onclick="nav(this)"><span class="si">🛒</span><span class="sb-label">My Orders</span><span class="sb-bdg">14</span></div>
+    <div class="sb-item" data-sec="sec-track" onclick="nav(this)"><span class="si">📍</span><span class="sb-label">Track Shipment</span></div>
+    <div class="sb-item" data-sec="sec-wishlist" onclick="nav(this)"><span class="si">❤️</span><span class="sb-label">Wishlist</span><span class="sb-bdg g">8</span></div>
+    <div class="sb-item" data-sec="sec-rfq" onclick="nav(this)"><span class="si">📋</span><span class="sb-label">My RFQs</span></div>
+    <div class="sb-item" data-sec="sec-reviews" onclick="nav(this)"><span class="si">⭐</span><span class="sb-label">My Reviews</span></div>
+    <div class="sb-item" data-sec="sec-disputes" onclick="nav(this)"><span class="si">⚖️</span><span class="sb-label">Disputes</span></div>
+    <div class="sb-grp">Account</div>
+    <div class="sb-item" data-sec="sec-profile" onclick="nav(this)"><span class="si">👤</span><span class="sb-label">My Profile</span></div>
+    <div class="sb-item" data-sec="sec-addresses" onclick="nav(this)"><span class="si">📬</span><span class="sb-label">Addresses</span></div>
+    <div class="sb-item" data-sec="sec-payment" onclick="nav(this)"><span class="si">💳</span><span class="sb-label">Payment Methods</span></div>
+    <div class="sb-item" data-sec="sec-notifs" onclick="nav(this)"><span class="si">🔔</span><span class="sb-label">Notifications</span><span class="sb-bdg">3</span></div>
+    <div class="sb-item" data-sec="sec-security" onclick="nav(this)"><span class="si">🔒</span><span class="sb-label">Security</span></div>
+  </nav>
+  <div class="sb-footer">
+    <a href="../index.html">🌐 <span>Back to Marketplace</span></a>
+    <a href="#" onclick="handleGlobalSignOut(event)" style="margin-top:2px">🚪 <span>Sign Out</span></a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-title">Overview</div>
+    <div class="tb-right">
+      <div class="tb-search"><span style="color:var(--muted)">🔍</span><input type="text" placeholder="Search orders, products…"></div>
+      <div class="ibtm" onclick="nav(document.querySelector('[data-sec=sec-notifs]'))">🔔<span class="ndot"></span></div>
+      <div class="ibtm" onclick="nav(document.querySelector('[data-sec=sec-wishlist]'))">❤️</div>
+      <div class="tb-pro"><div class="tb-av">JW</div><span style="font-size:13px;font-weight:600">James Wilson</span></div>
+    </div>
+  </div>
+  <div class="content">
+
+<!-- ═══════════════ OVERVIEW ═══════════════ -->
+<div id="sec-overview" class="sec active">
+  <div class="ph">
+    <div><h1>Welcome back, James 👋</h1><p>Here's a summary of your Ebazario account</p></div>
+    <div class="ph-r">
+      <button class="btn btn-out btn-sm" onclick="nav(document.querySelector('[data-sec=sec-rfq]'))">📋 Submit RFQ</button>
+      <button class="btn btn-p btn-sm" onclick="goHome()">🛍️ Shop Now</button>
+    </div>
+  </div>
+
+  <!-- PROFILE BANNER -->
+  <div style="background:linear-gradient(135deg,#003D5C 0%,#1AA6DC 60%,#49c5f5 100%);border-radius:var(--rxl);padding:22px 28px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gl));display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1a0a00;border:3px solid rgba(255,255,255,.2)">JW</div>
+      <div>
+        <div style="font-family:Sora,sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:3px">James Wilson</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.6)">📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8ae0ebe7eff9cafeefe9e2e9e5f8faa4e9e5e7">[email&#160;protected]</a> · 🇺🇸 United States · Member since Jan 2023</div>
+        <div style="margin-top:7px;display:flex;gap:7px;flex-wrap:wrap">
+          <span class="pill p-gold">⭐ Gold Buyer</span>
+          <span class="pill" style="background:rgba(255,255,255,.15);color:#fff">✅ Verified</span>
+          <span class="pill" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.8)">🛡️ Trade Assured</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:28px;flex-wrap:wrap">
+      <div style="text-align:center"><div style="font-family:Sora,sans-serif;font-size:26px;font-weight:700;color:#fff">14</div><div style="font-size:11px;color:rgba(255,255,255,.55);text-transform:uppercase;font-weight:600;letter-spacing:.5px">Total Orders</div></div>
+      <div style="text-align:center"><div style="font-family:Sora,sans-serif;font-size:26px;font-weight:700;color:var(--gl)">$284K</div><div style="font-size:11px;color:rgba(255,255,255,.55);text-transform:uppercase;font-weight:600;letter-spacing:.5px">Total Spent</div></div>
+      <div style="text-align:center"><div style="font-family:Sora,sans-serif;font-size:26px;font-weight:700;color:#fff">8</div><div style="font-size:11px;color:rgba(255,255,255,.55);text-transform:uppercase;font-weight:600;letter-spacing:.5px">Wishlist</div></div>
+      <div style="text-align:center"><div style="font-family:Sora,sans-serif;font-size:26px;font-weight:700;color:#fff">3</div><div style="font-size:11px;color:rgba(255,255,255,.55);text-transform:uppercase;font-weight:600;letter-spacing:.5px">Open RFQs</div></div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--ok),#4ade80)"></div><div class="stat-ico">🛒</div><div class="stat-lbl">Total Orders</div><div class="stat-val">14</div><div class="stat-ch up">↑ 3 this month</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--p),var(--pa))"></div><div class="stat-ico">💰</div><div class="stat-lbl">Total Spent</div><div class="stat-val">$284K</div><div class="stat-ch up">↑ $57K this month</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--warn),#fbbf24)"></div><div class="stat-ico">📍</div><div class="stat-lbl">In Transit</div><div class="stat-val">2</div><div class="stat-ch neu">Orders shipping</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--gold),var(--gl))"></div><div class="stat-ico">⭐</div><div class="stat-lbl">Reviews Given</div><div class="stat-val">11</div><div class="stat-ch neu">3 pending</div></div>
+  </div>
+
+  <div class="g14" style="margin-bottom:16px">
+    <div class="card" style="margin-bottom:0">
+      <div class="card-head"><div class="card-title">📦 Recent Orders</div><button class="btn btn-ghost btn-sm" onclick="nav(document.querySelector('[data-sec=sec-orders]'))">View All →</button></div>
+      <div class="ord-card">
+        <div class="ord-head">
+          <div><div class="ord-id">#EB-28401</div><div class="ord-date">Jan 15, 2025 · TechPro CN</div></div>
+          <span class="pill p-ok">✓ Delivered</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+          <div class="ord-item-img">💻</div>
+          <div><div style="font-size:13px;font-weight:700">Industrial Rugged Laptop 15.6"</div><div style="font-size:12px;color:var(--sub)">Qty: 200 units · $285/unit</div></div>
+          <div style="margin-left:auto;font-family:Sora,sans-serif;font-size:16px;font-weight:700;color:var(--ok)">$57,000</div>
+        </div>
+        <div style="display:flex;gap:7px">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-order-detail')">View Details</button>
+          <button class="btn btn-ghost btn-sm" onclick="nav(document.querySelector('[data-sec=sec-track]'))">📍 Track</button>
+          <button class="btn btn-p btn-sm" onclick="openModal('modal-review')">⭐ Leave Review</button>
+        </div>
+      </div>
+      <div class="ord-card">
+        <div class="ord-head">
+          <div><div class="ord-id">#EB-28355</div><div class="ord-date">Dec 20, 2024 · Suntech Solar</div></div>
+          <span class="pill p-warn">🚢 In Transit</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+          <div class="ord-item-img">☀️</div>
+          <div><div style="font-size:13px;font-weight:700">Solar Panel 400W Monocrystalline</div><div style="font-size:12px;color:var(--sub)">Qty: 50 units · $95/unit</div></div>
+          <div style="margin-left:auto;font-family:Sora,sans-serif;font-size:16px;font-weight:700;color:var(--warn)">$4,750</div>
+        </div>
+        <div style="display:flex;gap:7px">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-order-detail')">View Details</button>
+          <button class="btn btn-p btn-sm" onclick="nav(document.querySelector('[data-sec=sec-track]'))">📍 Track Shipment</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <!-- QUICK ACTIONS -->
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title" style="margin-bottom:14px">⚡ Quick Actions</div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <button class="btn btn-p" style="width:100%;justify-content:flex-start" onclick="nav(document.querySelector('[data-sec=sec-rfq]'))">📋 Submit New RFQ</button>
+          <button class="btn btn-out" style="width:100%;justify-content:flex-start" onclick="nav(document.querySelector('[data-sec=sec-orders]'))">🛒 View All Orders</button>
+          <button class="btn btn-ghost" style="width:100%;justify-content:flex-start" onclick="nav(document.querySelector('[data-sec=sec-track]'))">📍 Track a Shipment</button>
+          <button class="btn btn-ghost" style="width:100%;justify-content:flex-start" onclick="nav(document.querySelector('[data-sec=sec-wishlist]'))">❤️ View Wishlist (8)</button>
+          <button class="btn btn-ghost" style="width:100%;justify-content:flex-start" onclick="nav(document.querySelector('[data-sec=sec-disputes]'))">⚖️ File a Dispute</button>
+        </div>
+      </div>
+      <!-- TRADE ASSURANCE -->
+      <div class="card" style="margin-bottom:0;background:linear-gradient(135deg,#fef9ee,#fffbf0);border-color:#e8c040">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:28px">🛡️</span>
+          <div><div style="font-family:Sora,sans-serif;font-size:14px;font-weight:700">Trade Assurance Active</div><div style="font-size:12px;color:var(--muted)">Your payments are protected</div></div>
+        </div>
+        <div style="font-size:13px;color:var(--sub);margin-bottom:10px">Up to <strong style="color:var(--p)">$500,000</strong> covered per transaction. Funds released only after you confirm receipt.</div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600">
+          <span style="color:var(--ok)">✓ Escrow Protection</span>
+          <span style="color:var(--ok)">✓ Dispute Resolution</span>
+          <span style="color:var(--ok)">✓ Refund Guarantee</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MY ORDERS ═══════════════ -->
+<div id="sec-orders" class="sec">
+  <div class="ph">
+    <div><h1>My Orders</h1><p>All your purchase history</p></div>
+    <div class="ph-r">
+      <input class="ifield" type="text" placeholder="Search orders…" style="width:190px">
+      <select class="ifield" style="width:150px"><option>All Statuses</option><option>Processing</option><option>In Transit</option><option>Delivered</option><option>Disputed</option></select>
+      <button class="btn btn-ghost btn-sm" onclick="showToast('Orders exported!','ok')">📥 Export</button>
+    </div>
+  </div>
+  <div data-tabs>
+    <div class="tab-bar">
+      <button class="tab-btn on" onclick="showTab('ord-all',this)">All Orders (14)</button>
+      <button class="tab-btn" onclick="showTab('ord-transit',this)">In Transit (2)</button>
+      <button class="tab-btn" onclick="showTab('ord-delivered',this)">Delivered (11)</button>
+      <button class="tab-btn" onclick="showTab('ord-pending-review',this)">Pending Review (3)</button>
+    </div>
+    <div id="ord-all" class="tabpane on">
+      <div class="ord-card">
+        <div class="ord-head">
+          <div><div class="ord-id">#EB-28401</div><div class="ord-date">Jan 15, 2025 · Shenzhen TechPro Electronics</div></div>
+          <span class="pill p-ok">✓ Delivered</span>
+        </div>
+        <div class="ord-items">
+          <div style="display:flex;gap:10px;align-items:center;flex:1">
+            <div class="ord-item-img">💻</div>
+            <div class="ord-item-info"><h4>Industrial Rugged Laptop 15.6" Core i7 IP65</h4><p>Qty: 200 units · $285/unit · ✈️ Air Freight · CN → US</p></div>
+          </div>
+        </div>
+        <div class="ord-foot">
+          <div style="font-size:12px;color:var(--muted)">Delivered Jan 22 · 🌟 Rated 5/5</div>
+          <div style="font-family:Sora,sans-serif;font-size:16px;font-weight:700;color:var(--ok)">$57,000</div>
+        </div>
+        <div style="display:flex;gap:7px;margin-top:10px">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-order-detail')">View Details</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Invoice downloaded!','ok')">📄 Invoice</button>
+          <button class="btn btn-p btn-sm" onclick="showToast('Reorder added to cart!','ok')">🔄 Reorder</button>
+        </div>
+      </div>
+      <div class="ord-card">
+        <div class="ord-head">
+          <div><div class="ord-id">#EB-28355</div><div class="ord-date">Dec 20, 2024 · Suntech Solar Energy</div></div>
+          <span class="pill p-warn">🚢 In Transit</span>
+        </div>
+        <div class="ord-items">
+          <div style="display:flex;gap:10px;align-items:center;flex:1">
+            <div class="ord-item-img">☀️</div>
+            <div class="ord-item-info"><h4>Solar Panel 400W Monocrystalline</h4><p>Qty: 50 units · $95/unit · 🚢 Sea FCL · CN → US</p></div>
+          </div>
+        </div>
+        <div class="ord-foot">
+          <div style="font-size:12px;color:var(--muted)">ETA: Feb 8, 2025 · Tracking: MCC-2024122001</div>
+          <div style="font-family:Sora,sans-serif;font-size:16px;font-weight:700;color:var(--warn)">$4,750</div>
+        </div>
+        <div style="display:flex;gap:7px;margin-top:10px">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-order-detail')">View Details</button>
+          <button class="btn btn-p btn-sm" onclick="nav(document.querySelector('[data-sec=sec-track]'))">📍 Track Shipment</button>
+        </div>
+      </div>
+      <div class="ord-card">
+        <div class="ord-head">
+          <div><div class="ord-id">#EB-28290</div><div class="ord-date">Nov 5, 2024 · Precision Manufacturing GmbH</div></div>
+          <span class="pill p-ok">✓ Delivered</span>
+        </div>
+        <div class="ord-items">
+          <div style="display:flex;gap:10px;align-items:center;flex:1">
+            <div class="ord-item-img">⚙️</div>
+            <div class="ord-item-info"><h4>CNC Milling Machine VMC850 3-Axis</h4><p>Qty: 1 unit · $18,500 · 🚢 Sea FCL · DE → US</p></div>
+          </div>
+        </div>
+        <div class="ord-foot">
+          <div style="font-size:12px;color:var(--muted)">Delivered Nov 30 · ⭐ Review pending</div>
+          <div style="font-family:Sora,sans-serif;font-size:16px;font-weight:700;color:var(--ok)">$18,500</div>
+        </div>
+        <div style="display:flex;gap:7px;margin-top:10px">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-order-detail')">View Details</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Invoice downloaded!','ok')">📄 Invoice</button>
+          <button class="btn btn-p btn-sm" onclick="openModal('modal-review')">⭐ Leave Review</button>
+        </div>
+      </div>
+      <div class="ord-card" style="border-color:#fca5a5;background:#fff8f8">
+        <div class="ord-head">
+          <div><div class="ord-id">#EB-28210</div><div class="ord-date">Oct 12, 2024 · FoShan Furniture Co.</div></div>
+          <span class="pill p-danger">⚖️ Disputed</span>
+        </div>
+        <div class="ord-items">
+          <div style="display:flex;gap:10px;align-items:center;flex:1">
+            <div class="ord-item-img">🪑</div>
+            <div class="ord-item-info"><h4>Executive Office Chair OEM × 100</h4><p>Qty: 100 units · $84/unit · 🚢 Sea LCL · CN → US</p></div>
+          </div>
+        </div>
+        <div class="ord-foot">
+          <div style="font-size:12px;color:var(--dangerd);font-weight:600">⚠️ Dispute filed: 20 units missing from shipment</div>
+          <div style="font-family:Sora,sans-serif;font-size:16px;font-weight:700;color:var(--danger)">$8,400</div>
+        </div>
+        <div style="display:flex;gap:7px;margin-top:10px">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-order-detail')">View Details</button>
+          <button class="btn btn-danger btn-sm" onclick="nav(document.querySelector('[data-sec=sec-disputes]'))">View Dispute</button>
+        </div>
+      </div>
+    </div>
+    <div id="ord-transit" class="tabpane">
+      <div class="notice n-blue"><span class="ni">🚢</span><div>You have 2 shipments currently in transit. Click "Track Shipment" to see real-time location and ETA.</div></div>
+      <div class="ord-card">
+        <div class="ord-head"><div><div class="ord-id">#EB-28355</div><div class="ord-date">Dec 20, 2024</div></div><span class="pill p-warn">🚢 In Transit</span></div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+          <div class="ord-item-img">☀️</div>
+          <div><div style="font-size:13px;font-weight:700">Solar Panel 400W × 50 units</div><div style="font-size:12px;color:var(--sub)">ETA: Feb 8 · Tracking: MCC-2024122001</div></div>
+        </div>
+        <button class="btn btn-p btn-sm" onclick="nav(document.querySelector('[data-sec=sec-track]'))">📍 Track Now</button>
+      </div>
+    </div>
+    <div id="ord-delivered" class="tabpane">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Order</th><th>Items</th><th>Seller</th><th>Amount</th><th>Delivered</th><th>Review</th></tr></thead>
+        <tbody>
+          <tr><td><strong>#EB-28401</strong></td><td>Rugged Laptop ×200</td><td>TechPro CN</td><td>$57,000</td><td>Jan 22</td><td><span class="stars">★★★★★</span></td></tr>
+          <tr><td><strong>#EB-28290</strong></td><td>CNC Machine ×1</td><td>Precision DE</td><td>$18,500</td><td>Nov 30</td><td><button class="btn btn-p btn-sm" onclick="openModal('modal-review')">Rate Now</button></td></tr>
+          <tr><td><strong>#EB-28240</strong></td><td>Industrial Tablet ×50</td><td>TechPro CN</td><td>$12,500</td><td>Oct 5</td><td><span class="stars">★★★★☆</span></td></tr>
+          <tr><td><strong>#EB-28190</strong></td><td>LED Strip Light ×1000</td><td>LightCo</td><td>$2,200</td><td>Sep 18</td><td><span class="stars">★★★★★</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div id="ord-pending-review" class="tabpane">
+      <div class="notice n-p"><span class="ni">⭐</span><div>You have 3 delivered orders awaiting your review. Your feedback helps other buyers!</div></div>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Order</th><th>Product</th><th>Seller</th><th>Amount</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><strong>#EB-28290</strong></td><td>CNC Machine VMC850</td><td>Precision DE</td><td>$18,500</td><td><button class="btn btn-p btn-sm" onclick="openModal('modal-review')">⭐ Review Now</button></td></tr>
+          <tr><td><strong>#EB-28155</strong></td><td>Hydraulic Press 50T</td><td>HydroMach CN</td><td>$4,200</td><td><button class="btn btn-p btn-sm" onclick="openModal('modal-review')">⭐ Review Now</button></td></tr>
+          <tr><td><strong>#EB-28130</strong></td><td>Steel Pipe 50m Roll ×10</td><td>SteelPro</td><td>$1,800</td><td><button class="btn btn-p btn-sm" onclick="openModal('modal-review')">⭐ Review Now</button></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TRACK SHIPMENT ═══════════════ -->
+<div id="sec-track" class="sec">
+  <div class="ph"><div><h1>Track Shipment</h1><p>Real-time tracking for your orders in transit</p></div></div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title" style="margin-bottom:14px">🔍 Enter Tracking Number</div>
+    <div style="display:flex;gap:10px">
+      <input class="ifield" type="text" placeholder="e.g. MCC-2024122001" style="flex:1" id="tracking-input">
+      <button class="btn btn-p" onclick="trackShipment()">Track Now</button>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card" style="margin-bottom:0">
+      <div class="card-head">
+        <div>
+          <div class="card-title">🚢 Order #EB-28355 — Solar Panels</div>
+          <div style="font-size:12px;color:var(--muted)">Tracking: MCC-2024122001 · Sea FCL · CN → US</div>
+        </div>
+        <span class="pill p-warn">In Transit</span>
+      </div>
+      <div style="background:#f8fafc;border-radius:var(--r);padding:14px;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px">
+        <div><span style="color:var(--muted)">Carrier:</span> <strong>MAERSK Line</strong></div>
+        <div><span style="color:var(--muted)">Vessel:</span> <strong>EVER GRACE</strong></div>
+        <div><span style="color:var(--muted)">Departed:</span> <strong>Dec 28, Shanghai</strong></div>
+        <div><span style="color:var(--muted)">ETA:</span> <strong style="color:var(--warn)">Feb 8, Los Angeles</strong></div>
+        <div><span style="color:var(--muted)">Containers:</span> <strong>1 × 40HC</strong></div>
+        <div><span style="color:var(--muted)">Current:</span> <strong>Pacific Ocean</strong></div>
+      </div>
+      <div class="track-line">
+        <div class="track-step done">
+          <div class="track-dot">✓</div>
+          <div class="track-info"><strong>Order Confirmed</strong><span>Dec 20, 2024 · Payment secured via Trade Assurance</span></div>
+        </div>
+        <div class="track-step done">
+          <div class="track-dot">✓</div>
+          <div class="track-info"><strong>Production Complete</strong><span>Dec 24, 2024 · Quality inspection passed</span></div>
+        </div>
+        <div class="track-step done">
+          <div class="track-dot">✓</div>
+          <div class="track-info"><strong>Departed Origin Port</strong><span>Dec 28, 2024 · Shanghai Yangshan Port · BL: MCC-2024122001</span></div>
+        </div>
+        <div class="track-step act">
+          <div class="track-dot">🚢</div>
+          <div class="track-info"><strong>At Sea — Pacific Ocean</strong><span>Est. Jan 28, 2025 · 68% of journey complete</span></div>
+        </div>
+        <div class="track-step">
+          <div class="track-dot">5</div>
+          <div class="track-info"><strong>Arriving Destination Port</strong><span>ETA: Feb 5, 2025 · Port of Los Angeles</span></div>
+        </div>
+        <div class="track-step">
+          <div class="track-dot">6</div>
+          <div class="track-info"><strong>Customs Clearance</strong><span>ETA: Feb 6–7, 2025</span></div>
+        </div>
+        <div class="track-step">
+          <div class="track-dot">7</div>
+          <div class="track-info"><strong>Delivered to You</strong><span>ETA: Feb 8, 2025</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title" style="margin-bottom:12px">📦 Shipment Details</div>
+        <div style="font-size:13px;line-height:2.2;color:var(--sub)">
+          <div style="display:flex;justify-content:space-between"><span>Product</span><strong style="color:var(--text)">Solar Panel 400W ×50</strong></div>
+          <div style="display:flex;justify-content:space-between"><span>Seller</span><strong style="color:var(--text)">Suntech Solar, Shanghai</strong></div>
+          <div style="display:flex;justify-content:space-between"><span>Total Weight</span><strong style="color:var(--text)">1,800 kg</strong></div>
+          <div style="display:flex;justify-content:space-between"><span>Volume</span><strong style="color:var(--text)">22 CBM</strong></div>
+          <div style="display:flex;justify-content:space-between"><span>Shipping Mode</span><strong style="color:var(--text)">Sea FCL (40HC)</strong></div>
+          <div style="display:flex;justify-content:space-between"><span>Insurance</span><strong style="color:var(--ok)">Covered ✓</strong></div>
+          <div style="display:flex;justify-content:space-between"><span>Customs Docs</span><strong style="color:var(--ok)">Submitted ✓</strong></div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title" style="margin-bottom:12px">🚨 Report an Issue</div>
+        <div style="font-size:13px;color:var(--sub);margin-bottom:12px">If you experience any shipping issue, report it immediately to trigger the Trade Assurance investigation.</div>
+        <button class="btn btn-danger" style="width:100%" onclick="openModal('modal-shipping-issue')">⚠️ Report Shipping Issue</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ WISHLIST ═══════════════ -->
+<div id="sec-wishlist" class="sec">
+  <div class="ph"><div><h1>Wishlist</h1><p>8 saved products</p></div><div class="ph-r"><button class="btn btn-ghost btn-sm" onclick="showToast('All added to RFQ!','ok')">📋 RFQ All</button></div></div>
+  <div class="g3" style="margin-bottom:16px">
+    <div class="wish-card">
+      <div class="wish-img">💻</div>
+      <div class="wish-body">
+        <div class="wish-name">Industrial Laptop 15.6" IP65</div>
+        <div class="wish-price">$285<span style="font-size:11px;color:var(--muted);font-weight:400">/unit</span></div>
+        <div class="wish-seller">Shenzhen TechPro · MOQ: 50</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-p btn-sm" style="flex:1" onclick="showToast('Added to cart!','ok')">Add to Cart</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Removed from wishlist','warn')">✕</button>
+        </div>
+      </div>
+    </div>
+    <div class="wish-card">
+      <div class="wish-img">⚙️</div>
+      <div class="wish-body">
+        <div class="wish-name">CNC Milling Machine VMC850</div>
+        <div class="wish-price">$18,500<span style="font-size:11px;color:var(--muted);font-weight:400">/unit</span></div>
+        <div class="wish-seller">Precision Mfg GmbH · MOQ: 1</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-p btn-sm" style="flex:1" onclick="showToast('Added to cart!','ok')">Add to Cart</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Removed','warn')">✕</button>
+        </div>
+      </div>
+    </div>
+    <div class="wish-card">
+      <div class="wish-img">🔋</div>
+      <div class="wish-body">
+        <div class="wish-name">LiFePO4 Battery 100Ah</div>
+        <div class="wish-price">$145<span style="font-size:11px;color:var(--muted);font-weight:400">/unit</span></div>
+        <div class="wish-seller">EnergyCo · MOQ: 20</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-p btn-sm" style="flex:1" onclick="showToast('Added to cart!','ok')">Add to Cart</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Removed','warn')">✕</button>
+        </div>
+      </div>
+    </div>
+    <div class="wish-card">
+      <div class="wish-img">📡</div>
+      <div class="wish-body">
+        <div class="wish-name">5G Industrial Router DIN Rail</div>
+        <div class="wish-price">$78<span style="font-size:11px;color:var(--muted);font-weight:400">/unit</span></div>
+        <div class="wish-seller">TechPro CN · MOQ: 100</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-p btn-sm" style="flex:1" onclick="showToast('Added to cart!','ok')">Add to Cart</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Removed','warn')">✕</button>
+        </div>
+      </div>
+    </div>
+    <div class="wish-card">
+      <div class="wish-img">🏗️</div>
+      <div class="wish-body">
+        <div class="wish-name">Steel I-Beam 200×200mm</div>
+        <div class="wish-price">$0.85<span style="font-size:11px;color:var(--muted);font-weight:400">/kg</span></div>
+        <div class="wish-seller">SteelPro CN · MOQ: 10T</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-p btn-sm" style="flex:1" onclick="showToast('Added to cart!','ok')">Add to Cart</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Removed','warn')">✕</button>
+        </div>
+      </div>
+    </div>
+    <div class="wish-card">
+      <div class="wish-img">🔌</div>
+      <div class="wish-body">
+        <div class="wish-name">LED Panel Light 60×60cm 48W</div>
+        <div class="wish-price">$12.50<span style="font-size:11px;color:var(--muted);font-weight:400">/unit</span></div>
+        <div class="wish-seller">LightCo · MOQ: 200</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-p btn-sm" style="flex:1" onclick="showToast('Added to cart!','ok')">Add to Cart</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Removed','warn')">✕</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MY RFQs ═══════════════ -->
+<div id="sec-rfq" class="sec">
+  <div class="ph"><div><h1>Request for Quotation (RFQ)</h1><p>Get competitive quotes from multiple verified sellers</p></div><div class="ph-r"><button class="btn btn-p" onclick="openModal('modal-new-rfq')">+ Submit New RFQ</button></div></div>
+  <div data-tabs>
+    <div class="tab-bar">
+      <button class="tab-btn on" onclick="showTab('rfq-active',this)">Active RFQs (3)</button>
+      <button class="tab-btn" onclick="showTab('rfq-quotes',this)">Quotes Received (7)</button>
+      <button class="tab-btn" onclick="showTab('rfq-closed',this)">Closed (12)</button>
+    </div>
+    <div id="rfq-active" class="tabpane on">
+      <div class="notice n-blue"><span class="ni">📋</span><div>Your active RFQs are visible to verified sellers matching the category. You'll receive quotes within 24–48 hours. Compare and negotiate directly with sellers.</div></div>
+      <div class="rfq-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+          <div><div style="font-family:Sora,sans-serif;font-size:14px;font-weight:700;margin-bottom:3px">Rugged Industrial Laptops — Bulk Order</div><div style="font-size:12px;color:var(--muted)">RFQ #RQ-2025-0042 · Electronics · Submitted Jan 10</div></div>
+          <div style="display:flex;gap:7px;align-items:center"><span class="pill p-ok">Open</span><span class="pill p-blue">5 Quotes</span></div>
+        </div>
+        <div style="font-size:13px;color:var(--sub);margin-bottom:10px;background:#f8fafc;padding:10px;border-radius:var(--r)">
+          <strong>Requirements:</strong> 500 units · Core i7 / i9 · IP65 / MIL-STD-810H · 15.6" · Windows 11 Pro · Delivery: New York · Timeline: 45 days
+        </div>
+        <div style="display:flex;gap:7px">
+          <button class="btn btn-p btn-sm" onclick="openModal('modal-rfq-quotes')">📬 View 5 Quotes</button>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-new-rfq')">Edit RFQ</button>
+          <button class="btn btn-ghost btn-sm" onclick="if(confirm('Close this RFQ?'))showToast('RFQ closed','warn')">Close</button>
+        </div>
+      </div>
+      <div class="rfq-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+          <div><div style="font-family:Sora,sans-serif;font-size:14px;font-weight:700;margin-bottom:3px">Commercial Solar Panels 400W+</div><div style="font-size:12px;color:var(--muted)">RFQ #RQ-2025-0039 · Electrical · Submitted Jan 8</div></div>
+          <div style="display:flex;gap:7px;align-items:center"><span class="pill p-ok">Open</span><span class="pill p-blue">2 Quotes</span></div>
+        </div>
+        <div style="font-size:13px;color:var(--sub);margin-bottom:10px;background:#f8fafc;padding:10px;border-radius:var(--r)">
+          <strong>Requirements:</strong> 500+ units · 400W min · Monocrystalline · IEC 61215 certified · Delivery: California · Budget: $40–55/unit
+        </div>
+        <div style="display:flex;gap:7px">
+          <button class="btn btn-p btn-sm" onclick="openModal('modal-rfq-quotes')">📬 View 2 Quotes</button>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-new-rfq')">Edit RFQ</button>
+        </div>
+      </div>
+    </div>
+    <div id="rfq-quotes" class="tabpane">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>RFQ</th><th>Seller</th><th>Unit Price</th><th>Qty</th><th>Lead Time</th><th>Trade Assured</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><strong>#RQ-2025-0042</strong></td><td>Shenzhen TechPro</td><td><strong style="color:var(--ok)">$262/unit</strong></td><td>500</td><td>30 days</td><td><span class="pill p-ok">✓ Yes</span></td><td><div style="display:flex;gap:4px"><button class="btn btn-p btn-sm" onclick="showToast('Seller contacted!','ok')">Accept</button><button class="btn btn-ghost btn-sm">Negotiate</button></div></td></tr>
+          <tr><td><strong>#RQ-2025-0042</strong></td><td>GlobalTech Vietnam</td><td>$275/unit</td><td>500</td><td>35 days</td><td><span class="pill p-ok">✓ Yes</span></td><td><div style="display:flex;gap:4px"><button class="btn btn-p btn-sm" onclick="showToast('Seller contacted!','ok')">Accept</button><button class="btn btn-ghost btn-sm">Negotiate</button></div></td></tr>
+          <tr><td><strong>#RQ-2025-0039</strong></td><td>Suntech Solar</td><td>$48/unit</td><td>500</td><td>20 days</td><td><span class="pill p-ok">✓ Yes</span></td><td><div style="display:flex;gap:4px"><button class="btn btn-p btn-sm" onclick="showToast('Seller contacted!','ok')">Accept</button><button class="btn btn-ghost btn-sm">Negotiate</button></div></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div id="rfq-closed" class="tabpane">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>RFQ</th><th>Product</th><th>Awarded To</th><th>Order Value</th><th>Closed</th></tr></thead>
+        <tbody>
+          <tr><td>#RQ-2024-0180</td><td>Industrial Rugged Laptop ×200</td><td>TechPro CN</td><td>$57,000</td><td>Dec 2024</td></tr>
+          <tr><td>#RQ-2024-0165</td><td>CNC Machine VMC850 ×1</td><td>Precision DE</td><td>$18,500</td><td>Oct 2024</td></tr>
+          <tr><td>#RQ-2024-0148</td><td>Industrial Tablet ×50</td><td>TechPro CN</td><td>$12,500</td><td>Sep 2024</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MY REVIEWS ═══════════════ -->
+<div id="sec-reviews" class="sec">
+  <div class="ph"><div><h1>My Reviews</h1><p>Your feedback helps the community</p></div></div>
+  <div class="card">
+    <div class="card-head"><div class="card-title">Published Reviews (11)</div></div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Product</th><th>Seller</th><th>Rating</th><th>Review</th><th>Date</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Industrial Rugged Laptop 15.6"</strong></td>
+          <td>TechPro CN</td>
+          <td><span class="stars">★★★★★</span></td>
+          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--sub);font-size:12px">Excellent quality, exactly as described. Fast shipping.</td>
+          <td style="font-size:12px;white-space:nowrap">Jan 24, 2025</td>
+          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-review')">Edit</button></div></td>
+        </tr>
+        <tr>
+          <td><strong>Industrial Tablet 10.1"</strong></td>
+          <td>TechPro CN</td>
+          <td><span class="stars" style="color:#f59e0b">★★★★☆</span></td>
+          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--sub);font-size:12px">Good product, minor packaging issue on arrival.</td>
+          <td style="font-size:12px;white-space:nowrap">Oct 12, 2024</td>
+          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-review')">Edit</button></div></td>
+        </tr>
+        <tr>
+          <td><strong>LED Panel Light 48W ×500</strong></td>
+          <td>LightCo</td>
+          <td><span class="stars">★★★★★</span></td>
+          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--sub);font-size:12px">Perfect brightness, all units working perfectly.</td>
+          <td style="font-size:12px;white-space:nowrap">Sep 22, 2024</td>
+          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-review')">Edit</button></div></td>
+        </tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><div class="card-title">⭐ Pending Reviews (3)</div></div>
+    <div class="notice n-p"><span class="ni">💬</span><div>You have delivered orders waiting for your review. Share your experience to help other buyers and earn buyer trust points.</div></div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Product</th><th>Seller</th><th>Order</th><th>Delivered</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td><strong>CNC Machine VMC850</strong></td><td>Precision DE</td><td>#EB-28290</td><td>Nov 30</td><td><button class="btn btn-p btn-sm" onclick="openModal('modal-review')">⭐ Write Review</button></td></tr>
+        <tr><td><strong>Hydraulic Press 50T</strong></td><td>HydroMach CN</td><td>#EB-28155</td><td>Aug 15</td><td><button class="btn btn-p btn-sm" onclick="openModal('modal-review')">⭐ Write Review</button></td></tr>
+        <tr><td><strong>Steel Pipe 50m ×10</strong></td><td>SteelPro</td><td>#EB-28130</td><td>Jul 28</td><td><button class="btn btn-p btn-sm" onclick="openModal('modal-review')">⭐ Write Review</button></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════════ DISPUTES ═══════════════ -->
+<div id="sec-disputes" class="sec">
+  <div class="ph"><div><h1>Disputes</h1><p>Manage buyer–seller disputes under Trade Assurance</p></div><div class="ph-r"><button class="btn btn-danger" onclick="openModal('modal-new-dispute')">+ File New Dispute</button></div></div>
+  <div class="notice n-warn"><span class="ni">⚠️</span><div>All disputes are managed under <strong>Ebazario Trade Assurance</strong>. Funds in escrow are frozen until the dispute is resolved. Our team typically resolves disputes within 5–10 business days.</div></div>
+  <div data-tabs>
+    <div class="tab-bar">
+      <button class="tab-btn on" onclick="showTab('disp-open',this)">Open Disputes (1)</button>
+      <button class="tab-btn" onclick="showTab('disp-resolved',this)">Resolved (2)</button>
+    </div>
+    <div id="disp-open" class="tabpane on">
+      <div style="background:var(--white);border:1.5px solid #fca5a5;border-radius:var(--rl);padding:18px;background:#fff8f8">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+          <div>
+            <div style="font-family:Sora,sans-serif;font-size:15px;font-weight:700;margin-bottom:4px">Order #EB-28210 — Missing Items</div>
+            <div style="font-size:12px;color:var(--muted)">Filed Jan 12, 2025 · Against: FoShan Furniture Co. · Amount: $8,400</div>
+          </div>
+          <span class="pill p-danger">Open · Day 16</span>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:12px;font-size:13px;margin-bottom:10px">
+          <strong>Your claim:</strong> "I received 80 chairs instead of 100 as ordered. 20 units are missing from the shipment. The seller is not responding to my emails."
+        </div>
+        <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:var(--r);padding:12px;font-size:13px;margin-bottom:12px">
+          <strong>⏳ Status:</strong> Admin is reviewing the shipping bill of lading and carrier manifest. Expected resolution: within 5 days.
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Evidence submitted!','ok')">📎 Add Evidence</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Message sent to admin','ok')">✉️ Message Admin</button>
+        </div>
+      </div>
+    </div>
+    <div id="disp-resolved" class="tabpane">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Order</th><th>Issue</th><th>Decision</th><th>Refund</th><th>Resolved</th></tr></thead>
+        <tbody>
+          <tr><td><strong>#EB-27840</strong></td><td>Wrong specs delivered</td><td><span class="pill p-ok">Buyer Won</span></td><td><strong style="color:var(--ok)">$2,400 refunded</strong></td><td>Nov 2024</td></tr>
+          <tr><td><strong>#EB-27510</strong></td><td>Damaged packaging</td><td><span class="pill p-warn">Partial Refund</span></td><td><strong style="color:var(--warn)">$350 refunded</strong></td><td>Aug 2024</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MY PROFILE ═══════════════ -->
+<div id="sec-profile" class="sec">
+  <div class="ph"><div><h1>My Profile</h1></div><div class="ph-r"><button class="btn btn-p" onclick="showToast('Profile saved!','ok')">💾 Save Changes</button></div></div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px">👤 Personal Information</div>
+      <div style="text-align:center;margin-bottom:18px">
+        <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gl));display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;color:#1a0a00;margin:0 auto 10px">JW</div>
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Profile photo updated!','ok')">📷 Change Photo</button>
+      </div>
+      <div class="frow2">
+        <div class="fg"><label>First Name</label><input type="text" value="James"></div>
+        <div class="fg"><label>Last Name</label><input type="text" value="Wilson"></div>
+      </div>
+      <div class="fg"><label>Email Address</label><input type="email" value="james@techcorp.com"></div>
+      <div class="fg"><label>Phone Number</label><input type="tel" value="+1 (212) 555-0184"></div>
+      <div class="fg"><label>Date of Birth</label><input type="date" value="1985-06-15"></div>
+      <div class="fg"><label>Position / Title</label><input type="text" value="Procurement Manager"></div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px">🏢 Company Information</div>
+        <div class="fg"><label>Company Name</label><input type="text" value="TechCorp Industries Inc."></div>
+        <div class="fg"><label>Industry</label>
+          <select><option>Electronics &amp; Technology</option><option>Manufacturing</option><option>Construction</option><option>Healthcare</option><option>Retail</option></select>
+        </div>
+        <div class="fg"><label>Company Size</label>
+          <select><option>201–500 employees</option><option>1–10</option><option>11–50</option><option>51–200</option><option>500+ employees</option></select>
+        </div>
+        <div class="fg"><label>Annual Purchasing Budget (USD)</label>
+          <select><option>$100K – $500K</option><option>Under $10K</option><option>$10K–$50K</option><option>$50K–$100K</option><option>$500K–$1M</option><option>$1M+</option></select>
+        </div>
+        <div class="fg"><label>Website</label><input type="url" value="https://techcorp.com"></div>
+        <div class="fg"><label>Business Registration Number</label><input type="text" value="TX-20180042"></div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title" style="margin-bottom:16px">🌍 Location</div>
+        <div class="fg"><label>Country</label>
+          <select><option selected>United States</option><option>UAE</option><option>UK</option><option>Germany</option><option>Australia</option></select>
+        </div>
+        <div class="frow2">
+          <div class="fg"><label>State / Region</label><input type="text" value="New York"></div>
+          <div class="fg"><label>City</label><input type="text" value="New York City"></div>
+        </div>
+        <div class="fg"><label>Preferred Language</label>
+          <select><option>English</option><option>Arabic</option><option>Chinese</option><option>German</option><option>French</option></select>
+        </div>
+        <div class="fg"><label>Preferred Currency</label>
+          <select><option>USD ($)</option><option>EUR (€)</option><option>AED (د.إ)</option><option>GBP (£)</option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ ADDRESSES ═══════════════ -->
+<div id="sec-addresses" class="sec">
+  <div class="ph"><div><h1>Shipping Addresses</h1></div><div class="ph-r"><button class="btn btn-p" onclick="openModal('modal-add-address')">+ Add Address</button></div></div>
+  <div class="g2">
+    <div class="addr-card default-addr">
+      <div class="addr-default-badge"><span class="pill p-p">★ Default</span></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:22px">🏢</span>
+        <div><strong style="display:block;font-size:14px">TechCorp Industries — HQ</strong><span class="pill p-muted btn-sm" style="font-size:11px;margin-top:3px">Commercial</span></div>
+      </div>
+      <div style="font-size:13px;color:var(--sub);line-height:2">
+        <div>James Wilson</div>
+        <div>245 Park Avenue, Floor 22</div>
+        <div>New York, NY 10167, USA</div>
+        <div>📞 +1 (212) 555-0184</div>
+      </div>
+      <div style="display:flex;gap:7px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-add-address')">✏️ Edit</button>
+      </div>
+    </div>
+    <div class="addr-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:22px">🏭</span>
+        <div><strong style="display:block;font-size:14px">TechCorp Warehouse</strong><span class="pill p-muted" style="font-size:11px;margin-top:3px;padding:2px 7px">Warehouse</span></div>
+      </div>
+      <div style="font-size:13px;color:var(--sub);line-height:2">
+        <div>James Wilson / Receiving Dept.</div>
+        <div>1800 Commerce Blvd, Unit 14</div>
+        <div>Newark, NJ 07102, USA</div>
+        <div>📞 +1 (973) 555-0291</div>
+      </div>
+      <div style="display:flex;gap:7px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-add-address')">✏️ Edit</button>
+        <button class="btn btn-p btn-sm" onclick="showToast('Set as default address','ok')">Set Default</button>
+        <button class="btn btn-danger btn-sm" onclick="if(confirm('Delete?'))showToast('Address deleted','warn')">Delete</button>
+      </div>
+    </div>
+    <div class="addr-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:22px">🏠</span>
+        <div><strong style="display:block;font-size:14px">Home Address</strong><span class="pill p-muted" style="font-size:11px;margin-top:3px;padding:2px 7px">Residential</span></div>
+      </div>
+      <div style="font-size:13px;color:var(--sub);line-height:2">
+        <div>James Wilson</div>
+        <div>88 Riverside Drive, Apt 4C</div>
+        <div>New York, NY 10024, USA</div>
+        <div>📞 +1 (212) 555-0194</div>
+      </div>
+      <div style="display:flex;gap:7px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-add-address')">✏️ Edit</button>
+        <button class="btn btn-p btn-sm" onclick="showToast('Set as default','ok')">Set Default</button>
+        <button class="btn btn-danger btn-sm" onclick="if(confirm('Delete?'))showToast('Deleted','warn')">Delete</button>
+      </div>
+    </div>
+    <div class="addr-card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:140px;cursor:pointer;transition:all .2s" onclick="openModal('modal-add-address')" onmouseover="this.style.borderColor='var(--p)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="text-align:center;color:var(--muted)">
+        <div style="font-size:32px;margin-bottom:8px">+</div>
+        <div style="font-size:13px;font-weight:600">Add New Address</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PAYMENT METHODS ═══════════════ -->
+<div id="sec-payment" class="sec">
+  <div class="ph"><div><h1>Payment Methods</h1></div><div class="ph-r"><button class="btn btn-p" onclick="openModal('modal-add-payment')">+ Add Payment Method</button></div></div>
+  <div class="notice n-ok"><span class="ni">🛡️</span><div>All payments on Ebazario go through <strong>Trade Assurance Escrow</strong>. Your payment is only released to the seller after you confirm receipt and satisfaction.</div></div>
+  <div class="g2">
+    <div class="card" style="border-color:var(--p)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:50px;height:32px;background:#1a1f71;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;letter-spacing:1px">VISA</div>
+          <div><strong style="display:block">Visa ending in 4821</strong><span style="font-size:12px;color:var(--muted)">Expires 09/2027</span></div>
+        </div>
+        <span class="pill p-p">★ Default</span>
+      </div>
+      <div style="font-size:13px;color:var(--sub)">James Wilson · TechCorp Industries</div>
+      <div style="display:flex;gap:7px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Card updated','ok')">Edit</button>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div style="width:50px;height:32px;background:#eb001b;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;letter-spacing:.5px">MC</div>
+        <div><strong style="display:block">Mastercard ending in 9374</strong><span style="font-size:12px;color:var(--muted)">Expires 03/2026</span></div>
+      </div>
+      <div style="font-size:13px;color:var(--sub)">James Wilson</div>
+      <div style="display:flex;gap:7px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Card edited','ok')">Edit</button>
+        <button class="btn btn-p btn-sm" onclick="showToast('Set as default','ok')">Set Default</button>
+        <button class="btn btn-danger btn-sm" onclick="if(confirm('Remove?'))showToast('Card removed','warn')">Remove</button>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div style="width:50px;height:32px;background:#003087;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff">PayPal</div>
+        <div><strong style="display:block">PayPal</strong><span style="font-size:12px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8fe5eee2eafccffbeaece7ece0fdffa1ece0e2">[email&#160;protected]</a></span></div>
+      </div>
+      <div style="font-size:13px;color:var(--sub)">Connected · Verified account</div>
+      <div style="display:flex;gap:7px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm" onclick="showToast('PayPal disconnected','warn')">Disconnect</button>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div style="width:50px;height:32px;background:#f5f5f5;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:22px">🏦</div>
+        <div><strong style="display:block">Bank Transfer (Wire)</strong><span style="font-size:12px;color:var(--muted)">Available for orders $5,000+</span></div>
+      </div>
+      <div style="font-size:13px;color:var(--sub)">Chase Bank · Account ****8901 · ABA: 021000021</div>
+      <div style="display:flex;gap:7px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-add-payment')">Update Bank</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ NOTIFICATIONS ═══════════════ -->
+<div id="sec-notifs" class="sec">
+  <div class="ph"><div><h1>Notifications</h1></div><div class="ph-r"><button class="btn btn-ghost btn-sm" onclick="showToast('All marked as read','ok')">Mark All Read</button></div></div>
+  <div data-tabs>
+    <div class="tab-bar">
+      <button class="tab-btn on" onclick="showTab('notif-all',this)">All (8)</button>
+      <button class="tab-btn" onclick="showTab('notif-unread',this)">Unread (3)</button>
+    </div>
+    <div id="notif-all" class="tabpane on">
+      <div style="display:flex;flex-direction:column;gap:0">
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);background:#faf8ff;padding:14px;border-radius:var(--r);margin-bottom:6px">
+          <span style="font-size:22px;flex-shrink:0">📬</span>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700;margin-bottom:2px">New quote received for your RFQ</div>
+            <div style="font-size:13px;color:var(--sub)">Shenzhen TechPro submitted a quote of $262/unit for your RFQ #RQ-2025-0042 (Industrial Laptops ×500).</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">2 hours ago · <span class="pill p-p" style="font-size:10px">Unread</span></div>
+          </div>
+          <button class="btn btn-p btn-sm" onclick="nav(document.querySelector('[data-sec=sec-rfq]'))">View Quote</button>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:var(--r);margin-bottom:6px;background:#faf8ff">
+          <span style="font-size:22px;flex-shrink:0">🚢</span>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700;margin-bottom:2px">Shipment update — #EB-28355</div>
+            <div style="font-size:13px;color:var(--sub)">Your solar panel order departed Shanghai Yangshan Port. Vessel: EVER GRACE. ETA Los Angeles: Feb 8.</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">Yesterday · <span class="pill p-p" style="font-size:10px">Unread</span></div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="nav(document.querySelector('[data-sec=sec-track]'))">Track</button>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:var(--r);margin-bottom:6px;background:#faf8ff">
+          <span style="font-size:22px;flex-shrink:0">⚖️</span>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700;margin-bottom:2px">Dispute update — Order #EB-28210</div>
+            <div style="font-size:13px;color:var(--sub)">Admin is now reviewing your dispute. Evidence requested from seller. Response expected within 3 business days.</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">Jan 14 · <span class="pill p-p" style="font-size:10px">Unread</span></div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="nav(document.querySelector('[data-sec=sec-disputes]'))">View</button>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:var(--r);margin-bottom:6px">
+          <span style="font-size:22px;flex-shrink:0">✅</span>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700;margin-bottom:2px">Order delivered — #EB-28401</div>
+            <div style="font-size:13px;color:var(--sub)">Your order of 200 Industrial Rugged Laptops has been delivered. Please leave a review for the seller.</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">Jan 22</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-review')">Review</button>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:var(--r);margin-bottom:6px">
+          <span style="font-size:22px;flex-shrink:0">💰</span>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700;margin-bottom:2px">Payment confirmed — #EB-28401</div>
+            <div style="font-size:13px;color:var(--sub)">Your payment of $57,000 has been secured in Trade Assurance escrow. It will be released to the seller after delivery confirmation.</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">Jan 15</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="notif-unread" class="tabpane">
+      <div class="notice n-blue"><span class="ni">📬</span><div>You have 3 unread notifications.</div></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:8px">
+    <div class="card-title" style="margin-bottom:16px">🔔 Notification Preferences</div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center"><div><strong style="font-size:13px;display:block">Order Updates</strong><span style="font-size:12px;color:var(--muted)">Shipping, delivery, payment confirmations</span></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><div><strong style="font-size:13px;display:block">RFQ &amp; Quote Alerts</strong><span style="font-size:12px;color:var(--muted)">New quotes received for your RFQs</span></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><div><strong style="font-size:13px;display:block">Dispute Notifications</strong><span style="font-size:12px;color:var(--muted)">Status updates on open disputes</span></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><div><strong style="font-size:13px;display:block">Price Drop Alerts</strong><span style="font-size:12px;color:var(--muted)">Wishlist items on sale</span></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><div><strong style="font-size:13px;display:block">Marketing &amp; Promotions</strong><span style="font-size:12px;color:var(--muted)">Special deals and platform news</span></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <button class="btn btn-p btn-sm" style="margin-top:16px" onclick="showToast('Preferences saved!','ok')">Save Preferences</button>
+  </div>
+</div>
+
+<!-- ═══════════════ SECURITY ═══════════════ -->
+<div id="sec-security" class="sec">
+  <div class="ph"><div><h1>Security</h1></div></div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px">🔑 Change Password</div>
+      <div class="fg"><label>Current Password</label><input type="password" placeholder="••••••••"></div>
+      <div class="fg"><label>New Password</label><input type="password" placeholder="Min. 8 characters"></div>
+      <div class="fg"><label>Confirm New Password</label><input type="password" placeholder="Repeat new password"></div>
+      <button class="btn btn-p" onclick="showToast('Password updated successfully!','ok')">Update Password</button>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px">📱 Two-Factor Authentication</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div><strong style="font-size:13px;display:block">SMS Authentication</strong><span style="font-size:12px;color:var(--muted)">+1 (212) 555-0184</span></div>
+          <span class="pill p-ok">✓ Enabled</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div><strong style="font-size:13px;display:block">Authenticator App</strong><span style="font-size:12px;color:var(--muted)">Google Authenticator / Authy</span></div>
+          <button class="btn btn-out btn-sm" onclick="showToast('Setup code sent to your email!','ok')">Set Up</button>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><strong style="font-size:13px;display:block">Email Verification</strong><span style="font-size:12px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="91fbf0fcf4e2d1e5f4f2f9f2fee3e1bff2fefc">[email&#160;protected]</a></span></div>
+          <span class="pill p-ok">✓ Verified</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px">🖥️ Active Sessions</div>
+        <div style="font-size:13px;line-height:2.1;margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:var(--bg);border-radius:var(--r);margin-bottom:6px">
+            <div><strong>Chrome — MacBook Pro</strong><div style="font-size:11px;color:var(--muted)">New York, USA · Current session</div></div>
+            <span class="pill p-ok">Current</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:var(--bg);border-radius:var(--r);margin-bottom:6px">
+            <div><strong>Safari — iPhone 14 Pro</strong><div style="font-size:11px;color:var(--muted)">New York, USA · 2 days ago</div></div>
+            <button class="btn btn-danger btn-sm" onclick="showToast('Session revoked','warn')">Revoke</button>
+          </div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="if(confirm('Sign out all devices?'))showToast('All sessions revoked','warn')">Sign Out All Other Devices</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="margin-bottom:16px">📋 Login History</div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Date / Time</th><th>Device</th><th>Location</th><th>IP Address</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td style="font-size:12px">Today 09:24</td><td>Chrome / MacBook</td><td>New York, USA</td><td>12.34.56.78</td><td><span class="pill p-ok">Success</span></td></tr>
+        <tr><td style="font-size:12px">Yesterday 18:02</td><td>Safari / iPhone</td><td>New York, USA</td><td>12.34.56.78</td><td><span class="pill p-ok">Success</span></td></tr>
+        <tr><td style="font-size:12px">Jan 10 14:15</td><td>Chrome / MacBook</td><td>New York, USA</td><td>12.34.56.78</td><td><span class="pill p-ok">Success</span></td></tr>
+        <tr style="background:#fef2f2"><td style="font-size:12px">Jan 8 03:42</td><td>Unknown Device</td><td>Lagos, Nigeria</td><td>197.210.x.x</td><td><span class="pill p-danger">Blocked</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /dash -->
+
+<!-- ════════════ MODALS ════════════ -->
+
+<!-- ORDER DETAIL -->
+<div id="modal-order-detail" class="modal-bg" onclick="if(event.target===this)closeModal('modal-order-detail')">
+  <div class="modal modal-lg">
+    <div class="modal-head"><h3>🛒 Order #EB-28401 — Details</h3><button class="modal-close" onclick="closeModal('modal-order-detail')">✕</button></div>
+    <div class="modal-body">
+      <div class="g2" style="margin-bottom:14px">
+        <div style="background:#f9f8ff;border-radius:var(--r);padding:13px;font-size:13px;line-height:1.9">
+          <strong style="display:block;margin-bottom:6px">📦 Order Summary</strong>
+          <div><span style="color:var(--muted)">Order ID:</span> <strong>#EB-28401</strong></div>
+          <div><span style="color:var(--muted)">Date:</span> Jan 15, 2025</div>
+          <div><span style="color:var(--muted)">Status:</span> <span class="pill p-ok">Delivered</span></div>
+          <div><span style="color:var(--muted)">Payment:</span> <span class="pill p-ok">Trade Assurance ✓</span></div>
+          <div><span style="color:var(--muted)">Released to seller:</span> Jan 24, 2025</div>
+        </div>
+        <div style="background:#f9f8ff;border-radius:var(--r);padding:13px;font-size:13px;line-height:1.9">
+          <strong style="display:block;margin-bottom:6px">🏭 Seller</strong>
+          <div><strong>Shenzhen TechPro Electronics</strong></div>
+          <div>🇨🇳 Shenzhen, China</div>
+          <div>⭐ 4.9 · Verified · Gold Seller</div>
+          <div style="margin-top:6px"><button class="btn btn-ghost btn-sm" onclick="showToast('Message sent!','ok')">✉️ Message Seller</button></div>
+        </div>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:var(--r);padding:13px;margin-bottom:13px;display:flex;gap:12px;align-items:center">
+        <div style="width:60px;height:60px;border-radius:var(--r);background:linear-gradient(135deg,#f0e8ff,#ede4ff);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">💻</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:700">Industrial Rugged Laptop 15.6" Core i7 IP65 MIL-STD-810H</div><div style="font-size:12px;color:var(--sub)">200 units × $285/unit</div></div>
+        <div style="font-family:Sora,sans-serif;font-size:18px;font-weight:700;color:var(--ok)">$57,000</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;background:#f9f8ff;border-radius:var(--r);padding:13px">
+        <div><span style="color:var(--muted)">Shipping:</span> ✈️ Air Freight</div>
+        <div><span style="color:var(--muted)">Delivered:</span> Jan 22, 2025</div>
+        <div><span style="color:var(--muted)">Tracking:</span> AWB-20250115TP</div>
+        <div><span style="color:var(--muted)">Destination:</span> New York, USA</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-order-detail')">Close</button>
+      <button class="btn btn-ghost" onclick="showToast('Invoice downloaded!','ok')">📄 Download Invoice</button>
+      <button class="btn btn-p" onclick="openModal('modal-review');closeModal('modal-order-detail')">⭐ Leave Review</button>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEW MODAL -->
+<div id="modal-review" class="modal-bg" onclick="if(event.target===this)closeModal('modal-review')">
+  <div class="modal">
+    <div class="modal-head"><h3>⭐ Leave a Review</h3><button class="modal-close" onclick="closeModal('modal-review')">✕</button></div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:12px;background:#f9f8ff;border-radius:var(--r)">
+        <div style="font-size:28px">💻</div>
+        <div><strong style="display:block;font-size:13px">Industrial Rugged Laptop 15.6"</strong><span style="font-size:12px;color:var(--muted)">Shenzhen TechPro · Order #EB-28401</span></div>
+      </div>
+      <div class="fg"><label>Overall Rating</label>
+        <div style="display:flex;gap:6px;margin-top:4px" id="star-rating">
+          <button class="btn btn-ghost btn-sm" onclick="setRating(1)">★</button>
+          <button class="btn btn-ghost btn-sm" onclick="setRating(2)">★★</button>
+          <button class="btn btn-ghost btn-sm" onclick="setRating(3)">★★★</button>
+          <button class="btn btn-ghost btn-sm" onclick="setRating(4)">★★★★</button>
+          <button class="btn btn-p btn-sm" onclick="setRating(5)">★★★★★</button>
+        </div>
+      </div>
+      <div class="frow2">
+        <div class="fg"><label>Product Quality</label><select><option>5 — Excellent</option><option>4 — Good</option><option>3 — OK</option><option>2 — Poor</option></select></div>
+        <div class="fg"><label>Shipping Speed</label><select><option>5 — Very Fast</option><option>4 — Fast</option><option>3 — Average</option><option>2 — Slow</option></select></div>
+        <div class="fg"><label>Communication</label><select><option>5 — Excellent</option><option>4 — Good</option><option>3 — OK</option></select></div>
+        <div class="fg"><label>As Described</label><select><option>Yes, exactly as listed</option><option>Minor differences</option><option>Significant differences</option></select></div>
+      </div>
+      <div class="fg"><label>Your Review</label><textarea placeholder="Share your experience with this product and seller…" style="height:100px"></textarea></div>
+      <div class="fg"><label>Upload Photos (optional)</label>
+        <div style="border:2px dashed var(--border);border-radius:var(--r);padding:20px;text-align:center;cursor:pointer;color:var(--muted);font-size:13px" onclick="showToast('Photos added!','ok')">
+          📷 Click to upload photos of the received product
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-review')">Cancel</button>
+      <button class="btn btn-p" onclick="showToast('Review submitted! Thank you!','ok');closeModal('modal-review')">Submit Review</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW RFQ -->
+<div id="modal-new-rfq" class="modal-bg" onclick="if(event.target===this)closeModal('modal-new-rfq')">
+  <div class="modal modal-lg">
+    <div class="modal-head"><h3>📋 Submit New Request for Quotation</h3><button class="modal-close" onclick="closeModal('modal-new-rfq')">✕</button></div>
+    <div class="modal-body">
+      <div class="notice n-p"><span class="ni">💡</span><div>Your RFQ will be sent to all verified sellers matching the selected category. You'll typically receive quotes within 24–48 hours.</div></div>
+      <div class="fg"><label>Product Name / Description *</label><input type="text" placeholder="e.g. Industrial Rugged Laptops, IP65 rated, Core i7"></div>
+      <div class="frow3" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div class="fg"><label>Category *</label><select><option>Electronics</option><option>Machinery</option><option>Apparel</option><option>Healthcare</option><option>Food &amp; Agri</option></select></div>
+        <div class="fg"><label>Quantity Required *</label><input type="number" placeholder="e.g. 500"></div>
+        <div class="fg"><label>Unit</label><select><option>units</option><option>kg</option><option>tons</option><option>CBM</option><option>sets</option></select></div>
+      </div>
+      <div class="frow2">
+        <div class="fg"><label>Budget (per unit, USD)</label><input type="text" placeholder="e.g. $200–$300"></div>
+        <div class="fg"><label>Required Timeline</label><select><option>Within 30 days</option><option>Within 45 days</option><option>Within 60 days</option><option>Within 90 days</option><option>Flexible</option></select></div>
+      </div>
+      <div class="fg"><label>Delivery Address</label><select><option>TechCorp HQ — New York, USA (Default)</option><option>TechCorp Warehouse — Newark, NJ</option><option>Other</option></select></div>
+      <div class="fg"><label>Technical Specifications</label><textarea placeholder="List specific technical requirements, certifications needed, material grades, etc." style="height:100px"></textarea></div>
+      <div class="fg"><label>Additional Requirements</label><textarea placeholder="Packaging requirements, labeling, samples needed, OEM/custom branding, etc." style="height:80px"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-new-rfq')">Cancel</button>
+      <button class="btn btn-p" onclick="showToast('RFQ submitted! Sellers will respond within 48h.','ok');closeModal('modal-new-rfq')">Submit RFQ</button>
+    </div>
+  </div>
+</div>
+
+<!-- RFQ QUOTES -->
+<div id="modal-rfq-quotes" class="modal-bg" onclick="if(event.target===this)closeModal('modal-rfq-quotes')">
+  <div class="modal modal-lg">
+    <div class="modal-head"><h3>📬 Quotes — RFQ #RQ-2025-0042</h3><button class="modal-close" onclick="closeModal('modal-rfq-quotes')">✕</button></div>
+    <div class="modal-body">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Seller</th><th>Unit Price</th><th>Total (500 units)</th><th>Lead Time</th><th>Warranty</th><th>Trade Assured</th><th>Rating</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr style="background:#f0fdf4">
+            <td><strong>Shenzhen TechPro</strong><div style="font-size:11px;color:var(--muted)">🇨🇳 China · Gold Seller</div></td>
+            <td><strong style="color:var(--ok);font-size:15px">$262</strong></td>
+            <td><strong>$131,000</strong></td>
+            <td>30 days</td>
+            <td>2 years</td>
+            <td><span class="pill p-ok">✓</span></td>
+            <td>⭐ 4.9</td>
+            <td><div style="display:flex;flex-direction:column;gap:4px"><button class="btn btn-p btn-sm" onclick="showToast('Seller contacted!','ok');closeModal('modal-rfq-quotes')">Accept</button><button class="btn btn-ghost btn-sm" onclick="showToast('Negotiation started!','ok')">Negotiate</button></div></td>
+          </tr>
+          <tr>
+            <td><strong>GlobalTech Vietnam</strong><div style="font-size:11px;color:var(--muted)">🇻🇳 Vietnam · Gold Seller</div></td>
+            <td><strong>$275</strong></td>
+            <td><strong>$137,500</strong></td>
+            <td>35 days</td>
+            <td>1 year</td>
+            <td><span class="pill p-ok">✓</span></td>
+            <td>⭐ 4.7</td>
+            <td><div style="display:flex;flex-direction:column;gap:4px"><button class="btn btn-p btn-sm" onclick="showToast('Seller contacted!','ok');closeModal('modal-rfq-quotes')">Accept</button><button class="btn btn-ghost btn-sm">Negotiate</button></div></td>
+          </tr>
+          <tr>
+            <td><strong>TechLine Korea</strong><div style="font-size:11px;color:var(--muted)">🇰🇷 Korea · Silver Seller</div></td>
+            <td><strong>$290</strong></td>
+            <td><strong>$145,000</strong></td>
+            <td>28 days</td>
+            <td>3 years</td>
+            <td><span class="pill p-ok">✓</span></td>
+            <td>⭐ 4.8</td>
+            <td><div style="display:flex;flex-direction:column;gap:4px"><button class="btn btn-p btn-sm" onclick="showToast('Seller contacted!','ok');closeModal('modal-rfq-quotes')">Accept</button><button class="btn btn-ghost btn-sm">Negotiate</button></div></td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modal-rfq-quotes')">Close</button></div>
+  </div>
+</div>
+
+<!-- NEW DISPUTE -->
+<div id="modal-new-dispute" class="modal-bg" onclick="if(event.target===this)closeModal('modal-new-dispute')">
+  <div class="modal">
+    <div class="modal-head"><h3>⚖️ File a Dispute</h3><button class="modal-close" onclick="closeModal('modal-new-dispute')">✕</button></div>
+    <div class="modal-body">
+      <div class="notice n-warn"><span class="ni">⚠️</span><div>Only file a dispute if you have a genuine issue with your order. Disputes freeze funds in escrow until resolved by our team.</div></div>
+      <div class="fg"><label>Select Order *</label><select><option>#EB-28355 — Solar Panels — In Transit</option><option>#EB-28290 — CNC Machine — Delivered</option></select></div>
+      <div class="fg"><label>Issue Type *</label><select><option>Missing items / incorrect quantity</option><option>Product not as described</option><option>Damaged / defective goods</option><option>Item not received</option><option>Wrong product received</option><option>Quality does not meet specs</option></select></div>
+      <div class="fg"><label>Describe the Issue *</label><textarea placeholder="Provide specific details about the problem, including quantities, measurements, photos etc." style="height:110px"></textarea></div>
+      <div class="fg"><label>Requested Resolution</label><select><option>Full refund</option><option>Partial refund for missing/damaged items</option><option>Re-shipment of missing items</option><option>Replacement of defective units</option></select></div>
+      <div class="fg"><label>Upload Evidence (photos, documents)</label>
+        <div style="border:2px dashed var(--border);border-radius:var(--r);padding:18px;text-align:center;cursor:pointer;color:var(--muted);font-size:13px" onclick="showToast('Files uploaded!','ok')">
+          📎 Upload photos, inspection reports, packing lists
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-new-dispute')">Cancel</button>
+      <button class="btn btn-danger" onclick="showToast('Dispute filed! Our team will review within 24h.','ok');closeModal('modal-new-dispute')">File Dispute</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHIPPING ISSUE -->
+<div id="modal-shipping-issue" class="modal-bg" onclick="if(event.target===this)closeModal('modal-shipping-issue')">
+  <div class="modal">
+    <div class="modal-head"><h3>⚠️ Report Shipping Issue</h3><button class="modal-close" onclick="closeModal('modal-shipping-issue')">✕</button></div>
+    <div class="modal-body">
+      <div class="fg"><label>Issue Type</label><select><option>Shipment delayed significantly</option><option>Package lost</option><option>Customs hold</option><option>Wrong destination</option><option>Damaged in transit</option></select></div>
+      <div class="fg"><label>Description</label><textarea placeholder="Describe the shipping issue in detail…" style="height:90px"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-shipping-issue')">Cancel</button>
+      <button class="btn btn-danger" onclick="showToast('Issue reported. Ebazario team notified.','ok');closeModal('modal-shipping-issue')">Report Issue</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD ADDRESS -->
+<div id="modal-add-address" class="modal-bg" onclick="if(event.target===this)closeModal('modal-add-address')">
+  <div class="modal">
+    <div class="modal-head"><h3>📬 Add / Edit Address</h3><button class="modal-close" onclick="closeModal('modal-add-address')">✕</button></div>
+    <div class="modal-body">
+      <div class="fg"><label>Address Label</label><input type="text" placeholder="e.g. Main Office, Warehouse, Home"></div>
+      <div class="fg"><label>Address Type</label><select><option>Commercial</option><option>Warehouse</option><option>Residential</option></select></div>
+      <div class="frow2">
+        <div class="fg"><label>First Name</label><input type="text" value="James"></div>
+        <div class="fg"><label>Last Name</label><input type="text" value="Wilson"></div>
+      </div>
+      <div class="fg"><label>Company Name</label><input type="text" value="TechCorp Industries"></div>
+      <div class="fg"><label>Street Address</label><input type="text" placeholder="Street address, building, unit"></div>
+      <div class="frow2">
+        <div class="fg"><label>City</label><input type="text" placeholder="City"></div>
+        <div class="fg"><label>State / Province</label><input type="text" placeholder="State"></div>
+      </div>
+      <div class="frow2">
+        <div class="fg"><label>ZIP / Postal Code</label><input type="text" placeholder="ZIP code"></div>
+        <div class="fg"><label>Country</label><select><option>United States</option><option>UAE</option><option>UK</option><option>Germany</option></select></div>
+      </div>
+      <div class="fg"><label>Phone Number</label><input type="tel" placeholder="+1 (555) 000-0000"></div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> Set as default shipping address</label>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-address')">Cancel</button>
+      <button class="btn btn-p" onclick="showToast('Address saved!','ok');closeModal('modal-add-address')">Save Address</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PAYMENT -->
+<div id="modal-add-payment" class="modal-bg" onclick="if(event.target===this)closeModal('modal-add-payment')">
+  <div class="modal">
+    <div class="modal-head"><h3>💳 Add Payment Method</h3><button class="modal-close" onclick="closeModal('modal-add-payment')">✕</button></div>
+    <div class="modal-body">
+      <div class="fg"><label>Payment Type</label><select onchange="showToast('Fields updated','ok')"><option>Credit / Debit Card</option><option>PayPal</option><option>Bank Transfer (Wire)</option></select></div>
+      <div class="fg"><label>Cardholder Name</label><input type="text" placeholder="As printed on card"></div>
+      <div class="fg"><label>Card Number</label><input type="text" placeholder="•••• •••• •••• ••••" maxlength="19"></div>
+      <div class="frow2">
+        <div class="fg"><label>Expiry Date</label><input type="text" placeholder="MM / YY"></div>
+        <div class="fg"><label>CVV</label><input type="text" placeholder="•••" maxlength="4"></div>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> Set as default payment method</label>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-payment')">Cancel</button>
+      <button class="btn btn-p" onclick="showToast('Payment method saved!','ok');closeModal('modal-add-payment')">Save</button>
+    </div>
+  </div>
+</div>
+<script>
+
+// ── NAVIGATION ──────────────────────────────────────────────
+function nav(el) {
+  if (!el) return;
+  var id = el.getAttribute('data-sec');
+  if (!id) return;
+  document.querySelectorAll('.sec').forEach(function(s){ s.classList.remove('active'); });
+  document.querySelectorAll('.sb-item').forEach(function(s){ s.classList.remove('active'); });
+  var sec = document.getElementById(id);
+  if (sec) sec.classList.add('active');
+  el.classList.add('active');
+  var lbl = el.querySelector('.sb-label');
+  var tb = document.querySelector('.tb-title');
+  if (tb) tb.textContent = lbl ? lbl.textContent.trim() : 'My Account';
+  window.scrollTo(0,0);
+}
+
+// ── TABS ────────────────────────────────────────────────────
+function showTab(id, btn) {
+  var par = btn.closest('[data-tabs]');
+  par.querySelectorAll('.tab-btn').forEach(function(t){ t.classList.remove('on'); });
+  par.querySelectorAll('.tabpane').forEach(function(t){ t.classList.remove('on'); });
+  btn.classList.add('on');
+  var p = document.getElementById(id);
+  if (p) p.classList.add('on');
+}
+
+// ── MODALS ──────────────────────────────────────────────────
+function openModal(id){ var m=document.getElementById(id); if(m)m.classList.add('show'); }
+function closeModal(id){ var m=document.getElementById(id); if(m)m.classList.remove('show'); }
+
+// ── MISC ─────────────────────────────────────────────────────
+function goHome(){ window.location.href='../index.html'; }
+function trackShipment(){
+  var v = document.getElementById('tracking-input');
+  if (!v || !v.value.trim()){ showToast('Please enter a tracking number','warn'); return; }
+  showToast('Searching for ' + v.value.trim() + '...','ok');
+}
+function setRating(n){
+  document.querySelectorAll('#star-rating button').forEach(function(b,i){
+    b.className = i === n-1 ? 'btn btn-p btn-sm' : 'btn btn-ghost btn-sm';
+  });
+  showToast(n + '-star rating selected','ok');
+}
+
+// ── TOAST ────────────────────────────────────────────────────
+function showToast(msg, type) {
+  document.querySelectorAll('.cust-toast').forEach(function(t){ t.remove(); });
+  var t = document.createElement('div');
+  t.className = 'cust-toast';
+  var colors = {
+    ok:    ['#dcfce7','#86efac','#15803d'],
+    warn:  ['#fef3c7','#fcd34d','#92400e'],
+    danger:['#fee2e2','#fca5a5','#b91c1c']
+  };
+  var c = colors[type] || colors.ok;
+  t.style.cssText = 'position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:12px;'
+    + 'font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.12);'
+    + 'max-width:360px;font-family:DM Sans,sans-serif;border:1px solid ' + c[1]
+    + ';background:' + c[0] + ';color:' + c[2];
+  t.textContent = (type==='ok' ? '\u2713 ' : type==='warn' ? '\u26a0 ' : '\u2715 ') + msg;
+  document.body.appendChild(t);
+  setTimeout(function(){
+    t.style.transition='opacity .3s'; t.style.opacity='0';
+    setTimeout(function(){ t.remove(); }, 300);
+  }, 3000);
+}
+
+// ── EMPTY STATE HELPER ───────────────────────────────────────
+function emptyState(container, icon, title, msg, btnText, btnFn) {
+  if (!container) return;
+  container.innerHTML = '';
+  var wrap = document.createElement('div');
+  wrap.style.cssText = 'text-align:center;padding:60px 20px;color:#94a3b8';
+  var ico = document.createElement('div');
+  ico.style.cssText = 'font-size:48px;margin-bottom:14px';
+  ico.textContent = icon;
+  var h3 = document.createElement('h3');
+  h3.style.cssText = 'font-size:16px;font-weight:700;color:#5b5278;margin-bottom:6px';
+  h3.textContent = title;
+  var p = document.createElement('p');
+  p.style.cssText = 'font-size:13px';
+  p.textContent = msg;
+  wrap.appendChild(ico);
+  wrap.appendChild(h3);
+  wrap.appendChild(p);
+  if (btnText && btnFn) {
+    var btn = document.createElement('button');
+    btn.className = 'btn btn-p btn-sm';
+    btn.style.marginTop = '16px';
+    btn.textContent = btnText;
+    btn.addEventListener('click', btnFn);
+    wrap.appendChild(btn);
+  }
+  container.appendChild(wrap);
+}
+
+// ── UPDATE PAGE WITH REAL USER DATA ──────────────────────────
+function applyProfile(profile, cp) {
+  var firstName = (profile.first_name || '').trim();
+  var lastName  = (profile.last_name  || '').trim();
+  var fullName  = (firstName + ' ' + lastName).trim() || profile.email.split('@')[0];
+  var initials  = ((firstName[0]||'') + (lastName[0]||'')).toUpperCase() || profile.email[0].toUpperCase();
+  var email     = profile.email || '';
+
+  // Initials in all avatar circles
+  document.querySelectorAll('.sb-av, .tb-av').forEach(function(el){ el.textContent = initials; });
+
+  // Name in sidebar
+  document.querySelectorAll('.sb-user strong').forEach(function(el){ el.textContent = fullName; });
+
+  // Name in topbar
+  document.querySelectorAll('.tb-pro span').forEach(function(el){ el.textContent = fullName; });
+
+  // Welcome heading
+  var welcome = document.querySelector('#sec-overview .ph h1');
+  if (welcome) welcome.textContent = 'Welcome back, ' + (firstName || fullName) + ' \uD83D\uDC4B';
+
+  // Profile banner - find by content
+  document.querySelectorAll('div, strong, span').forEach(function(el){
+    if (el.children.length === 0) {
+      if (el.textContent === 'James Wilson') el.textContent = fullName;
+      if (el.textContent === 'JW') el.textContent = initials;
+    }
+  });
+
+  // Stats
+  var spent = parseFloat(cp && cp.total_spent_usd || 0);
+  var orders = parseInt(cp && cp.total_orders || 0);
+  document.querySelectorAll('.stat-val').forEach(function(el){
+    var lbl = el.previousElementSibling;
+    if (!lbl) return;
+    var txt = lbl.textContent.toLowerCase();
+    if (txt.includes('total orders') || txt.includes('orders')) el.textContent = orders;
+    if (txt.includes('total spent'))  el.textContent = spent >= 1000 ? '$' + Math.floor(spent/1000) + 'K' : '$' + spent;
+  });
+
+  // Profile form fields
+  var fields = {
+    'input[placeholder="James"]':                       firstName,
+    'input[placeholder="Last name"]':                   lastName,
+    'input[type="email"][value="james@techcorp.com"]':  email,
+    'input[value="TechCorp Industries Inc."]':          (cp && cp.company_name) || '',
+    'input[value="Procurement Manager"]':               (cp && cp.position)     || '',
+    'input[value="TX-20180042"]':                       (cp && cp.business_reg_number) || ''
+  };
+  Object.keys(fields).forEach(function(sel){
+    var el = document.querySelector(sel);
+    if (el) el.value = fields[sel];
+  });
+  // All email inputs
+  document.querySelectorAll('input[type="email"]').forEach(function(el){
+    if (el.value === 'james@techcorp.com') el.value = email;
+  });
+  // Country
+  if (profile.country) {
+    document.querySelectorAll('select').forEach(function(sel){
+      Array.from(sel.options).forEach(function(opt){
+        if (opt.text === profile.country) sel.value = opt.value;
+      });
+    });
+  }
+}
+
+// ── CLEAR ALL DEMO DATA ──────────────────────────────────────
+function clearDemoData() {
+  // Orders tab
+  var ordAll = document.getElementById('ord-all');
+  if (ordAll) emptyState(ordAll, '\uD83D\uDED2', 'No orders yet', 'Your orders will appear here once you make a purchase.', 'Browse Products', goHome);
+
+  ['ord-transit','ord-delivered','ord-pending-review'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) emptyState(el, '\uD83D\uDED2', 'No orders here yet', 'Orders in this category will appear here.', null, null);
+  });
+
+  // Recent orders in overview
+  var overviewCards = document.querySelectorAll('#sec-overview .ord-card');
+  if (overviewCards.length > 0) {
+    var container = overviewCards[0].parentNode;
+    emptyState(container, '\uD83D\uDED2', 'No recent orders', 'Your recent orders will appear here.', 'Start Shopping', goHome);
+  }
+
+  // Wishlist
+  var wishGrid = document.querySelector('#sec-wishlist .g3');
+  if (wishGrid) emptyState(wishGrid, '\u2764\uFE0F', 'Your wishlist is empty', 'Save products you like to come back to them later.', 'Browse Products', goHome);
+  var wishBadge = document.querySelector('[data-sec=sec-wishlist] .sb-bdg');
+  if (wishBadge) wishBadge.textContent = '0';
+
+  // RFQs
+  var rfqActive = document.getElementById('rfq-active');
+  if (rfqActive) emptyState(rfqActive, '\uD83D\uDCCB', 'No active RFQs', 'Submit an RFQ to get quotes from multiple verified suppliers.', '+ Submit New RFQ', function(){ openModal('modal-new-rfq'); });
+  var rfqClosed = document.getElementById('rfq-closed');
+  if (rfqClosed) emptyState(rfqClosed, '\uD83D\uDCC1', 'No closed RFQs', 'Closed RFQs will appear here.', null, null);
+
+  // Reviews
+  var revCard = document.querySelector('#sec-reviews .card');
+  if (revCard) {
+    revCard.innerHTML = '';
+    var rHead = document.createElement('div');
+    rHead.className = 'card-head';
+    var rTitle = document.createElement('div');
+    rTitle.className = 'card-title';
+    rTitle.textContent = 'Published Reviews (0)';
+    rHead.appendChild(rTitle);
+    revCard.appendChild(rHead);
+    emptyState(revCard, '\u2B50', 'No reviews yet', 'Your reviews will appear here after rating purchased products.', null, null);
+  }
+
+  // Disputes
+  var dispOpen = document.getElementById('disp-open');
+  if (dispOpen) emptyState(dispOpen, '\u2696\uFE0F', 'No open disputes', 'All your orders are running smoothly!', null, null);
+  var dispResolved = document.getElementById('disp-resolved');
+  if (dispResolved) emptyState(dispResolved, '\u2705', 'No resolved disputes', 'Resolved disputes will appear here.', null, null);
+
+  // Addresses
+  var addrGrid = document.querySelector('#sec-addresses .g2');
+  if (addrGrid) {
+    addrGrid.innerHTML = '';
+    var addrCard = document.createElement('div');
+    addrCard.className = 'addr-card';
+    addrCard.style.cssText = 'border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:140px;cursor:pointer';
+    var addrInner = document.createElement('div');
+    addrInner.style.cssText = 'text-align:center;color:#94a3b8';
+    var addrPlus = document.createElement('div');
+    addrPlus.style.cssText = 'font-size:32px;margin-bottom:8px';
+    addrPlus.textContent = '+';
+    var addrLbl = document.createElement('div');
+    addrLbl.style.cssText = 'font-size:13px;font-weight:600';
+    addrLbl.textContent = 'Add Your First Address';
+    addrInner.appendChild(addrPlus);
+    addrInner.appendChild(addrLbl);
+    addrCard.appendChild(addrInner);
+    addrCard.onclick = function(){ openModal('modal-add-address'); };
+    addrGrid.appendChild(addrCard);
+  }
+
+  // Payments
+  var payGrid = document.querySelector('#sec-payment .g2');
+  if (payGrid) emptyState(payGrid, '\uD83D\uDCB3', 'No payment methods yet', 'Add a card or bank account to start purchasing.', '+ Add Payment Method', function(){ openModal('modal-add-payment'); });
+
+  // Notifications
+  var notifContainer = document.getElementById('notif-all');
+  if (notifContainer) emptyState(notifContainer, '\uD83D\uDD14', 'No notifications yet', 'We will notify you about your orders and account activity.', null, null);
+  var nBadge = document.querySelector('[data-sec=sec-notifs] .sb-bdg');
+  if (nBadge) nBadge.remove();
+}
+
+// ── RENDER REAL ORDERS ───────────────────────────────────────
+function renderOrders(orders) {
+  var statusMap = {
+    delivered:'p-ok', in_transit:'p-warn', processing:'p-blue',
+    disputed:'p-danger', pending:'p-muted', confirmed:'p-blue',
+    shipped:'p-warn', cancelled:'p-muted', refunded:'p-muted'
+  };
+  var ordAll = document.getElementById('ord-all');
+  if (!ordAll) return;
+  if (!orders || orders.length === 0) {
+    emptyState(ordAll, '\uD83D\uDED2', 'No orders yet', 'Your orders will appear here once you make a purchase.', 'Browse Products', goHome);
+    return;
+  }
+  ordAll.innerHTML = '';
+  orders.forEach(function(o){
+    var cls = statusMap[o.status] || 'p-muted';
+    var lbl = o.status.replace(/_/g,' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+    var date = new Date(o.created_at).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
+    var sellerName = o.seller_profiles ? o.seller_profiles.company_name : 'Seller';
+    var total = parseFloat(o.total_usd).toLocaleString('en-US',{style:'currency',currency:'USD'});
+
+    var card = document.createElement('div');
+    card.className = 'ord-card';
+    card.innerHTML = [
+      '<div class="ord-head">',
+        '<div>',
+          '<div class="ord-id">' + o.order_number + '</div>',
+          '<div class="ord-date">' + date + ' \u00B7 ' + sellerName + '</div>',
+        '</div>',
+        '<span class="pill ' + cls + '">' + lbl + '</span>',
+      '</div>',
+      '<div class="ord-foot">',
+        '<div style="font-size:12px;color:var(--muted)">' + (Array.isArray(o.items) ? o.items.length : 0) + ' item(s)</div>',
+        '<div style="font-family:Sora,sans-serif;font-size:16px;font-weight:700;color:var(--p)">' + total + '</div>',
+      '</div>'
+    ].join('');
+
+    var btnWrap = document.createElement('div');
+    btnWrap.style.cssText = 'display:flex;gap:7px;margin-top:10px';
+    var viewBtn = document.createElement('button');
+    viewBtn.className = 'btn btn-ghost btn-sm';
+    viewBtn.textContent = 'View Details';
+    viewBtn.onclick = function(){ openModal('modal-order-detail'); };
+    btnWrap.appendChild(viewBtn);
+    if (o.status === 'in_transit' || o.status === 'shipped') {
+      var trackBtn = document.createElement('button');
+      trackBtn.className = 'btn btn-p btn-sm';
+      trackBtn.textContent = '\uD83D\uDCCD Track Shipment';
+      trackBtn.onclick = function(){ nav(document.querySelector('[data-sec=sec-track]')); };
+      btnWrap.appendChild(trackBtn);
+    }
+    card.appendChild(btnWrap);
+    ordAll.appendChild(card);
+  });
+
+  // Update badge
+  var badge = document.querySelector('[data-sec=sec-orders] .sb-bdg');
+  if (badge) badge.textContent = orders.length;
+
+  // Also update overview recent orders
+  var overviewCards = document.querySelectorAll('#sec-overview .ord-card');
+  if (overviewCards.length > 0) {
+    var container = overviewCards[0].parentNode;
+    container.innerHTML = '';
+    orders.slice(0,2).forEach(function(o){
+      var cls2 = statusMap[o.status] || 'p-muted';
+      var lbl2 = o.status.replace(/_/g,' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+      var date2 = new Date(o.created_at).toLocaleDateString();
+      var total2 = parseFloat(o.total_usd).toLocaleString('en-US',{style:'currency',currency:'USD'});
+      var sellerName2 = o.seller_profiles ? o.seller_profiles.company_name : 'Seller';
+      var oc = document.createElement('div');
+      oc.className = 'ord-card';
+      oc.innerHTML = '<div class="ord-head"><div><div class="ord-id">' + o.order_number + '</div><div class="ord-date">' + date2 + ' \u00B7 ' + sellerName2 + '</div></div><span class="pill ' + cls2 + '">' + lbl2 + '</span></div><div class="ord-foot"><div style="font-size:12px;color:var(--muted)">' + (Array.isArray(o.items)?o.items.length:0) + ' item(s)</div><div style="font-family:Sora,sans-serif;font-size:16px;font-weight:700;color:var(--ok)">' + total2 + '</div></div>';
+      container.appendChild(oc);
+    });
+  }
+}
+
+// ── RENDER NOTIFICATIONS ─────────────────────────────────────
+function renderNotifications(notifs) {
+  var container = document.getElementById('notif-all');
+  if (!container) return;
+  if (!notifs || notifs.length === 0) {
+    emptyState(container, '\uD83D\uDD14', 'No notifications yet', 'We will notify you about your orders and account activity.', null, null);
+    var nb = document.querySelector('[data-sec=sec-notifs] .sb-bdg');
+    if (nb) nb.remove();
+    return;
+  }
+  container.innerHTML = '';
+  notifs.forEach(function(n){
+    var item = document.createElement('div');
+    item.style.cssText = 'display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:8px;margin-bottom:6px;background:#faf8ff';
+    var ico = document.createElement('span');
+    ico.style.cssText = 'font-size:22px;flex-shrink:0';
+    ico.textContent = n.icon || '\uD83D\uDD14';
+    var info = document.createElement('div');
+    info.style.flex = '1';
+    var titleEl = document.createElement('div');
+    titleEl.style.cssText = 'font-size:13px;font-weight:700;margin-bottom:2px';
+    titleEl.textContent = n.title;
+    var bodyEl = document.createElement('div');
+    bodyEl.style.cssText = 'font-size:13px;color:#475569';
+    bodyEl.textContent = n.body || '';
+    var timeEl = document.createElement('div');
+    timeEl.style.cssText = 'font-size:11px;color:#94a3b8;margin-top:4px';
+    timeEl.textContent = new Date(n.created_at).toLocaleString();
+    info.appendChild(titleEl);
+    info.appendChild(bodyEl);
+    info.appendChild(timeEl);
+    item.appendChild(ico);
+    item.appendChild(info);
+    container.appendChild(item);
+  });
+  var nb2 = document.querySelector('[data-sec=sec-notifs] .sb-bdg');
+  var unread = notifs.filter(function(n){ return !n.is_read; }).length;
+  if (nb2) nb2.textContent = unread;
+}
+
+// ── MAIN INIT ────────────────────────────────────────────────
+(async function initDashboard() {
+  if (!_configured) {
+    console.warn('[Ebazario] Demo mode');
+    return;
+  }
+  try {
+    const auth = await requireRole('customer', 'login-customer.html');
+    if (!auth) return;
+    const { session, profile } = auth;
+
+    // Get customer profile separately
+    var cpRes = await sb.from('customer_profiles').select('*').eq('user_id', session.user.id).single();
+    var cp = cpRes.data || {};
+
+    // Apply real profile to page
+    applyProfile(profile, cp);
+
+    // Clear all demo data
+    clearDemoData();
+
+    // Load real orders
+    try {
+      var ordRes = await sb.from('orders').select('*, seller_profiles(company_name)').eq('buyer_id', session.user.id).order('created_at', { ascending: false }).limit(20);
+      renderOrders(ordRes.data || []);
+    } catch(e) { console.error('Orders error:', e); }
+
+    // Load wishlist count
+    try {
+      var wRes = await sb.from('wishlists').select('id', { count: 'exact', head: true }).eq('user_id', session.user.id);
+      var wb = document.querySelector('[data-sec=sec-wishlist] .sb-bdg');
+      if (wb && wRes.count != null) wb.textContent = wRes.count;
+    } catch(e) {}
+
+    // Load notifications
+    try {
+      var nRes = await sb.from('notifications').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }).limit(30);
+      renderNotifications(nRes.data || []);
+    } catch(e) {}
+
+    // Load RFQ count
+    try {
+      var rRes = await sb.from('rfqs').select('id', { count: 'exact', head: true }).eq('buyer_id', session.user.id).eq('status', 'open');
+      if (rRes.count && rRes.count > 0) {
+        var rfqBadge = document.querySelector('[data-sec=sec-rfq] .sb-bdg');
+        if (!rfqBadge) {
+          var rfqItem = document.querySelector('[data-sec=sec-rfq]');
+          if (rfqItem) { var b=document.createElement('span'); b.className='sb-bdg'; b.textContent=rRes.count; rfqItem.appendChild(b); }
+        } else { rfqBadge.textContent = rRes.count; }
+      }
+    } catch(e) {}
+
+    // Realtime notifications
+    sb.channel('cust_notif_' + session.user.id)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: 'user_id=eq.' + session.user.id }, function(payload) {
+        showToast(payload.new.title, 'ok');
+        var nb = document.querySelector('[data-sec=sec-notifs] .sb-bdg');
+        if (nb) nb.textContent = parseInt(nb.textContent || '0') + 1;
+      }).subscribe();
+
+    // Sign out handler
+    document.querySelectorAll('a[href="login-customer.html"]').forEach(function(a){
+      if (a.textContent.includes('Sign Out') || a.textContent.includes('Out')) {
+        a.addEventListener('click', async function(e){
+          e.preventDefault();
+          await sb.auth.signOut();
+          window.location.href = 'login-customer.html';
+        });
+      }
+    });
+
+    window._session = session;
+    window._profile = profile;
+    console.log('[Ebazario] Dashboard ready for:', profile.email);
+
+  } catch(e) {
+    console.error('[Ebazario] Init error:', e);
+  }
+})();
+
+
+</script>
+</body>
+</html>

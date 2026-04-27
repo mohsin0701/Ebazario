@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Analytics & Reports — Ebazario Trading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f172a;--bg2:#1e293b;--bg3:#334155;--bg4:#475569;
+  --card:#ffffff;--card2:#f8fafc;
+  --text:#0f172a;--sub:#475569;--muted:#94a3b8;
+  --border:#e2e8f0;--border-d:rgba(255,255,255,.07);
+  --gold:#c9a227;--gl:#e8c040;--gd:#9a7a15;
+  --ok:#16a34a;--okl:#dcfce7;--okd:#14532d;
+  --danger:#dc2626;--dangerl:#fee2e2;--dangerd:#991b1b;
+  --warn:#f59e0b;--warnl:#fef3c7;--warnd:#92400e;
+  --blue:#1AA6DC;--bluel:#e0f2fe;
+  --p:#1AA6DC;--pl:#49c5f5;
+  --r:10px;--rl:16px;--rxl:22px;
+  --shd:0 2px 24px rgba(0,0,0,.08);--shd-lg:0 8px 48px rgba(0,0,0,.12);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:#e8e4f8;font-size:14px;line-height:1.6;min-height:100vh}
+h1,h2,h3,h4{font-family:'Playfair Display',serif}
+code,samp,.mono{font-family:'DM Mono',monospace}
+a{text-decoration:none;color:inherit}
+button{font-family:'DM Sans',sans-serif;cursor:pointer}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:10px}
+
+/* ── TOP HEADER ── */
+.report-header{background:var(--bg2);border-bottom:1px solid var(--border-d);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.rh-logo{display:flex;align-items:center;gap:12px}
+.rh-logo img{height:30px;filter:brightness(0) invert(1);opacity:.85}
+.rh-logo-text{font-family:'Playfair Display',serif;font-size:13px;color:rgba(255,255,255,.5);letter-spacing:.5px}
+.rh-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.rh-right{display:flex;align-items:center;gap:10px}
+.rh-period{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1px solid var(--border-d);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;color:rgba(255,255,255,.7);cursor:pointer}
+.rh-btn{padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .2s}
+.rh-btn-ghost{background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);border:1px solid var(--border-d)}
+.rh-btn-ghost:hover{background:rgba(255,255,255,.12);color:#fff}
+.rh-btn-gold{background:linear-gradient(135deg,var(--gold),var(--gl));color:#1a0a00}
+.rh-btn-gold:hover{filter:brightness(1.08)}
+
+/* ── TAB NAV ── */
+.tab-nav{display:flex;background:var(--bg2);border-bottom:1px solid var(--border-d);padding:0 32px;overflow-x:auto;gap:0}
+.tn-item{padding:14px 22px;font-size:13px;font-weight:600;color:rgba(255,255,255,.4);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif}
+.tn-item:hover{color:rgba(255,255,255,.8)}
+.tn-item.on{color:var(--gl);border-bottom-color:var(--gl)}
+
+/* ── REPORT PAGES ── */
+.rpage{display:none;padding:32px;max-width:1440px;margin:0 auto}.rpage.on{display:block}
+
+/* ── SECTION LABEL ── */
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin-bottom:6px}
+.sec-title{font-size:28px;font-weight:800;color:#fff;margin-bottom:4px;letter-spacing:-.5px}
+.sec-sub{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:28px}
+
+/* ── KPI CARDS ── */
+.kpi-grid{display:grid;gap:14px;margin-bottom:28px}
+.kpi-5{grid-template-columns:repeat(5,1fr)}
+.kpi-4{grid-template-columns:repeat(4,1fr)}
+.kpi-3{grid-template-columns:repeat(3,1fr)}
+.kpi-card{background:var(--card);border-radius:var(--rl);padding:20px;position:relative;overflow:hidden;animation:fadeUp .4s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.kpi-card:nth-child(1){animation-delay:.05s}
+.kpi-card:nth-child(2){animation-delay:.1s}
+.kpi-card:nth-child(3){animation-delay:.15s}
+.kpi-card:nth-child(4){animation-delay:.2s}
+.kpi-card:nth-child(5){animation-delay:.25s}
+.kpi-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--rl) var(--rl) 0 0}
+.kpi-ico{font-size:22px;margin-bottom:10px}
+.kpi-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--sub);margin-bottom:5px}
+.kpi-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--text);margin-bottom:5px;letter-spacing:-.5px}
+.kpi-val.ok{color:var(--okd)}.kpi-val.danger{color:var(--dangerd)}
+.kpi-ch{font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px}
+.ch-up{color:var(--ok)}.ch-dn{color:var(--danger)}.ch-neu{color:var(--muted)}
+.kpi-sparkline{height:32px;display:flex;align-items:flex-end;gap:2px;margin-top:10px;opacity:.5}
+.sp{flex:1;border-radius:2px 2px 0 0;min-width:4px;transition:opacity .2s}
+.kpi-card:hover .kpi-sparkline{opacity:1}
+
+/* ── CHART CONTAINERS ── */
+.chart-grid{display:grid;gap:16px;margin-bottom:20px}
+.cg-21{grid-template-columns:2fr 1fr}
+.cg-12{grid-template-columns:1fr 2fr}
+.cg-2{grid-template-columns:1fr 1fr}
+.cg-3{grid-template-columns:1fr 1fr 1fr}
+.chart-card{background:var(--card);border-radius:var(--rl);padding:22px;animation:fadeUp .5s ease both;animation-delay:.2s}
+.cc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
+.cc-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--text)}
+.cc-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.cc-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.cb-ok{background:var(--okl);color:var(--okd)}.cb-warn{background:var(--warnl);color:var(--warnd)}.cb-gold{background:#fef3c7;color:#92400e}.cb-blue{background:var(--bluel);color:#1e40af}
+
+/* ── BAR CHART (CSS only) ── */
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:140px;padding-bottom:0}
+.bc-group{display:flex;flex-direction:column;align-items:center;flex:1;gap:4px}
+.bc-bar{width:100%;border-radius:4px 4px 0 0;transition:all .3s;position:relative;cursor:pointer}
+.bc-bar:hover{filter:brightness(1.1)}
+.bc-label{font-size:10px;color:var(--muted);text-align:center;font-weight:600;margin-top:6px;white-space:nowrap}
+
+/* ── HORIZONTAL BAR ── */
+.hbar{margin-bottom:12px}
+.hbar-head{display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px}
+.hbar-label{color:var(--sub);font-weight:500}
+.hbar-val{font-weight:700;color:var(--text)}
+.hbar-track{height:8px;background:#f0eefb;border-radius:4px;overflow:hidden}
+.hbar-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+
+/* ── DONUT CHART (CSS) ── */
+.donut-wrap{display:flex;align-items:center;gap:22px}
+.donut{width:120px;height:120px;border-radius:50%;flex-shrink:0;position:relative}
+.donut-center{position:absolute;inset:20px;border-radius:50%;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.donut-pct{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text);line-height:1}
+.donut-lbl{font-size:10px;color:var(--muted);font-weight:600;margin-top:2px}
+.donut-legend{flex:1;display:flex;flex-direction:column;gap:8px}
+.dl-item{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px}
+.dl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dl-name{flex:1;color:var(--sub)}
+.dl-pct{font-weight:700;color:var(--text)}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;padding:10px 14px;background:var(--card2);font-weight:700;font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);white-space:nowrap}
+.tbl td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#faf8ff}
+.tbl-footer td{background:var(--card2)!important;font-weight:700;border-top:2px solid var(--border)!important}
+.tbl-pos td:first-child{border-left:3px solid var(--ok)}
+.tbl-neg td:first-child{border-left:3px solid var(--danger)}
+
+/* ── PILLS ── */
+.pill{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.p-ok{background:var(--okl);color:var(--okd)}.p-warn{background:var(--warnl);color:var(--warnd)}
+.p-danger{background:var(--dangerl);color:var(--dangerd)}.p-blue{background:var(--bluel);color:#1d4ed8}
+.p-gold{background:#fef3c7;color:#92400e}.p-muted{background:#f1f5f9;color:var(--sub)}
+.p-p{background:#e6f6fc;color:#0e8ec0}
+
+/* ── TREND INDICATOR ── */
+.trend{font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:3px}
+.trend-up{color:var(--ok)}.trend-dn{color:var(--danger)}.trend-neu{color:var(--muted)}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:24px 0}
+
+/* ── PROFIT/LOSS STATEMENT ── */
+.pnl-section{margin-bottom:0}
+.pnl-row{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border)}
+.pnl-row:last-child{border-bottom:none}
+.pnl-row.pnl-header{background:var(--bg3);color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.pnl-row.pnl-sub{padding-left:32px;color:var(--sub)}
+.pnl-row.pnl-total{background:var(--card2);font-weight:700;font-size:14px}
+.pnl-row.pnl-grand{background:var(--text);color:var(--card);font-weight:700;font-size:15px;border-radius:0 0 var(--r) var(--r)}
+.pnl-row.pnl-positive{border-left:3px solid var(--ok)}
+.pnl-row.pnl-negative{border-left:3px solid var(--danger)}
+.pnl-name{font-size:13px}
+.pnl-amount{font-family:'DM Mono',monospace;font-size:13px;font-weight:600}
+.pnl-positive .pnl-amount{color:var(--okd)}
+.pnl-negative .pnl-amount{color:var(--dangerd)}
+
+/* ── PROGRESS RING ── */
+.prog-ring{display:inline-block;position:relative;width:80px;height:80px}
+.prog-ring svg{transform:rotate(-90deg)}
+.prog-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.prog-ring-val{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);line-height:1}
+.prog-ring-lbl{font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+
+/* ── METRIC COMPARISON ── */
+.metric-compare{display:flex;gap:0;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.mc-item{flex:1;padding:14px 16px;text-align:center;border-right:1px solid var(--border);background:var(--card)}
+.mc-item:last-child{border-right:none}
+.mc-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:6px}
+.mc-val{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text)}
+.mc-ch{font-size:11px;font-weight:600;margin-top:4px}
+
+/* ── SELLER SCORECARD ── */
+.scorecard{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.sc-item{background:var(--card);border-radius:var(--r);padding:16px;text-align:center;animation:fadeUp .4s ease both}
+.sc-ico{font-size:28px;margin-bottom:8px}
+.sc-val{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text)}
+.sc-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
+
+/* ── TIMELINE CHART ── */
+.timeline-chart{height:120px;display:flex;align-items:flex-end;gap:6px;padding-top:10px;position:relative}
+.tc-bar-wrap{display:flex;flex-direction:column;align-items:center;flex:1;gap:3px}
+.tc-bar{width:100%;border-radius:3px 3px 0 0;transition:all .3s;cursor:pointer}
+.tc-bar.income{background:linear-gradient(180deg,#00e5a3,#00b884)}
+.tc-bar.expense{background:linear-gradient(180deg,#ff6b7a,#e8394a)}
+.tc-label{font-size:9px;color:var(--muted);font-weight:600;text-align:center}
+.tc-legend{display:flex;gap:16px;margin-top:12px;justify-content:flex-end}
+.tcl-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub)}
+.tcl-dot{width:10px;height:10px;border-radius:2px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1200px){.kpi-5{grid-template-columns:repeat(3,1fr)}.cg-21,.cg-12{grid-template-columns:1fr}}
+@media(max-width:900px){.kpi-4,.kpi-3{grid-template-columns:repeat(2,1fr)}.cg-2,.cg-3{grid-template-columns:1fr}.tab-nav{padding:0 16px}.rpage{padding:20px 16px}.report-header{padding:0 16px}}
+@media(max-width:600px){.kpi-5,.kpi-4,.kpi-3{grid-template-columns:1fr 1fr}}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="report-header">
+  <div class="rh-logo">
+    <img src="../logo.png" alt="Ebazario">
+    <span class="rh-logo-text">/ Analytics &amp; Reports</span>
+  </div>
+  <div class="rh-title">Business Intelligence Dashboard</div>
+  <div class="rh-right">
+    <div class="rh-period">📅 Jan 2025 &nbsp;▾</div>
+    <button class="rh-btn rh-btn-ghost" onclick="showToast('PDF downloaded!','ok')">📄 Export PDF</button>
+    <button class="rh-btn rh-btn-gold" onclick="showToast('Excel report ready!','ok')">📊 Export Excel</button>
+    <button class="rh-btn rh-btn-ghost" onclick="handleGlobalSignOut(event)">🚪 Sign Out</button>
+    <a href="admin-dashboard.html" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:rgba(255,255,255,.5);padding:7px 12px;border:1px solid rgba(255,255,255,.1);border-radius:8px;transition:all .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'">← Admin</a>
+  </div>
+</header>
+
+<!-- TAB NAV -->
+<nav class="tab-nav">
+  <button class="tn-item on" onclick="showReport('rp-platform',this)">🌐 Platform Overview</button>
+  <button class="tn-item" onclick="showReport('rp-seller',this)">🏪 Seller Report</button>
+  <button class="tn-item" onclick="showReport('rp-admin',this)">👑 Admin Report</button>
+  <button class="tn-item" onclick="showReport('rp-pnl',this)">📊 P&amp;L Statement</button>
+  <button class="tn-item" onclick="showReport('rp-sales',this)">💰 Sales Analysis</button>
+  <button class="tn-item" onclick="showReport('rp-categories',this)">🗂️ Categories</button>
+  <button class="tn-item" onclick="showReport('rp-shipping',this)">🚢 Logistics</button>
+</nav>
+
+<!-- ═══════ PLATFORM OVERVIEW ═══════ -->
+<div id="rp-platform" class="rpage on">
+  <div class="sec-label">Monthly Report · January 2025</div>
+  <div class="sec-title">Platform Overview</div>
+  <div class="sec-sub">Ebazario Global B2B Marketplace — consolidated performance snapshot</div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid kpi-5">
+    <div class="kpi-card">
+      <div class="kpi-accent" style="background:linear-gradient(90deg,#00b884,#00e5a3)"></div>
+      <div class="kpi-ico">💰</div><div class="kpi-label">Total GMV</div>
+      <div class="kpi-val">$2.48M</div>
+      <div class="kpi-ch ch-up">↑ 18.4% vs Dec</div>
+      <div class="kpi-sparkline">
+        <div class="sp" style="height:40%;background:#00b884"></div><div class="sp" style="height:55%;background:#00b884"></div>
+        <div class="sp" style="height:48%;background:#00b884"></div><div class="sp" style="height:72%;background:#00b884"></div>
+        <div class="sp" style="height:63%;background:#00b884"></div><div class="sp" style="height:88%;background:#00b884"></div>
+        <div class="sp" style="height:100%;background:#00b884"></div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent" style="background:linear-gradient(90deg,#5b3fd4,#9b6cff)"></div>
+      <div class="kpi-ico">🛒</div><div class="kpi-label">Total Orders</div>
+      <div class="kpi-val">1,284</div>
+      <div class="kpi-ch ch-up">↑ 9.2% vs Dec</div>
+      <div class="kpi-sparkline">
+        <div class="sp" style="height:50%;background:#5b3fd4"></div><div class="sp" style="height:60%;background:#5b3fd4"></div>
+        <div class="sp" style="height:55%;background:#5b3fd4"></div><div class="sp" style="height:80%;background:#5b3fd4"></div>
+        <div class="sp" style="height:70%;background:#5b3fd4"></div><div class="sp" style="height:90%;background:#5b3fd4"></div>
+        <div class="sp" style="height:100%;background:#5b3fd4"></div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent" style="background:linear-gradient(90deg,#c9a43c,#e8c55a)"></div>
+      <div class="kpi-ico">🏪</div><div class="kpi-label">Active Sellers</div>
+      <div class="kpi-val">8,640</div>
+      <div class="kpi-ch ch-up">↑ 42 new this month</div>
+      <div class="kpi-sparkline">
+        <div class="sp" style="height:70%;background:#c9a43c"></div><div class="sp" style="height:75%;background:#c9a43c"></div>
+        <div class="sp" style="height:78%;background:#c9a43c"></div><div class="sp" style="height:82%;background:#c9a43c"></div>
+        <div class="sp" style="height:88%;background:#c9a43c"></div><div class="sp" style="height:94%;background:#c9a43c"></div>
+        <div class="sp" style="height:100%;background:#c9a43c"></div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent" style="background:linear-gradient(90deg,#3b7bff,#60a5fa)"></div>
+      <div class="kpi-ico">👥</div><div class="kpi-label">Registered Buyers</div>
+      <div class="kpi-val">142K</div>
+      <div class="kpi-ch ch-up">↑ 2,100 this month</div>
+      <div class="kpi-sparkline">
+        <div class="sp" style="height:60%;background:#3b7bff"></div><div class="sp" style="height:65%;background:#3b7bff"></div>
+        <div class="sp" style="height:72%;background:#3b7bff"></div><div class="sp" style="height:80%;background:#3b7bff"></div>
+        <div class="sp" style="height:86%;background:#3b7bff"></div><div class="sp" style="height:92%;background:#3b7bff"></div>
+        <div class="sp" style="height:100%;background:#3b7bff"></div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent" style="background:linear-gradient(90deg,#e8394a,#ff6b7a)"></div>
+      <div class="kpi-ico">📋</div><div class="kpi-label">Platform Revenue</div>
+      <div class="kpi-val ok">$172K</div>
+      <div class="kpi-ch ch-up">↑ 21.3% vs Dec</div>
+      <div class="kpi-sparkline">
+        <div class="sp" style="height:38%;background:#e8394a"></div><div class="sp" style="height:52%;background:#e8394a"></div>
+        <div class="sp" style="height:44%;background:#e8394a"></div><div class="sp" style="height:70%;background:#e8394a"></div>
+        <div class="sp" style="height:62%;background:#e8394a"></div><div class="sp" style="height:84%;background:#e8394a"></div>
+        <div class="sp" style="height:100%;background:#e8394a"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- METRIC COMPARE ROW -->
+  <div class="metric-compare" style="margin-bottom:20px">
+    <div class="mc-item"><div class="mc-label">Avg Order Value</div><div class="mc-val">$1,932</div><div class="mc-ch trend-up">↑ 8.4%</div></div>
+    <div class="mc-item"><div class="mc-label">Fulfillment Rate</div><div class="mc-val">98.7%</div><div class="mc-ch trend-up">↑ 0.3pp</div></div>
+    <div class="mc-item"><div class="mc-label">Dispute Rate</div><div class="mc-val" style="color:var(--okd)">0.6%</div><div class="mc-ch trend-up">↓ 0.1pp</div></div>
+    <div class="mc-item"><div class="mc-label">On-Time Delivery</div><div class="mc-val">96.2%</div><div class="mc-ch trend-up">↑ 1.1pp</div></div>
+    <div class="mc-item"><div class="mc-label">New Seller Approval</div><div class="mc-val">42</div><div class="mc-ch trend-neu">→ Same as target</div></div>
+    <div class="mc-item"><div class="mc-label">Avg Review Score</div><div class="mc-val">4.78 ⭐</div><div class="mc-ch trend-up">↑ 0.04</div></div>
+  </div>
+
+  <div class="chart-grid cg-21">
+    <!-- REVENUE TREND BAR CHART -->
+    <div class="chart-card">
+      <div class="cc-head">
+        <div><div class="cc-title">Monthly GMV Trend</div><div class="cc-sub">Gross Merchandise Value · Last 7 months</div></div>
+        <span class="cc-badge cb-ok">↑ 18.4%</span>
+      </div>
+      <div class="bar-chart" style="height:160px;align-items:flex-end;gap:10px">
+        <div class="bc-group"><div class="bc-bar" style="height:52%;background:linear-gradient(180deg,#9b6cff,#5b3fd4)"></div><div class="bc-label">Jul</div></div>
+        <div class="bc-group"><div class="bc-bar" style="height:61%;background:linear-gradient(180deg,#9b6cff,#5b3fd4)"></div><div class="bc-label">Aug</div></div>
+        <div class="bc-group"><div class="bc-bar" style="height:58%;background:linear-gradient(180deg,#9b6cff,#5b3fd4)"></div><div class="bc-label">Sep</div></div>
+        <div class="bc-group"><div class="bc-bar" style="height:74%;background:linear-gradient(180deg,#9b6cff,#5b3fd4)"></div><div class="bc-label">Oct</div></div>
+        <div class="bc-group"><div class="bc-bar" style="height:82%;background:linear-gradient(180deg,#9b6cff,#5b3fd4)"></div><div class="bc-label">Nov</div></div>
+        <div class="bc-group"><div class="bc-bar" style="height:84%;background:linear-gradient(180deg,#9b6cff,#5b3fd4)"></div><div class="bc-label">Dec</div></div>
+        <div class="bc-group"><div class="bc-bar" style="height:100%;background:linear-gradient(180deg,#e8c55a,#c9a43c)"></div><div class="bc-label" style="color:var(--gold);font-weight:700">Jan ★</div></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:14px;font-size:12px;border-top:1px solid var(--border);padding-top:12px">
+        <span style="color:var(--muted)">Jul 2024: <strong style="color:var(--text)">$1.28M</strong></span>
+        <span style="color:var(--muted)">Avg/month: <strong style="color:var(--text)">$1.94M</strong></span>
+        <span style="color:var(--muted)">Jan 2025: <strong style="color:var(--okd)">$2.48M</strong></span>
+      </div>
+    </div>
+
+    <!-- TOP CATEGORIES DONUT -->
+    <div class="chart-card">
+      <div class="cc-head"><div><div class="cc-title">Revenue by Category</div><div class="cc-sub">Top 5 this month</div></div></div>
+      <div class="donut-wrap">
+        <div class="donut" style="background:conic-gradient(#5b3fd4 0% 36%,#00b884 36% 61%,#c9a43c 61% 74%,#e8394a 74% 87%,#3b7bff 87% 100%)">
+          <div class="donut-center"><div class="donut-pct">$2.48M</div><div class="donut-lbl">Total</div></div>
+        </div>
+        <div class="donut-legend">
+          <div class="dl-item"><div class="dl-dot" style="background:#5b3fd4"></div><span class="dl-name">Electronics</span><span class="dl-pct">36%</span></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#00b884"></div><span class="dl-name">Machinery</span><span class="dl-pct">25%</span></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#c9a43c"></div><span class="dl-name">Apparel</span><span class="dl-pct">13%</span></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#e8394a"></div><span class="dl-name">Healthcare</span><span class="dl-pct">13%</span></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#3b7bff"></div><span class="dl-name">Other</span><span class="dl-pct">13%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP SELLERS TABLE -->
+  <div class="chart-card" style="margin-bottom:20px">
+    <div class="cc-head"><div><div class="cc-title">Top 5 Sellers — January 2025</div><div class="cc-sub">By gross merchandise volume</div></div></div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>#</th><th>Seller</th><th>Country</th><th>Plan</th><th>Orders</th><th>GMV</th><th>Platform Fee</th><th>Net Payout</th><th>Rating</th><th>Growth</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:700;color:var(--gold)">🥇 1</td><td><strong>Precision Manufacturing GmbH</strong></td><td>🇩🇪 Germany</td><td><span class="pill p-p">💎 Platinum</span></td><td>12</td><td><strong>$124,000</strong></td><td>$6,200</td><td>$117,800</td><td>⭐ 5.0</td><td><span class="trend trend-up">↑ 22%</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--muted)">🥈 2</td><td><strong>Shenzhen TechPro Electronics</strong></td><td>🇨🇳 China</td><td><span class="pill p-gold">⭐ Gold</span></td><td>84</td><td><strong>$48,200</strong></td><td>$2,410</td><td>$45,790</td><td>⭐ 4.9</td><td><span class="trend trend-up">↑ 14%</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--warn)">🥉 3</td><td><strong>AutoParts Korea Ltd.</strong></td><td>🇰🇷 South Korea</td><td><span class="pill p-gold">⭐ Gold</span></td><td>36</td><td><strong>$38,400</strong></td><td>$1,920</td><td>$36,480</td><td>⭐ 4.8</td><td><span class="trend trend-up">↑ 31%</span></td></tr>
+        <tr><td>4</td><td><strong>Dhaka Textiles International</strong></td><td>🇧🇩 Bangladesh</td><td><span class="pill p-muted">🥈 Silver</span></td><td>240</td><td><strong>$18,400</strong></td><td>$920</td><td>$17,480</td><td>⭐ 4.7</td><td><span class="trend trend-up">↑ 8%</span></td></tr>
+        <tr><td>5</td><td><strong>Suntech Solar Energy</strong></td><td>🇨🇳 China</td><td><span class="pill p-gold">⭐ Gold</span></td><td>28</td><td><strong>$14,200</strong></td><td>$710</td><td>$13,490</td><td>⭐ 4.6</td><td><span class="trend trend-dn">↓ 4%</span></td></tr>
+      </tbody>
+      <tfoot><tr class="tbl-footer"><td colspan="4"><strong>TOP 5 TOTAL</strong></td><td><strong>400</strong></td><td><strong>$243,200</strong></td><td><strong>$12,160</strong></td><td><strong>$231,040</strong></td><td colspan="2"></td></tr></tfoot>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════ SELLER REPORT ═══════ -->
+<div id="rp-seller" class="rpage">
+  <div class="sec-label">Seller Intelligence · January 2025</div>
+  <div class="sec-title">Seller Performance Report</div>
+  <div class="sec-sub">Shenzhen TechPro Electronics — Gold Seller · Member since 2006</div>
+
+  <!-- SCORECARD -->
+  <div class="scorecard">
+    <div class="sc-item" style="animation-delay:.05s"><div class="sc-ico">💰</div><div class="sc-val">$48,200</div><div class="sc-label">Monthly GMV</div></div>
+    <div class="sc-item" style="animation-delay:.10s"><div class="sc-ico">🛒</div><div class="sc-val">84</div><div class="sc-label">Orders Received</div></div>
+    <div class="sc-item" style="animation-delay:.15s"><div class="sc-ico">📦</div><div class="sc-val">2,480</div><div class="sc-label">Active Listings</div></div>
+    <div class="sc-item" style="animation-delay:.20s"><div class="sc-ico">⭐</div><div class="sc-val">4.9/5</div><div class="sc-label">Avg Rating</div></div>
+    <div class="sc-item" style="animation-delay:.25s"><div class="sc-ico">💬</div><div class="sc-val">98.4%</div><div class="sc-label">Response Rate</div></div>
+    <div class="sc-item" style="animation-delay:.30s"><div class="sc-ico">🚀</div><div class="sc-val">99.2%</div><div class="sc-label">On-time Delivery</div></div>
+  </div>
+
+  <div class="chart-grid cg-2">
+    <!-- INCOME BREAKDOWN -->
+    <div class="chart-card">
+      <div class="cc-head"><div><div class="cc-title">Revenue Breakdown</div><div class="cc-sub">Jan 2025 vs Dec 2024</div></div></div>
+      <div class="metric-compare" style="margin-bottom:16px">
+        <div class="mc-item"><div class="mc-label">Jan 2025</div><div class="mc-val">$48,200</div><div class="mc-ch trend-up">↑ 14%</div></div>
+        <div class="mc-item"><div class="mc-label">Dec 2024</div><div class="mc-val">$42,300</div><div class="mc-ch trend-neu">baseline</div></div>
+        <div class="mc-item"><div class="mc-label">Payout</div><div class="mc-val" style="color:var(--okd)">$45,790</div><div class="mc-ch trend-neu">after 5% fee</div></div>
+      </div>
+      <div class="hbar"><div class="hbar-head"><span class="hbar-label">Electronics & Tablets</span><span class="hbar-val">$29,400 (61%)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:61%;background:linear-gradient(90deg,#5b3fd4,#9b6cff)"></div></div></div>
+      <div class="hbar"><div class="hbar-head"><span class="hbar-label">Networking Equipment</span><span class="hbar-val">$11,800 (25%)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:25%;background:linear-gradient(90deg,#3b7bff,#60a5fa)"></div></div></div>
+      <div class="hbar"><div class="hbar-head"><span class="hbar-label">Accessories & Parts</span><span class="hbar-val">$7,000 (14%)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:14%;background:linear-gradient(90deg,#c9a43c,#e8c55a)"></div></div></div>
+      <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:12px;display:flex;justify-content:space-between;font-size:12px">
+        <span style="color:var(--muted)">Platform Fee Deducted: <strong style="color:var(--dangerd)">-$2,410 (5%)</strong></span>
+        <span style="color:var(--muted)">Net Payout: <strong style="color:var(--okd)">$45,790</strong></span>
+      </div>
+    </div>
+
+    <!-- ORDER STATUS -->
+    <div class="chart-card">
+      <div class="cc-head"><div><div class="cc-title">Order Fulfillment Status</div><div class="cc-sub">84 orders this month</div></div></div>
+      <div class="donut-wrap" style="margin-bottom:16px">
+        <div class="donut" style="background:conic-gradient(#00b884 0% 82%,#c9a43c 82% 93%,#f59e0b 93% 98%,#e8394a 98% 100%)">
+          <div class="donut-center"><div class="donut-pct">98.8%</div><div class="donut-lbl">Success</div></div>
+        </div>
+        <div class="donut-legend">
+          <div class="dl-item"><div class="dl-dot" style="background:#00b884"></div><span class="dl-name">Delivered</span><span class="dl-pct">69 (82%)</span></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#c9a43c"></div><span class="dl-name">In Transit</span><span class="dl-pct">9 (11%)</span></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#f59e0b"></div><span class="dl-name">Processing</span><span class="dl-pct">5 (6%)</span></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#e8394a"></div><span class="dl-name">Disputed</span><span class="dl-pct">1 (1%)</span></div>
+        </div>
+      </div>
+      <div style="background:var(--okl);border-radius:var(--r);padding:10px 14px;font-size:12px;color:var(--okd);font-weight:600">✓ Fulfillment rate is above the platform target of 98%. Excellent performance.</div>
+    </div>
+  </div>
+
+  <!-- PRODUCT PERFORMANCE -->
+  <div class="chart-card" style="margin-bottom:20px">
+    <div class="cc-head"><div><div class="cc-title">Top Products by Revenue</div><div class="cc-sub">January 2025</div></div><span class="cc-badge cb-blue">2,480 total listings</span></div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Product</th><th>Category</th><th>Units Sold</th><th>Unit Price</th><th>Revenue</th><th>Margin</th><th>Views</th><th>Conversion</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr class="tbl-pos"><td><strong>Industrial Rugged Laptop 15.6"</strong></td><td>Electronics</td><td>200</td><td>$285</td><td><strong>$57,000</strong></td><td>+12%</td><td>12,480</td><td>1.6%</td><td><span class="pill p-ok">Top Seller</span></td></tr>
+        <tr class="tbl-pos"><td><strong>5G Industrial Router DIN</strong></td><td>Networking</td><td>150</td><td>$78</td><td><strong>$11,700</strong></td><td>+12%</td><td>8,240</td><td>1.8%</td><td><span class="pill p-ok">Live</span></td></tr>
+        <tr class="tbl-pos"><td><strong>Industrial Tablet 10.1" IP67</strong></td><td>Electronics</td><td>80</td><td>$145</td><td><strong>$11,600</strong></td><td>+12%</td><td>6,900</td><td>1.2%</td><td><span class="pill p-ok">Live</span></td></tr>
+        <tr><td><strong>Power Supply 48V 20A DIN Rail</strong></td><td>Electronics</td><td>200</td><td>$38</td><td><strong>$7,600</strong></td><td>+12%</td><td>4,100</td><td>4.9%</td><td><span class="pill p-ok">Live</span></td></tr>
+        <tr class="tbl-neg"><td><strong>Barcode Scanner 2D USB</strong></td><td>Accessories</td><td>20</td><td>$42</td><td><strong>$840</strong></td><td>+12%</td><td>3,200</td><td>0.6%</td><td><span class="pill p-warn">Low Conv.</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- SELLER HEALTH METRICS -->
+  <div class="chart-grid cg-3">
+    <div class="chart-card">
+      <div class="cc-head"><div><div class="cc-title">Seller Health Score</div><div class="cc-sub">Platform scorecard</div></div><span class="cc-badge cb-ok">Excellent</span></div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">Product Quality</span><span class="hbar-val">4.9/5</span></div><div class="hbar-track"><div class="hbar-fill" style="width:98%;background:var(--ok)"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">Communication</span><span class="hbar-val">98.4%</span></div><div class="hbar-track"><div class="hbar-fill" style="width:98.4%;background:var(--ok)"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">On-time Delivery</span><span class="hbar-val">99.2%</span></div><div class="hbar-track"><div class="hbar-fill" style="width:99.2%;background:var(--ok)"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">Dispute Rate</span><span class="hbar-val" style="color:var(--okd)">0.4% (Low)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:4%;background:var(--ok)"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">Listing Completeness</span><span class="hbar-val">91%</span></div><div class="hbar-track"><div class="hbar-fill" style="width:91%;background:var(--blue)"></div></div></div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="cc-head"><div><div class="cc-title">Orders by Country</div><div class="cc-sub">Top buyer markets</div></div></div>
+      <div style="display:flex;flex-direction:column;gap:11px">
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">🇺🇸 United States</span><span class="hbar-val">31 orders</span></div><div class="hbar-track"><div class="hbar-fill" style="width:37%;background:#5b3fd4"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">🇩🇪 Germany</span><span class="hbar-val">18 orders</span></div><div class="hbar-track"><div class="hbar-fill" style="width:21%;background:#5b3fd4"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">🇦🇪 UAE</span><span class="hbar-val">14 orders</span></div><div class="hbar-track"><div class="hbar-fill" style="width:17%;background:#5b3fd4"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">🇬🇧 United Kingdom</span><span class="hbar-val">12 orders</span></div><div class="hbar-track"><div class="hbar-fill" style="width:14%;background:#c9a43c"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">🇦🇺 Australia</span><span class="hbar-val">9 orders</span></div><div class="hbar-track"><div class="hbar-fill" style="width:11%;background:#c9a43c"></div></div></div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="cc-head"><div><div class="cc-title">Shipping Methods</div><div class="cc-sub">By order count</div></div></div>
+      <div class="donut-wrap">
+        <div class="donut" style="background:conic-gradient(#3b7bff 0% 45%,#00b884 45% 75%,#c9a43c 75% 90%,#e8394a 90% 100%)">
+          <div class="donut-center"><div class="donut-pct">84</div><div class="donut-lbl">Orders</div></div>
+        </div>
+        <div class="donut-legend">
+          <div class="dl-item"><div class="dl-dot" style="background:#3b7bff"></div><span class="dl-name">✈️ Air Freight</span><span class="dl-pct">45%</span></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#00b884"></div><span class="dl-name">🚢 Sea FCL</span><span class="dl-pct">30%</span></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#c9a43c"></div><span class="dl-name">🚢 Sea LCL</span><span class="dl-pct">15%</span></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#e8394a"></div><span class="dl-name">🏠 D2D</span><span class="dl-pct">10%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ ADMIN REPORT ═══════ -->
+<div id="rp-admin" class="rpage">
+  <div class="sec-label">Platform Administration · January 2025</div>
+  <div class="sec-title">Admin Operations Report</div>
+  <div class="sec-sub">Moderation activity, approval metrics, security and platform health</div>
+
+  <div class="kpi-grid kpi-4">
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#00b884,#00e5a3)"></div><div class="kpi-ico">✅</div><div class="kpi-label">Products Approved</div><div class="kpi-val">1,284</div><div class="kpi-ch ch-up">↑ 12% vs Dec</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#e8394a,#ff6b7a)"></div><div class="kpi-ico">❌</div><div class="kpi-label">Products Rejected</div><div class="kpi-val">184</div><div class="kpi-ch ch-neu">12.5% rejection rate</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#c9a43c,#e8c55a)"></div><div class="kpi-ico">🏪</div><div class="kpi-label">Sellers Approved</div><div class="kpi-val">42</div><div class="kpi-ch ch-up">↑ 8% vs Dec</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#3b7bff,#60a5fa)"></div><div class="kpi-ico">⚖️</div><div class="kpi-label">Disputes Resolved</div><div class="kpi-val">18</div><div class="kpi-ch ch-up">↓ 22% from Dec</div></div>
+  </div>
+
+  <div class="chart-grid cg-2" style="margin-bottom:20px">
+    <!-- APPROVAL FUNNEL -->
+    <div class="chart-card">
+      <div class="cc-head"><div><div class="cc-title">Product Review Funnel</div><div class="cc-sub">January 2025 · 1,468 submissions</div></div></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:#f0f8ff;border-radius:var(--r);padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:13px;font-weight:600;color:var(--text)">📥 Total Submissions</span><span style="font-family:'DM Mono',monospace;font-size:16px;font-weight:700;color:var(--text)">1,468</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:0 16px"><div style="flex:1;height:1px;background:#e8c55a"></div><span style="font-size:11px;color:var(--gold)">Automated pre-screening</span><div style="flex:1;height:1px;background:#e8c55a"></div></div>
+        <div style="background:#e6f6fc;border-radius:var(--r);padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:13px;font-weight:600;color:var(--text)">🤖 Auto-Passed (Basic checks)</span><span style="font-family:'DM Mono',monospace;font-size:16px;font-weight:700;color:var(--p)">1,380</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:0 16px"><div style="flex:1;height:1px;background:var(--border)"></div><span style="font-size:11px;color:var(--muted)">Manual admin review</span><div style="flex:1;height:1px;background:var(--border)"></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">✅ Approved (87.4%)</span><span class="hbar-val" style="color:var(--okd)">1,284</span></div><div class="hbar-track" style="height:12px"><div class="hbar-fill" style="width:87.4%;background:var(--ok)"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">❌ Rejected (12.5%)</span><span class="hbar-val" style="color:var(--dangerd)">184</span></div><div class="hbar-track" style="height:12px"><div class="hbar-fill" style="width:12.5%;background:var(--danger)"></div></div></div>
+        <div style="background:#f9fafb;border-radius:var(--r);padding:10px 14px;font-size:12px;display:flex;gap:16px;flex-wrap:wrap">
+          <span style="color:var(--muted)">Avg review time: <strong style="color:var(--text)">3.8 hours</strong></span>
+          <span style="color:var(--muted)">Pending in queue: <strong style="color:var(--warn)">14</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- REJECTION REASONS -->
+    <div class="chart-card">
+      <div class="cc-head"><div><div class="cc-title">Rejection Reasons</div><div class="cc-sub">184 rejections this month</div></div></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">Missing certifications</span><span class="hbar-val">64 (35%)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:35%;background:#e8394a"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">Poor image quality</span><span class="hbar-val">46 (25%)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:25%;background:#f59e0b"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">Incomplete description</span><span class="hbar-val">37 (20%)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:20%;background:#c9a43c"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">Pricing issues</span><span class="hbar-val">22 (12%)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:12%;background:#5b3fd4"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">Duplicate listing</span><span class="hbar-val">9 (5%)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:5%;background:#3b7bff"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">Prohibited product</span><span class="hbar-val">6 (3%)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:3%;background:#64748b"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECURITY REPORT -->
+  <div class="chart-card" style="margin-bottom:20px">
+    <div class="cc-head"><div><div class="cc-title">Security & Audit Summary</div><div class="cc-sub">Platform security events — January 2025</div></div><span class="cc-badge cb-ok">No Critical Incidents</span></div>
+    <div class="chart-grid cg-3" style="margin-bottom:0">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Login Security</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">Total admin logins</span><strong>248</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">2FA-verified logins</span><strong style="color:var(--okd)">248 (100%)</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">Failed attempts</span><strong style="color:var(--dangerd)">42</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">IPs auto-blocked</span><strong>6</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">Account lockouts</span><strong>3</strong></div>
+        </div>
+      </div>
+      <div style="border-left:1px solid var(--border);padding-left:24px">
+        <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Fraud Prevention</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">Fraudulent docs caught</span><strong style="color:var(--dangerd)">4</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">Accounts suspended</span><strong>7</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">Accounts permanently banned</span><strong>2</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">Flagged transactions</span><strong style="color:var(--warn)">11</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">Chargeback attempts</span><strong style="color:var(--okd)">0</strong></div>
+        </div>
+      </div>
+      <div style="border-left:1px solid var(--border);padding-left:24px">
+        <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Platform Health</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">Uptime</span><strong style="color:var(--okd)">99.97%</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">Avg page load</span><strong>1.4s</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">API response time</span><strong>180ms</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">Scheduled backups</span><strong style="color:var(--okd)">31/31 ✓</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">SSL certificates</span><strong style="color:var(--okd)">Valid ✓</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ P&L STATEMENT ═══════ -->
+<div id="rp-pnl" class="rpage">
+  <div class="sec-label">Financial Statements · January 2025</div>
+  <div class="sec-title">Profit &amp; Loss Statement</div>
+  <div class="sec-sub">Ebazario Trading Platform · Month ended January 31, 2025 · All figures in USD</div>
+
+  <!-- KPI SUMMARY ROW -->
+  <div class="kpi-grid kpi-4" style="margin-bottom:24px">
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#00b884,#00e5a3)"></div><div class="kpi-ico">💵</div><div class="kpi-label">Gross Revenue</div><div class="kpi-val ok">$172,340</div><div class="kpi-ch ch-up">↑ 21.3% vs Dec</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#e8394a,#ff6b7a)"></div><div class="kpi-ico">💸</div><div class="kpi-label">Total Expenses</div><div class="kpi-val danger">$84,620</div><div class="kpi-ch ch-up">↑ 8.1% vs Dec</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#c9a43c,#e8c55a)"></div><div class="kpi-ico">📈</div><div class="kpi-label">Net Profit</div><div class="kpi-val ok">$87,720</div><div class="kpi-ch ch-up">↑ 34.2% vs Dec</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#5b3fd4,#9b6cff)"></div><div class="kpi-ico">📊</div><div class="kpi-label">Profit Margin</div><div class="kpi-val">50.9%</div><div class="kpi-ch ch-up">↑ 5.2pp vs Dec</div></div>
+  </div>
+
+  <div class="chart-grid cg-21">
+    <!-- P&L TABLE -->
+    <div class="chart-card" style="padding:0;overflow:hidden">
+      <div style="padding:18px 22px 14px;border-bottom:1px solid var(--border)">
+        <div class="cc-title">Income Statement</div>
+        <div class="cc-sub">January 2025 vs December 2024</div>
+      </div>
+
+      <!-- REVENUE SECTION -->
+      <div class="pnl-row pnl-header"><span class="pnl-name">REVENUE</span><div style="display:flex;gap:60px"><span>Dec 2024</span><span>Jan 2025</span></div></div>
+      <div class="pnl-row pnl-sub pnl-positive"><span class="pnl-name">Transaction Commission (5% of GMV)</span><div style="display:flex;gap:60px"><span class="pnl-amount">$105,800</span><span class="pnl-amount">$124,000</span></div></div>
+      <div class="pnl-row pnl-sub pnl-positive"><span class="pnl-name">Subscription Fees (Silver/Gold/Platinum)</span><div style="display:flex;gap:60px"><span class="pnl-amount">$41,200</span><span class="pnl-amount">$48,340</span></div></div>
+      <div class="pnl-row pnl-total" style="background:#f0fdf4"><span class="pnl-name">Total Revenue</span><div style="display:flex;gap:60px"><span class="pnl-amount" style="color:var(--okd)">$147,000</span><span class="pnl-amount" style="color:var(--okd)">$172,340</span></div></div>
+
+      <!-- COST OF REVENUE -->
+      <div class="pnl-row pnl-header"><span class="pnl-name">COST OF REVENUE</span><div style="display:flex;gap:60px"><span>Dec 2024</span><span>Jan 2025</span></div></div>
+      <div class="pnl-row pnl-sub pnl-negative"><span class="pnl-name">Seller Payouts (fees &amp; commissions)</span><div style="display:flex;gap:60px"><span class="pnl-amount">$18,200</span><span class="pnl-amount">$22,400</span></div></div>
+      <div class="pnl-row pnl-sub pnl-negative"><span class="pnl-name">Payment Processing (Stripe/Bank fees)</span><div style="display:flex;gap:60px"><span class="pnl-amount">$3,680</span><span class="pnl-amount">$4,310</span></div></div>
+      <div class="pnl-row pnl-sub pnl-negative"><span class="pnl-name">Trade Assurance / Escrow costs</span><div style="display:flex;gap:60px"><span class="pnl-amount">$1,200</span><span class="pnl-amount">$1,480</span></div></div>
+      <div class="pnl-row pnl-total"><span class="pnl-name">Gross Profit</span><div style="display:flex;gap:60px"><span class="pnl-amount">$123,920</span><span class="pnl-amount">$144,150</span></div></div>
+
+      <!-- OPERATING EXPENSES -->
+      <div class="pnl-row pnl-header"><span class="pnl-name">OPERATING EXPENSES</span><div style="display:flex;gap:60px"><span>Dec 2024</span><span>Jan 2025</span></div></div>
+      <div class="pnl-row pnl-sub pnl-negative"><span class="pnl-name">Engineering &amp; Development</span><div style="display:flex;gap:60px"><span class="pnl-amount">$18,400</span><span class="pnl-amount">$20,200</span></div></div>
+      <div class="pnl-row pnl-sub pnl-negative"><span class="pnl-name">Sales &amp; Marketing</span><div style="display:flex;gap:60px"><span class="pnl-amount">$14,200</span><span class="pnl-amount">$15,800</span></div></div>
+      <div class="pnl-row pnl-sub pnl-negative"><span class="pnl-name">Customer Support (12 agents)</span><div style="display:flex;gap:60px"><span class="pnl-amount">$8,400</span><span class="pnl-amount">$9,200</span></div></div>
+      <div class="pnl-row pnl-sub pnl-negative"><span class="pnl-name">Cloud Infrastructure (AWS)</span><div style="display:flex;gap:60px"><span class="pnl-amount">$4,800</span><span class="pnl-amount">$5,620</span></div></div>
+      <div class="pnl-row pnl-sub pnl-negative"><span class="pnl-name">Legal &amp; Compliance</span><div style="display:flex;gap:60px"><span class="pnl-amount">$2,200</span><span class="pnl-amount">$2,400</span></div></div>
+      <div class="pnl-row pnl-sub pnl-negative"><span class="pnl-name">General &amp; Administrative</span><div style="display:flex;gap:60px"><span class="pnl-amount">$3,400</span><span class="pnl-amount">$3,600</span></div></div>
+      <div class="pnl-row pnl-total"><span class="pnl-name">Total OpEx</span><div style="display:flex;gap:60px"><span class="pnl-amount">$51,400</span><span class="pnl-amount">$56,820</span></div></div>
+
+      <!-- NET PROFIT -->
+      <div class="pnl-row" style="background:#f0fdf4;font-weight:700"><span class="pnl-name">EBITDA</span><div style="display:flex;gap:60px"><span class="pnl-amount" style="color:var(--okd)">$72,520</span><span class="pnl-amount" style="color:var(--okd)">$87,330</span></div></div>
+      <div class="pnl-row pnl-sub pnl-negative"><span class="pnl-name">Depreciation &amp; Amortisation</span><div style="display:flex;gap:60px"><span class="pnl-amount">$1,200</span><span class="pnl-amount">$1,210</span></div></div>
+      <div class="pnl-row pnl-sub pnl-negative"><span class="pnl-name">Interest Expense</span><div style="display:flex;gap:60px"><span class="pnl-amount">$400</span><span class="pnl-amount">$400</span></div></div>
+      <div class="pnl-row pnl-grand">
+        <span class="pnl-name" style="color:#fff">NET PROFIT (After Tax)</span>
+        <div style="display:flex;gap:60px">
+          <span class="pnl-amount" style="color:#a3f5d4">$65,360</span>
+          <span class="pnl-amount" style="color:#a3f5d4">$87,720</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDE CHARTS -->
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <!-- MARGIN TREND -->
+      <div class="chart-card" style="flex:1">
+        <div class="cc-head"><div><div class="cc-title">Margin Trend</div><div class="cc-sub">Net profit margin % · 6 months</div></div></div>
+        <div class="bar-chart" style="height:100px;gap:8px">
+          <div class="bc-group"><div class="bc-bar" style="height:38%;background:var(--ok)"></div><div class="bc-label">Aug</div></div>
+          <div class="bc-group"><div class="bc-bar" style="height:40%;background:var(--ok)"></div><div class="bc-label">Sep</div></div>
+          <div class="bc-group"><div class="bc-bar" style="height:42%;background:var(--ok)"></div><div class="bc-label">Oct</div></div>
+          <div class="bc-group"><div class="bc-bar" style="height:43%;background:var(--ok)"></div><div class="bc-label">Nov</div></div>
+          <div class="bc-group"><div class="bc-bar" style="height:44%;background:var(--ok)"></div><div class="bc-label">Dec</div></div>
+          <div class="bc-group"><div class="bc-bar" style="height:100%;background:linear-gradient(180deg,#e8c55a,#c9a43c)"></div><div class="bc-label" style="color:var(--gold)">Jan ★</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-top:10px">Bars represent profit margin percentage. Jan 2025 reached <strong style="color:var(--okd)">50.9%</strong> — highest recorded.</div>
+      </div>
+
+      <!-- EXPENSE SPLIT DONUT -->
+      <div class="chart-card" style="flex:1">
+        <div class="cc-head"><div><div class="cc-title">Expense Breakdown</div></div></div>
+        <div class="donut-wrap">
+          <div class="donut" style="background:conic-gradient(#5b3fd4 0% 36%,#e8394a 36% 64%,#c9a43c 64% 80%,#3b7bff 80% 90%,#00b884 90% 100%)">
+            <div class="donut-center"><div class="donut-pct">$84.6K</div><div class="donut-lbl">Total</div></div>
+          </div>
+          <div class="donut-legend">
+            <div class="dl-item"><div class="dl-dot" style="background:#5b3fd4"></div><span class="dl-name">Engineering</span><span class="dl-pct">36%</span></div>
+            <div class="dl-item"><div class="dl-dot" style="background:#e8394a"></div><span class="dl-name">Sales/Mktg</span><span class="dl-pct">28%</span></div>
+            <div class="dl-item"><div class="dl-dot" style="background:#c9a43c"></div><span class="dl-name">Support</span><span class="dl-pct">16%</span></div>
+            <div class="dl-item"><div class="dl-dot" style="background:#3b7bff"></div><span class="dl-name">Infra</span><span class="dl-pct">10%</span></div>
+            <div class="dl-item"><div class="dl-dot" style="background:#00b884"></div><span class="dl-name">Other</span><span class="dl-pct">10%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ SALES ANALYSIS ═══════ -->
+<div id="rp-sales" class="rpage">
+  <div class="sec-label">Sales Intelligence · January 2025</div>
+  <div class="sec-title">Sales Performance Analysis</div>
+  <div class="sec-sub">Detailed breakdown of orders, revenue, geography and growth drivers</div>
+
+  <div class="kpi-grid kpi-4">
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#00b884,#00e5a3)"></div><div class="kpi-ico">🛒</div><div class="kpi-label">Orders Placed</div><div class="kpi-val">1,284</div><div class="kpi-ch ch-up">↑ 9.2% vs Dec</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#c9a43c,#e8c55a)"></div><div class="kpi-ico">💰</div><div class="kpi-label">Avg Order Value</div><div class="kpi-val">$1,932</div><div class="kpi-ch ch-up">↑ 8.4% vs Dec</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#5b3fd4,#9b6cff)"></div><div class="kpi-ico">🔁</div><div class="kpi-label">Repeat Buyers</div><div class="kpi-val">68.4%</div><div class="kpi-ch ch-up">↑ 3.1pp vs Dec</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#3b7bff,#60a5fa)"></div><div class="kpi-ico">🌍</div><div class="kpi-label">Countries Reached</div><div class="kpi-val">84</div><div class="kpi-ch ch-up">↑ 6 new markets</div></div>
+  </div>
+
+  <div class="chart-grid cg-2" style="margin-bottom:20px">
+    <!-- INCOME vs EXPENSE TIMELINE -->
+    <div class="chart-card">
+      <div class="cc-head"><div><div class="cc-title">Revenue vs Expenses</div><div class="cc-sub">Monthly comparison · 2024–2025</div></div></div>
+      <div class="timeline-chart">
+        <div class="tc-bar-wrap"><div class="tc-bar income" style="height:52%"></div><div class="tc-bar expense" style="height:48%;margin-top:2px"></div><div class="tc-label">Aug</div></div>
+        <div class="tc-bar-wrap"><div class="tc-bar income" style="height:58%"></div><div class="tc-bar expense" style="height:50%"></div><div class="tc-label">Sep</div></div>
+        <div class="tc-bar-wrap"><div class="tc-bar income" style="height:64%"></div><div class="tc-bar expense" style="height:51%"></div><div class="tc-label">Oct</div></div>
+        <div class="tc-bar-wrap"><div class="tc-bar income" style="height:72%"></div><div class="tc-bar expense" style="height:53%"></div><div class="tc-label">Nov</div></div>
+        <div class="tc-bar-wrap"><div class="tc-bar income" style="height:85%"></div><div class="tc-bar expense" style="height:55%"></div><div class="tc-label">Dec</div></div>
+        <div class="tc-bar-wrap"><div class="tc-bar income" style="height:100%"></div><div class="tc-bar expense" style="height:49%"></div><div class="tc-label" style="color:var(--gold);font-weight:700">Jan ★</div></div>
+      </div>
+      <div class="tc-legend">
+        <div class="tcl-item"><div class="tcl-dot" style="background:#00b884"></div> Revenue</div>
+        <div class="tcl-item"><div class="tcl-dot" style="background:#e8394a"></div> Expenses</div>
+      </div>
+    </div>
+
+    <!-- GEOGRAPHIC BREAKDOWN -->
+    <div class="chart-card">
+      <div class="cc-head"><div><div class="cc-title">Sales by Region</div><div class="cc-sub">GMV distribution · Jan 2025</div></div></div>
+      <div style="display:flex;flex-direction:column;gap:11px">
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">🇺🇸 North America</span><span class="hbar-val">$892K (36%)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:36%;background:linear-gradient(90deg,#3b7bff,#60a5fa)"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">🇩🇪 Europe</span><span class="hbar-val">$644K (26%)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:26%;background:linear-gradient(90deg,#5b3fd4,#9b6cff)"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">🇦🇪 Middle East</span><span class="hbar-val">$396K (16%)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:16%;background:linear-gradient(90deg,#c9a43c,#e8c55a)"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">🌏 Asia Pacific</span><span class="hbar-val">$322K (13%)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:13%;background:linear-gradient(90deg,#00b884,#00e5a3)"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">🌍 Africa</span><span class="hbar-val">$198K (8%)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:8%;background:linear-gradient(90deg,#e8394a,#ff6b7a)"></div></div></div>
+        <div class="hbar"><div class="hbar-head"><span class="hbar-label">🌎 Rest of World</span><span class="hbar-val">$28K (1%)</span></div><div class="hbar-track"><div class="hbar-fill" style="width:1%;background:#64748b"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAILED SALES TABLE -->
+  <div class="chart-card" style="margin-bottom:20px">
+    <div class="cc-head"><div><div class="cc-title">Sales Breakdown by Category</div><div class="cc-sub">January 2025 — full details</div></div><span class="cc-badge cb-ok">↑ 18.4% overall</span></div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Category</th><th>Orders</th><th>Units Sold</th><th>GMV</th><th>Platform Margin</th><th>Commission (5%)</th><th>Sub Revenue</th><th>Total Platform Rev.</th><th>vs Dec</th></tr></thead>
+      <tbody>
+        <tr class="tbl-pos"><td><strong>🔌 Electronics</strong></td><td>480</td><td>24,800</td><td>$893,000</td><td>12%</td><td>$44,650</td><td>$18,200</td><td><strong>$62,850</strong></td><td><span class="trend trend-up">↑ 22%</span></td></tr>
+        <tr class="tbl-pos"><td><strong>⚙️ Machinery</strong></td><td>84</td><td>420</td><td>$620,000</td><td>10%</td><td>$31,000</td><td>$8,400</td><td><strong>$39,400</strong></td><td><span class="trend trend-up">↑ 18%</span></td></tr>
+        <tr class="tbl-pos"><td><strong>🏥 Healthcare</strong></td><td>240</td><td>48,000</td><td>$460,000</td><td>15%</td><td>$23,000</td><td>$6,200</td><td><strong>$29,200</strong></td><td><span class="trend trend-up">↑ 31%</span></td></tr>
+        <tr class="tbl-pos"><td><strong>🌿 Food &amp; Agri</strong></td><td>320</td><td>8,400T</td><td>$356,000</td><td>8%</td><td>$17,800</td><td>$4,100</td><td><strong>$21,900</strong></td><td><span class="trend trend-up">↑ 11%</span></td></tr>
+        <tr><td><strong>👗 Apparel</strong></td><td>1,240</td><td>620,000</td><td>$186,000</td><td>18%</td><td>$9,300</td><td>$5,800</td><td><strong>$15,100</strong></td><td><span class="trend trend-dn">↓ 3%</span></td></tr>
+        <tr><td><strong>🚗 Auto Parts</strong></td><td>186</td><td>9,300</td><td>$142,000</td><td>14%</td><td>$7,100</td><td>$3,200</td><td><strong>$10,300</strong></td><td><span class="trend trend-up">↑ 8%</span></td></tr>
+        <tr><td><strong>🏗️ Construction</strong></td><td>124</td><td>2,400T</td><td>$98,000</td><td>10%</td><td>$4,900</td><td>$1,800</td><td><strong>$6,700</strong></td><td><span class="trend trend-neu">→ Flat</span></td></tr>
+        <tr><td><strong>🪑 Furniture</strong></td><td>84</td><td>4,200</td><td>$84,000</td><td>16%</td><td>$4,200</td><td>$1,200</td><td><strong>$5,400</strong></td><td><span class="trend trend-dn">↓ 7%</span></td></tr>
+        <tr><td><strong>⚗️ Chemicals</strong></td><td>64</td><td>840T</td><td>$72,000</td><td>9%</td><td>$3,600</td><td>$900</td><td><strong>$4,500</strong></td><td><span class="trend trend-up">↑ 4%</span></td></tr>
+        <tr><td><strong>🔧 Tools</strong></td><td>84</td><td>16,800</td><td>$68,000</td><td>11%</td><td>$3,400</td><td>$820</td><td><strong>$4,220</strong></td><td><span class="trend trend-up">↑ 6%</span></td></tr>
+      </tbody>
+      <tfoot><tr class="tbl-footer"><td><strong>TOTAL</strong></td><td><strong>2,906</strong></td><td>—</td><td><strong>$2,979,000</strong></td><td>—</td><td><strong>$148,950</strong></td><td><strong>$49,620</strong></td><td><strong style="color:var(--okd)">$198,570</strong></td><td><span class="trend trend-up">↑ 18.4%</span></td></tr></tfoot>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════ CATEGORIES REPORT ═══════ -->
+<div id="rp-categories" class="rpage">
+  <div class="sec-label">Category Intelligence · January 2025</div>
+  <div class="sec-title">Category Performance</div>
+  <div class="sec-sub">Product listings, seller density, margin performance and growth by category</div>
+  <div class="chart-card">
+    <div class="cc-head"><div><div class="cc-title">All Category Metrics</div></div></div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Category</th><th>Listings</th><th>Active Sellers</th><th>Orders</th><th>GMV</th><th>Margin %</th><th>Gross Profit</th><th>Approval Rate</th><th>Avg Rating</th><th>Trend</th></tr></thead>
+      <tbody>
+        <tr class="tbl-pos"><td><strong>🔌 Electronics</strong></td><td>246,380</td><td>4,200</td><td>480</td><td>$893K</td><td>12%</td><td><strong>$107,160</strong></td><td>91%</td><td>⭐ 4.8</td><td><span class="trend trend-up">↑ 22%</span></td></tr>
+        <tr class="tbl-pos"><td><strong>⚙️ Machinery</strong></td><td>184,220</td><td>1,840</td><td>84</td><td>$620K</td><td>10%</td><td><strong>$62,000</strong></td><td>88%</td><td>⭐ 4.9</td><td><span class="trend trend-up">↑ 18%</span></td></tr>
+        <tr class="tbl-pos"><td><strong>🏥 Healthcare</strong></td><td>142,600</td><td>920</td><td>240</td><td>$460K</td><td>15%</td><td><strong>$69,000</strong></td><td>76%</td><td>⭐ 4.7</td><td><span class="trend trend-up">↑ 31%</span></td></tr>
+        <tr><td><strong>🌿 Food &amp; Agri</strong></td><td>98,400</td><td>2,100</td><td>320</td><td>$356K</td><td>8%</td><td><strong>$28,480</strong></td><td>94%</td><td>⭐ 4.6</td><td><span class="trend trend-up">↑ 11%</span></td></tr>
+        <tr><td><strong>👗 Apparel</strong></td><td>312,800</td><td>3,400</td><td>1,240</td><td>$186K</td><td>18%</td><td><strong>$33,480</strong></td><td>96%</td><td>⭐ 4.7</td><td><span class="trend trend-dn">↓ 3%</span></td></tr>
+        <tr><td><strong>🚗 Auto Parts</strong></td><td>218,400</td><td>2,200</td><td>186</td><td>$142K</td><td>14%</td><td><strong>$19,880</strong></td><td>90%</td><td>⭐ 4.6</td><td><span class="trend trend-up">↑ 8%</span></td></tr>
+        <tr><td><strong>🏗️ Construction</strong></td><td>128,900</td><td>1,100</td><td>124</td><td>$98K</td><td>10%</td><td><strong>$9,800</strong></td><td>89%</td><td>⭐ 4.5</td><td><span class="trend trend-neu">→ Flat</span></td></tr>
+        <tr><td><strong>🪑 Furniture</strong></td><td>186,200</td><td>1,900</td><td>84</td><td>$84K</td><td>16%</td><td><strong>$13,440</strong></td><td>97%</td><td>⭐ 4.4</td><td><span class="trend trend-dn">↓ 7%</span></td></tr>
+        <tr><td><strong>⚗️ Chemicals</strong></td><td>74,600</td><td>840</td><td>64</td><td>$72K</td><td>9%</td><td><strong>$6,480</strong></td><td>82%</td><td>⭐ 4.5</td><td><span class="trend trend-up">↑ 4%</span></td></tr>
+        <tr><td><strong>🔧 Tools</strong></td><td>94,700</td><td>1,450</td><td>84</td><td>$68K</td><td>11%</td><td><strong>$7,480</strong></td><td>98%</td><td>⭐ 4.8</td><td><span class="trend trend-up">↑ 6%</span></td></tr>
+      </tbody>
+      <tfoot><tr class="tbl-footer"><td><strong>TOTAL</strong></td><td><strong>1.69M</strong></td><td><strong>19,950</strong></td><td><strong>2,906</strong></td><td><strong>$2.98M</strong></td><td>—</td><td><strong style="color:var(--okd)">$357,200</strong></td><td><strong>90.1%</strong></td><td><strong>⭐ 4.65</strong></td><td><span class="trend trend-up">↑ 18.4%</span></td></tr></tfoot>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════ LOGISTICS REPORT ═══════ -->
+<div id="rp-shipping" class="rpage">
+  <div class="sec-label">Logistics Intelligence · January 2025</div>
+  <div class="sec-title">Shipping &amp; Logistics Report</div>
+  <div class="sec-sub">Freight performance, delivery rates and regional shipping analysis</div>
+
+  <div class="kpi-grid kpi-4">
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#00b884,#00e5a3)"></div><div class="kpi-ico">✈️</div><div class="kpi-label">Air Shipments</div><div class="kpi-val">578</div><div class="kpi-ch ch-up">45% of orders</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#3b7bff,#60a5fa)"></div><div class="kpi-ico">🚢</div><div class="kpi-label">Sea Shipments</div><div class="kpi-val">578</div><div class="kpi-ch ch-neu">45% of orders</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#c9a43c,#e8c55a)"></div><div class="kpi-ico">🏠</div><div class="kpi-label">Door-to-Door</div><div class="kpi-val">128</div><div class="kpi-ch ch-neu">10% of orders</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:linear-gradient(90deg,#e8394a,#ff6b7a)"></div><div class="kpi-ico">⚠️</div><div class="kpi-label">Shipping Issues</div><div class="kpi-val">14</div><div class="kpi-ch ch-up">↓ 22% vs Dec</div></div>
+  </div>
+
+  <div class="chart-card">
+    <div class="cc-head"><div><div class="cc-title">Shipping Rates Performance — by Destination</div></div></div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Destination</th><th>Orders</th><th>Air ($/kg)</th><th>Sea FCL ($)</th><th>Sea LCL ($/cbm)</th><th>D2D ($/kg)</th><th>Avg Transit</th><th>On-Time Rate</th><th>Issues</th></tr></thead>
+      <tbody>
+        <tr class="tbl-pos"><td><strong>🇦🇪 UAE / Dubai</strong></td><td>224</td><td>$4.50</td><td>$1,200</td><td>$95</td><td>$6.80</td><td>Air 4d · Sea 22d</td><td><strong style="color:var(--okd)">99.1%</strong></td><td>0</td></tr>
+        <tr class="tbl-pos"><td><strong>🇺🇸 United States</strong></td><td>386</td><td>$5.20</td><td>$1,800</td><td>$120</td><td>$8.50</td><td>Air 6d · Sea 30d</td><td><strong style="color:var(--okd)">97.4%</strong></td><td>4</td></tr>
+        <tr class="tbl-pos"><td><strong>🇩🇪 Germany</strong></td><td>284</td><td>$5.40</td><td>$1,550</td><td>$112</td><td>$7.90</td><td>Air 5d · Sea 26d</td><td><strong style="color:var(--okd)">98.6%</strong></td><td>1</td></tr>
+        <tr><td><strong>🇬🇧 United Kingdom</strong></td><td>192</td><td>$5.60</td><td>$1,600</td><td>$115</td><td>$8.00</td><td>Air 5d · Sea 26d</td><td><strong style="color:var(--warn)">94.8%</strong></td><td>5</td></tr>
+        <tr><td><strong>🇸🇦 Saudi Arabia</strong></td><td>168</td><td>$4.80</td><td>$1,350</td><td>$105</td><td>$7.20</td><td>Air 4d · Sea 24d</td><td><strong style="color:var(--okd)">98.2%</strong></td><td>1</td></tr>
+        <tr><td><strong>🇦🇺 Australia</strong></td><td>124</td><td>$6.20</td><td>$2,100</td><td>$140</td><td>$9.80</td><td>Air 6d · Sea 32d</td><td><strong style="color:var(--okd)">97.6%</strong></td><td>2</td></tr>
+        <tr><td><strong>🇮🇳 India</strong></td><td>96</td><td>$3.80</td><td>$900</td><td>$75</td><td>$5.20</td><td>Air 3d · Sea 15d</td><td><strong style="color:var(--okd)">98.9%</strong></td><td>1</td></tr>
+        <tr class="tbl-neg"><td><strong>🇳🇬 Nigeria</strong></td><td>62</td><td>$7.50</td><td>$2,400</td><td>$165</td><td>$11.20</td><td>Air 7d · Sea 35d</td><td><strong style="color:var(--dangerd)">88.7%</strong></td><td>7</td></tr>
+      </tbody>
+      <tfoot><tr class="tbl-footer"><td><strong>ALL ROUTES</strong></td><td><strong>1,536</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td><strong>96.2%</strong></td><td><strong>21</strong></td></tr></tfoot>
+    </table></div>
+    <div style="margin-top:14px;padding:12px;background:#fef3c7;border-radius:var(--r);border:1px solid #fde68a;font-size:13px;color:var(--warnd)">
+      <strong>⚠️ Alert:</strong> Nigeria route on-time rate at 88.7% is below the 95% platform threshold. 7 shipping issues logged this month. Consider reviewing carrier agreements or surcharging customs delays.
+    </div>
+  </div>
+</div>
+
+<script>
+  window.scrollTo(0, 0);
+}
+
+// ── REAL DATA LOADING ──
+(async function initRealReports() {
+  if (!_configured) return;
+  try {
+    const auth = await requireRole('admin', 'login-admin.html');
+    if (!auth) return;
+    // 1. GMV and Orders
+    const { data: ords } = await sb.from('orders').select('total_usd, status');
+    if (ords) {
+      const gmv = ords.reduce((a, b) => a + parseFloat(b.total_usd), 0);
+      const ordersCount = ords.length;
+      const platformRev = gmv * 0.05; // 5% fee model
+
+      updateKpi('Total GMV', '$' + formatLargeNum(gmv));
+      updateKpi('Total Orders', ordersCount.toLocaleString());
+      updateKpi('Platform Revenue', '$' + formatLargeNum(platformRev));
+    }
+
+    // 2. Sellers and Buyers
+    const { count: sellers } = await sb.from('seller_profiles').select('*', { count: 'exact', head: true });
+    if (sellers != null) updateKpi('Active Sellers', sellers.toLocaleString());
+
+    const { count: bios } = await sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'customer');
+    if (bios != null) updateKpi('Registered Buyers', formatLargeNum(bios));
+
+  } catch(e) { console.error('Reports logic error:', e); }
+})();
+
+function updateKpi(label, val) {
+  document.querySelectorAll('.kpi-card').forEach(card => {
+    const lbl = card.querySelector('.kpi-label');
+    if (lbl && lbl.textContent.trim() === label) {
+      const valEl = card.querySelector('.kpi-val');
+      if (valEl) valEl.textContent = val;
+    }
+  });
+}
+
+function formatLargeNum(num) {
+  if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
+  if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+  return num.toFixed(0);
+}
+
+function showToast(msg, type) {
+  var old = document.querySelectorAll('.rpt-toast');
+  old.forEach(function(t) { t.parentNode && t.parentNode.removeChild(t); });
+  var t = document.createElement('div');
+  t.className = 'rpt-toast';
+  var c = {
+    ok:{ bg:'#0d1f14', border:'#00b884', color:'#00e5a3' },
+    warn:{ bg:'#1a1200', border:'#c9a43c', color:'#e8c55a' }
+  }[type] || { bg:'#0d1f14', border:'#00b884', color:'#00e5a3' };
+  t.style.cssText = 'position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.4);font-family:DM Sans,sans-serif;border:1px solid ' + c.border + ';background:' + c.bg + ';color:' + c.color + ';animation:rptT .25s ease';
+  var sty = document.createElement('style');
+  sty.textContent = '@keyframes rptT{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}';
+  document.head.appendChild(sty);
+  t.textContent = (type === 'ok' ? '✓ ' : '⚡ ') + msg;
+  document.body.appendChild(t);
+  setTimeout(function() {
+    t.style.transition = 'opacity .3s, transform .3s';
+    t.style.opacity = '0';
+    t.style.transform = 'translateY(6px)';
+    setTimeout(function() { t.parentNode && t.parentNode.removeChild(t); }, 300);
+  }, 3200);
+}
+</script>
+
+<script>
+// Auth guard - redirect to login if not admin (in demo mode, stays on page)
+(async function() {
+  if (!_configured) return;
+  try {
+    var s = await getSession();
+    if (!s) { window.location.href = 'login-admin.html'; return; }
+    var p = await getProfile(s.user.id);
+    if (!p.data || p.data.role !== 'admin') window.location.href = 'login-admin.html';
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>

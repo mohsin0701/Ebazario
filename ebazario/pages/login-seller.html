@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Seller Login — Ebazario Trading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+<div style="width:100%;max-width:980px">
+  <a href="../index.html" class="back-link">← Back to Ebazario Trading</a>
+  <div class="wrap">
+    <div class="lpanel">
+      <div class="lpanel-logo"><a href="../index.html"><img src="../logo.png" alt="Ebazario Trading"></a></div>
+      <h2>Sell to <em>the World</em></h2>
+      <p>Reach 142,000+ verified buyers across 84 countries. List products, manage orders, and grow your export business.</p>
+      <div class="feat"><div class="feat-icon">🌍</div><div><strong>Global Reach</strong><span>Buyers in 84+ countries</span></div></div>
+      <div class="feat"><div class="feat-icon">🛡️</div><div><strong>Trade Assurance</strong><span>Secure payments via escrow</span></div></div>
+      <div class="feat"><div class="feat-icon">📊</div><div><strong>Analytics Dashboard</strong><span>Track your performance</span></div></div>
+      <div class="feat"><div class="feat-icon">📋</div><div><strong>RFQ System</strong><span>Receive buyer quote requests</span></div></div>
+    </div>
+    <div class="rform">
+      <div class="tabs">
+        <div class="tab on" onclick="switchPane('p-login',this)">Sign In</div>
+        <div class="tab" onclick="switchPane('p-reg',this)">Start Selling</div>
+      </div>
+
+      <!-- SIGN IN -->
+      <div id="p-login" class="pane on">
+        <div id="login-error" class="error-msg" style="display:none"></div>
+        <div id="login-info" class="success-msg" style="display:none"></div>
+        <div class="fg"><label>Business Email</label><input type="email" id="login-email" placeholder="seller@company.com" autocomplete="email"></div>
+        <div class="fg"><label>Password</label>
+          <div style="position:relative">
+            <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+            <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:16px;color:#9a90b4" onclick="var i=document.getElementById('login-password');i.type=i.type==='password'?'text':'password'">👁</span>
+          </div>
+        </div>
+        <button class="btn btn-p" id="login-btn" onclick="doLogin()">Sign In to Seller Panel →</button>
+        <div class="lfoot" style="margin-top:16px">Looking to buy? <a href="login-customer.html">Customer Login →</a></div>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="p-reg" class="pane">
+        <div id="reg-error" class="error-msg" style="display:none"></div>
+        <div id="reg-success" class="success-msg" style="display:none"></div>
+        <div class="frow">
+          <div class="fg"><label>First Name</label><input type="text" id="reg-first" placeholder="Your name"></div>
+          <div class="fg"><label>Last Name</label><input type="text" id="reg-last" placeholder="Last name"></div>
+        </div>
+        <div class="fg"><label>Company Name</label><input type="text" id="reg-company" placeholder="Your Company Ltd."></div>
+        <div class="fg"><label>Business Email</label><input type="email" id="reg-email" placeholder="info@company.com"></div>
+        <div class="frow">
+          <div class="fg"><label>Country</label>
+            <select id="reg-country">
+              <option value="">Select…</option>
+              <option>China</option><option>India</option><option>Turkey</option><option>Vietnam</option>
+              <option>Bangladesh</option><option>Germany</option><option>United States</option>
+              <option>UAE</option><option>Pakistan</option><option>Other</option>
+            </select>
+          </div>
+          <div class="fg"><label>Industry</label>
+            <select id="reg-industry">
+              <option value="">Select…</option>
+              <option>Electronics</option><option>Machinery</option><option>Apparel</option>
+              <option>Food &amp; Agriculture</option><option>Healthcare</option><option>Chemicals</option>
+              <option>Auto Parts</option><option>Construction</option><option>Furniture</option>
+              <option>Tools &amp; Hardware</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg"><label>Password</label><input type="password" id="reg-password" placeholder="Min. 6 characters"></div>
+        <div class="fg"><label>Confirm Password</label><input type="password" id="reg-confirm" placeholder="Repeat password"></div>
+        <div style="margin-bottom:14px">
+          <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:13px;color:#5b5278">
+            <input type="checkbox" id="reg-terms" style="margin-top:2px;accent-color:var(--p)">
+            <span>I agree to the <a href="#" style="color:var(--p)">Seller Terms</a></span>
+          </label>
+        </div>
+        <button class="btn btn-g" id="reg-btn" onclick="doRegister()">Create Seller Account →</button>
+        <div class="lfoot" style="margin-top:16px">Looking to buy? <a href="login-customer.html">Customer Login →</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script>
+var _busy = false;
+
+function switchPane(id, btn) {
+  document.querySelectorAll('.pane').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
+
+function showErr(id, msg) { var el=document.getElementById(id); el.textContent=msg; el.style.display='block'; }
+function showInf(id, msg) { var el=document.getElementById(id); el.textContent=msg; el.style.display='block'; }
+function hideMsg(id) { document.getElementById(id).style.display='none'; }
+function setBtn(id, loading, label) {
+  var b=document.getElementById(id); b.disabled=loading; b.textContent=loading?'⏳ Please wait...':label;
+}
+
+async function doLogin() {
+  if (_busy) return;
+  hideMsg('login-error'); hideMsg('login-info');
+  var email = document.getElementById('login-email').value.trim();
+  var pass  = document.getElementById('login-password').value;
+  if (!email||!pass) { showErr('login-error','Please enter email and password.'); return; }
+
+  if (!_configured) { window.location.href='seller-dashboard.html'; return; }
+
+  _busy = true;
+  setBtn('login-btn', true, 'Sign In to Seller Panel →');
+  showInf('login-info', 'Signing in...');
+
+  try {
+    var { data, error } = await sb.auth.signInWithPassword({ email:email, password:pass });
+    if (error) throw new Error(error.message);
+
+    var { data: profile, error: perr } = await sb
+      .from('profiles').select('id, role').eq('id', data.user.id).single();
+
+    if (perr || !profile) {
+      // Create seller profile if missing
+      await sb.from('profiles').upsert({
+        id: data.user.id, email: email, role: 'seller', is_active: true
+      });
+      window.location.href = 'seller-dashboard.html';
+      return;
+    }
+
+    if (profile.role === 'seller') {
+      showInf('login-info', 'Welcome! Loading your seller panel...');
+      setTimeout(function(){ window.location.href='seller-dashboard.html'; }, 400);
+    } else if (profile.role === 'customer') {
+      await sb.auth.signOut();
+      throw new Error('This is a customer account. Please use Customer Login.');
+    } else if (profile.role === 'admin') {
+      await sb.auth.signOut();
+      throw new Error('This is an admin account. Please use Admin Login.');
+    } else {
+      window.location.href = 'seller-dashboard.html';
+    }
+  } catch(e) {
+    _busy = false;
+    setBtn('login-btn', false, 'Sign In to Seller Panel →');
+    hideMsg('login-info');
+    showErr('login-error', e.message || 'Login failed.');
+  }
+}
+
+async function doRegister() {
+  if (_busy) return;
+  hideMsg('reg-error'); hideMsg('reg-success');
+  var first    = document.getElementById('reg-first').value.trim();
+  var last     = document.getElementById('reg-last').value.trim();
+  var company  = document.getElementById('reg-company').value.trim();
+  var email    = document.getElementById('reg-email').value.trim();
+  var country  = document.getElementById('reg-country').value;
+  var industry = document.getElementById('reg-industry').value;
+  var pass     = document.getElementById('reg-password').value;
+  var confirm  = document.getElementById('reg-confirm').value;
+
+  if (!first||!last||!email||!company||!country||!pass) { showErr('reg-error','Please fill in all required fields.'); return; }
+  if (pass.length < 6) { showErr('reg-error','Password must be at least 6 characters.'); return; }
+  if (pass !== confirm) { showErr('reg-error','Passwords do not match.'); return; }
+  if (!document.getElementById('reg-terms').checked) { showErr('reg-error','Please accept the Seller Terms.'); return; }
+
+  if (!_configured) { showInf('reg-success','Demo mode: Supabase not configured.'); return; }
+
+  _busy = true;
+  setBtn('reg-btn', true, 'Create Seller Account →');
+
+  try {
+    var { data, error } = await sb.auth.signUp({
+      email: email, password: pass,
+      options: { data: { role: 'seller', first_name: first, last_name: last } }
+    });
+    if (error) throw new Error(error.message);
+
+    if (data.user) {
+      await sb.from('profiles').upsert({
+        id: data.user.id, email: email, role: 'seller',
+        first_name: first, last_name: last, is_active: true
+      });
+      await sb.from('seller_profiles').upsert({
+        user_id: data.user.id,
+        company_name: company, country: country, industry: industry,
+        plan: 'free', status: 'pending'
+      });
+    }
+
+    showInf('reg-success', 'Application submitted! Login to access your seller panel. Our team will approve your account shortly.');
+    _busy = false;
+    setBtn('reg-btn', false, 'Create Seller Account →');
+    setTimeout(function(){
+      document.getElementById('login-email').value = email;
+      switchPane('p-login', document.querySelectorAll('.tab')[0]);
+    }, 2000);
+
+  } catch(e) {
+    _busy = false;
+    setBtn('reg-btn', false, 'Create Seller Account →');
+    showErr('reg-error', e.message || 'Registration failed.');
+  }
+}
+// NO auto-redirect
+</script>
+</body>
+</html>

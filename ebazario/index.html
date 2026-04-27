@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Ebazario Trading — Global B2B Marketplace</title>
+<meta name="description" content="Ebazario Trading connects buyers with verified suppliers worldwide. Source products across Electronics, Machinery, Apparel & more.">
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* ── HERO ── */
+.hero{background:#fff;padding:80px 0 140px;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+.hero-split{display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:center}
+.hero h1{font-size:72px;font-weight:900;line-height:1.05;letter-spacing:-0.03em;color:var(--text);margin-bottom:24px}
+.hero h1 span{color:var(--navy)}
+.hero p{font-size:18px;color:var(--text-secondary);line-height:1.6;margin-bottom:40px;max-width:480px;font-weight:500}
+.hero-cta-wrap{display:flex;align-items:center;gap:16px}
+.hero-cta a{padding:20px 48px;border-radius:var(--radius-full);font-size:16px;font-weight:800;cursor:pointer;border:none;transition:var(--transition);display:inline-flex;align-items:center;text-decoration:none;background:var(--navy);color:#fff}
+.hero-cta a:hover{transform:translateY(-2px);box-shadow:0 16px 32px rgba(0,61,92,0.25)}
+
+/* Visual Column */
+.hero-visual{position:relative;height:540px;perspective:1200px}
+.overlap-card{position:absolute;border-radius:32px;overflow:hidden;box-shadow:var(--shadow-lg);transition:all 0.6s cubic-bezier(0.25, 1, 0.5, 1);background:#f4f6f8}
+.overlap-card img{width:100%;height:100%;object-fit:cover;display:block}
+.overlap-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top, rgba(0,61,92,0.8) 0%, transparent 50%);opacity:0.85;transition:opacity 0.4s}
+.overlap-card:hover::after{opacity:0.6}
+
+.oc-tag{position:absolute;bottom:30px;left:30px;z-index:2;color:#fff}
+.oc-tag h3{font-size:28px;font-weight:900;margin-bottom:6px;letter-spacing:-0.5px;line-height:1.1}
+.oc-tag span{font-size:15px;font-weight:700;opacity:0.9;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px}
+
+.card-left{width:200px;height:280px;left:50%;top:80px;margin-left:-220px;transform:rotate(-15deg) translateZ(-50px);z-index:1;opacity:0.95}
+.card-right{width:190px;height:260px;left:50%;top:50px;margin-left:40px;transform:rotate(12deg) translateZ(-80px);z-index:1;opacity:0.9}
+.card-center{width:230px;height:310px;left:50%;top:110px;margin-left:-115px;transform:rotate(0deg) translateZ(50px);z-index:3;box-shadow:0 24px 48px rgba(0,61,92,0.3);border:6px solid #fff}
+
+.hero-visual:hover .card-left{transform:rotate(-20deg) translateX(-30px) translateZ(-50px)}
+.hero-visual:hover .card-right{transform:rotate(18deg) translateX(30px) translateZ(-80px)}
+.hero-visual:hover .card-center{transform:rotate(0deg) translateZ(80px) scale(1.05)}
+
+/* ── TRUST STRIP ── */
+.trust-bar{background:#fff;border-bottom:1px solid var(--border);padding:24px 0}
+.trust-items{display:flex;gap:0;justify-content:space-between;align-items:center}
+.trust-item{display:flex;align-items:center;gap:12px;padding:4px 0;flex:1;justify-content:center}
+.trust-item .icon{font-size:24px;flex-shrink:0}
+.trust-item div strong{display:block;font-size:14px;font-weight:700;color:var(--text)}
+.trust-item div span{font-size:12px;color:var(--text-muted);font-weight:500}
+
+/* ── CATEGORY GRID ── */
+.cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.cat-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-xl);padding:16px;text-align:center;display:block;transition:var(--transition);cursor:pointer}
+.cat-card:hover{border-color:var(--primary);transform:translateY(-4px);box-shadow:var(--shadow-hover)}
+.cat-img{height:100px;width:100%;object-fit:cover;border-radius:var(--radius-sm);margin-bottom:14px;background:#f4f6f8}
+.cat-card h4{font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px}
+.cat-card p{font-size:12px;color:var(--text-muted)}
+
+/* ── SUPPLIER CARDS ── */
+.supplier-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.supplier-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-xl);padding:22px;cursor:pointer;transition:var(--transition)}
+.supplier-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover);border-color:var(--primary-light)}
+.supplier-logo{width:100%;height:120px;border-radius:var(--radius-sm);background:#f4f6f8;margin-bottom:16px;overflow:hidden}
+.supplier-logo img{width:100%;height:100%;object-fit:cover}
+.supplier-card h4{font-size:15px;font-weight:700;margin-bottom:6px;line-height:1.4}
+.supplier-card .location{font-size:13px;color:var(--text-muted);margin-bottom:12px;font-weight:500}
+.supplier-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.supplier-stats{display:flex;gap:12px;font-size:12px;color:var(--text-muted);border-top:1px solid var(--border);padding-top:14px;font-weight:500;justify-content:space-between}
+.supplier-stats strong{color:var(--text);font-weight:700;display:block;font-size:13px;margin-bottom:2px}
+
+/* ── PROMO BANNER ── */
+.promo-banner{background:url('https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=1500&auto=format&fit=crop') center/cover no-repeat;border-radius:var(--radius-xl);padding:48px 44px;display:flex;justify-content:space-between;align-items:center;color:#fff;position:relative;overflow:hidden}
+.promo-banner::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg, rgba(0,61,92,0.95) 0%, rgba(26,166,220,0.85) 100%)}
+.promo-banner > div, .promo-banner > button{position:relative;z-index:1}
+.promo-banner h2{font-size:28px;font-weight:800;margin-bottom:8px;letter-spacing:-0.02em}
+.promo-banner p{color:rgba(255,255,255,0.7);font-size:15px;max-width:500px;line-height:1.7}
+.promo-banner button{padding:16px 32px;background:#fff;color:var(--navy);border:none;border-radius:var(--radius-full);font-weight:800;cursor:pointer;font-size:15px;white-space:nowrap;flex-shrink:0;transition:var(--transition);letter-spacing:0.3px}
+.promo-banner button:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+
+@media(max-width:1100px){.hero-split{grid-template-columns:1fr 1fr}.cat-grid{grid-template-columns:repeat(5,1fr)}.supplier-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:800px){
+  .hero-split{grid-template-columns:1fr;gap:40px}
+  .hero h1{font-size:48px}
+  .hero-visual{height:400px}
+  .card-left{width:220px;height:300px}
+  .card-right{width:200px;height:280px}
+  .card-center{width:260px;height:340px;margin-left:-130px;top:40px}
+  .cat-grid{grid-template-columns:repeat(3,1fr)}.supplier-grid{grid-template-columns:1fr}.promo-banner{flex-direction:column;text-align:center;padding:32px 24px}.promo-banner button{margin-top:20px}.trust-items{flex-wrap:wrap;gap:16px;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar"><div class="inner">
+  <span>🌐 Connecting buyers & suppliers across 190+ countries</span>
+  <div><a href="#">Help Center</a><a href="pages/login-seller.html">Sell on Ebazario</a><a href="#">English ▾</a></div>
+</div></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+<div class="nav-inner container">
+  <a href="index.html" class="logo-wrap"><img src="./logo.png" alt="Ebazario Trading"></a>
+  <div class="search-bar">
+    <select><option>All Categories</option><option>Electronics</option><option>Machinery</option><option>Apparel</option><option>Food & Agri</option><option>Chemicals</option><option>Construction</option><option>Auto Parts</option><option>Healthcare</option><option>Furniture</option><option>Tools</option></select>
+    <input type="text" id="nav-search" placeholder="Search products, suppliers, categories..." autocomplete="off">
+    <button onclick="doSearch()">Search</button>
+  </div>
+  <div class="nav-actions" id="nav-auth">
+    <div class="btn-login-menu">
+      <a href="pages/login-customer.html" class="nav-btn btn-outline">Log In ▾</a>
+      <div class="login-dropdown">
+        <a href="pages/login-customer.html">👤 Buyer Login</a>
+        <a href="pages/login-seller.html">🏪 Seller Login</a>
+        <div class="divider"></div>
+        <a href="pages/login-admin.html">🔒 Admin Panel</a>
+        <a href="pages/reports.html">📊 Analytics</a>
+      </div>
+    </div>
+    <a href="pages/login-seller.html" class="nav-btn btn-primary">Start Selling</a>
+  </div>
+</div>
+</nav>
+
+<!-- CATEGORY NAV -->
+<div class="cat-nav"><div class="cat-nav-inner">
+  <a href="pages/categories/electronics.html" class="cat-link">Electronics</a>
+  <a href="pages/categories/machinery.html" class="cat-link">Machinery</a>
+  <a href="pages/categories/apparel.html" class="cat-link">Apparel</a>
+  <a href="pages/categories/food-agriculture.html" class="cat-link">Food & Agri</a>
+  <a href="pages/categories/chemicals.html" class="cat-link">Chemicals</a>
+  <a href="pages/categories/construction.html" class="cat-link">Construction</a>
+  <a href="pages/categories/auto-parts.html" class="cat-link">Auto Parts</a>
+  <a href="pages/categories/healthcare.html" class="cat-link">Healthcare</a>
+  <a href="pages/categories/furniture.html" class="cat-link">Furniture</a>
+  <a href="pages/categories/tools-hardware.html" class="cat-link">Tools</a>
+</div></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container hero-split">
+    
+    <div class="hero-text-col">
+      <h1>Sustainably<br><span>Stylish.</span><br>Naturally You.</h1>
+      <p>Discover premium products from verified global suppliers. B2B fashion and lifestyle sourcing brought to life with seamless, protected transactions.</p>
+      <div class="hero-cta-wrap">
+        <a href="pages/categories/apparel.html">Explore Products</a>
+      </div>
+    </div>
+    
+    <div class="hero-visual">
+      <!-- Card Left -->
+      <a href="pages/categories/apparel.html" class="overlap-card card-left">
+        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600&auto=format&fit=crop" alt="Sneakers">
+        <div class="oc-tag">
+          <span>Men's Footwear</span>
+          <h3>Urban Kicks</h3>
+        </div>
+      </a>
+      
+      <!-- Card Right -->
+      <a href="pages/categories/furniture.html" class="overlap-card card-right">
+        <img src="https://images.unsplash.com/photo-1618220179428-22790b46a0eb?q=80&w=600&auto=format&fit=crop" alt="Interior">
+        <div class="oc-tag">
+          <span>Home Decor</span>
+          <h3>Minimalist</h3>
+        </div>
+      </a>
+      
+      <!-- Card Center -->
+      <a href="pages/categories/electronics.html" class="overlap-card card-center">
+        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=800&auto=format&fit=crop" alt="Headphones">
+        <div class="oc-tag">
+          <span>Electronics</span>
+          <h3>Aura Sound</h3>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar"><div class="container"><div class="trust-items">
+  <div class="trust-item"><div class="icon">🛡️</div><div><strong>Trade Assurance</strong><span>Up to $500K protection</span></div></div>
+  <div class="trust-item"><div class="icon">✅</div><div><strong>Verified Suppliers</strong><span>Factory-audited sellers</span></div></div>
+  <div class="trust-item"><div class="icon">✈️</div><div><strong>Air & Sea Shipping</strong><span>Door-to-door worldwide</span></div></div>
+  <div class="trust-item"><div class="icon">💬</div><div><strong>24/7 Support</strong><span>Dedicated trade managers</span></div></div>
+  <div class="trust-item"><div class="icon">🔄</div><div><strong>Quality Guarantee</strong><span>Easy returns & refunds</span></div></div>
+</div></div></div>
+
+<!-- CATEGORIES -->
+<div class="section"><div class="container">
+  <div class="section-header">
+    <div><div class="section-title">Browse by <span>Industry</span></div><div class="section-sub">Explore products across 30+ major categories</div></div>
+    <a href="pages/categories/electronics.html" class="view-all">View All →</a>
+  </div>
+  <div class="cat-grid">
+    <a href="pages/categories/electronics.html" class="cat-card"><img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=300&auto=format&fit=crop" class="cat-img" alt="Electronics"><h4>Electronics</h4><p>1.2M items</p></a>
+    <a href="pages/categories/machinery.html" class="cat-card"><img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=300&auto=format&fit=crop" class="cat-img" alt="Machinery"><h4>Machinery</h4><p>840K items</p></a>
+    <a href="pages/categories/apparel.html" class="cat-card"><img src="https://images.unsplash.com/photo-1558769132-cb1fac0840c2?q=80&w=300&auto=format&fit=crop" class="cat-img" alt="Apparel"><h4>Apparel</h4><p>620K items</p></a>
+    <a href="pages/categories/food-agriculture.html" class="cat-card"><img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?q=80&w=300&auto=format&fit=crop" class="cat-img" alt="Food & Agri"><h4>Food & Agri</h4><p>380K items</p></a>
+    <a href="pages/categories/chemicals.html" class="cat-card"><img src="https://images.unsplash.com/photo-1603126857599-f6e15782fa15?q=80&w=300&auto=format&fit=crop" class="cat-img" alt="Chemicals"><h4>Chemicals</h4><p>290K items</p></a>
+    <a href="pages/categories/construction.html" class="cat-card"><img src="https://images.unsplash.com/photo-1541888086425-d81bb19240f5?q=80&w=300&auto=format&fit=crop" class="cat-img" alt="Construction"><h4>Construction</h4><p>510K items</p></a>
+    <a href="pages/categories/auto-parts.html" class="cat-card"><img src="https://images.unsplash.com/photo-1486250944723-86bca2b15b06?q=80&w=300&auto=format&fit=crop" class="cat-img" alt="Auto Parts"><h4>Auto Parts</h4><p>750K items</p></a>
+    <a href="pages/categories/healthcare.html" class="cat-card"><img src="https://images.unsplash.com/photo-1584308666744-24d5e4a5d893?q=80&w=300&auto=format&fit=crop" class="cat-img" alt="Healthcare"><h4>Healthcare</h4><p>430K items</p></a>
+    <a href="pages/categories/furniture.html" class="cat-card"><img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=300&auto=format&fit=crop" class="cat-img" alt="Furniture"><h4>Furniture</h4><p>186K items</p></a>
+    <a href="pages/categories/tools-hardware.html" class="cat-card"><img src="https://images.unsplash.com/photo-1530124566582-a618bc2615dc?q=80&w=300&auto=format&fit=crop" class="cat-img" alt="Tools"><h4>Tools</h4><p>94K items</p></a>
+  </div>
+</div></div>
+
+<!-- HOT PRODUCTS -->
+<div class="section section-bg"><div class="container">
+  <div class="section-header">
+    <div><div class="section-title">Trending <span>Products</span></div><div class="section-sub">Best pricing from verified suppliers this week</div></div>
+    <a href="pages/categories/electronics.html" class="view-all">View All →</a>
+  </div>
+  <div class="product-grid" id="hot-products">
+    <div class="product-card"><a href="pages/products/electronics-p1.html" style="display:block;text-decoration:none;color:inherit"><div class="product-img"><img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=400&auto=format&fit=crop" alt="Laptop"><span class="product-badge">HOT</span></div><div class="product-body"><div class="product-name">Industrial Rugged Laptop 15.6" Core i7 IP65</div><div class="product-moq">Min. Order: 50 units</div><div class="product-price">$285.00 <span>/ unit</span></div><div class="product-supplier">🇨🇳 Shenzhen TechPro <span class="verified-badge">✓ Verified</span></div></div></a><div class="product-actions"><button class="btn-inquire" onclick="handleInquiry('Industrial Laptop')">Inquire Now</button><button class="btn-save" onclick="handleWishlist(this)">♡</button></div></div>
+    <div class="product-card"><a href="pages/products/electronics-p2.html" style="display:block;text-decoration:none;color:inherit"><div class="product-img"><img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400&auto=format&fit=crop" alt="Smartphones"><span class="product-badge new">NEW</span></div><div class="product-body"><div class="product-name">Wholesale Smartphones 5G OEM Android 14</div><div class="product-moq">Min. Order: 100 units</div><div class="product-price">$128.00 <span>/ unit</span></div><div class="product-supplier">🇨🇳 GZ Mobile Ltd. <span class="verified-badge">✓ Verified</span></div></div></a><div class="product-actions"><button class="btn-inquire" onclick="handleInquiry('5G Smartphones')">Inquire Now</button><button class="btn-save" onclick="handleWishlist(this)">♡</button></div></div>
+    <div class="product-card"><a href="pages/products/machinery-p1.html" style="display:block;text-decoration:none;color:inherit"><div class="product-img"><img src="https://images.unsplash.com/photo-1565514020179-026b92b84bb6?q=80&w=400&auto=format&fit=crop" alt="CNC Machine"><span class="product-badge">HOT</span></div><div class="product-body"><div class="product-name">CNC Milling Machine 3-Axis VMC850</div><div class="product-moq">Min. Order: 1 unit</div><div class="product-price">$18,500 <span>/ unit</span></div><div class="product-supplier">🇩🇪 Precision Mfg GmbH <span class="verified-badge">✓ Verified</span></div></div></a><div class="product-actions"><button class="btn-inquire" onclick="handleInquiry('CNC Machine')">Inquire Now</button><button class="btn-save" onclick="handleWishlist(this)">♡</button></div></div>
+    <div class="product-card"><a href="pages/products/apparel-p1.html" style="display:block;text-decoration:none;color:inherit"><div class="product-img"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=400&auto=format&fit=crop" alt="T-Shirts"><span class="product-badge">HOT</span></div><div class="product-body"><div class="product-name">Cotton T-Shirts 180gsm OEM Custom Logo</div><div class="product-moq">Min. Order: 500 pcs</div><div class="product-price">$1.80 <span>/ piece</span></div><div class="product-supplier">🇧🇩 Dhaka Textiles <span class="verified-badge">✓ Verified</span></div></div></a><div class="product-actions"><button class="btn-inquire" onclick="handleInquiry('Cotton T-Shirts')">Inquire Now</button><button class="btn-save" onclick="handleWishlist(this)">♡</button></div></div>
+    <div class="product-card"><a href="pages/products/electronics-p3.html" style="display:block;text-decoration:none;color:inherit"><div class="product-img"><img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=400&auto=format&fit=crop" alt="Solar Panel"></div><div class="product-body"><div class="product-name">Solar Panel 550W Monocrystalline Tier 1</div><div class="product-moq">Min. Order: 20 units</div><div class="product-price">$95.00 <span>/ unit</span></div><div class="product-supplier">🇨🇳 Suntech Power <span class="verified-badge">✓ Verified</span></div></div></a><div class="product-actions"><button class="btn-inquire" onclick="handleInquiry('Solar Panel')">Inquire Now</button><button class="btn-save" onclick="handleWishlist(this)">♡</button></div></div>
+  </div>
+</div></div>
+
+<!-- TOP SUPPLIERS -->
+<div class="section"><div class="container">
+  <div class="section-header">
+    <div><div class="section-title">Top Verified <span>Suppliers</span></div><div class="section-sub">Trusted factories with trade assurance</div></div>
+    <a href="pages/supplier.html" class="view-all">View All →</a>
+  </div>
+  <div class="supplier-grid">
+    <div class="supplier-card" onclick="window.location.href='pages/supplier.html'"><div class="supplier-logo"><img src="https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?q=80&w=300&auto=format&fit=crop" alt="Shenzhen TechPro"></div><h4>Shenzhen TechPro Electronics</h4><div class="location">📍 Shenzhen, China</div><div class="supplier-tags"><span class="tag">Electronics</span><span class="tag">OEM/ODM</span><span class="tag">ISO 9001</span></div><div class="supplier-stats"><div><strong>12 yrs</strong>on platform</div><div><strong>2,400+</strong>products</div><div>⭐ 4.9</div></div></div>
+    <div class="supplier-card" onclick="window.location.href='pages/supplier.html'"><div class="supplier-logo"><img src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?q=80&w=300&auto=format&fit=crop" alt="Precision Mfg"></div><h4>Precision Manufacturing GmbH</h4><div class="location">📍 Stuttgart, Germany</div><div class="supplier-tags"><span class="tag">Machinery</span><span class="tag">CNC</span><span class="tag">CE</span></div><div class="supplier-stats"><div><strong>8 yrs</strong>on platform</div><div><strong>860+</strong>products</div><div>⭐ 4.8</div></div></div>
+    <div class="supplier-card" onclick="window.location.href='pages/supplier.html'"><div class="supplier-logo"><img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=300&auto=format&fit=crop" alt="Dhaka Textiles"></div><h4>Dhaka Textiles International</h4><div class="location">📍 Dhaka, Bangladesh</div><div class="supplier-tags"><span class="tag">Apparel</span><span class="tag">OEM</span><span class="tag">Export</span></div><div class="supplier-stats"><div><strong>6 yrs</strong>on platform</div><div><strong>3,100+</strong>products</div><div>⭐ 4.7</div></div></div>
+    <div class="supplier-card" onclick="window.location.href='pages/supplier.html'"><div class="supplier-logo"><img src="https://images.unsplash.com/photo-1530836369250-ef71a81dc78b?q=80&w=300&auto=format&fit=crop" alt="AgriGlobal"></div><h4>AgriGlobal Trading Corp</h4><div class="location">📍 São Paulo, Brazil</div><div class="supplier-tags"><span class="tag">Agriculture</span><span class="tag">Organic</span></div><div class="supplier-stats"><div><strong>5 yrs</strong>on platform</div><div><strong>480+</strong>products</div><div>⭐ 4.9</div></div></div>
+  </div>
+</div></div>
+
+<!-- PROMO BANNER -->
+<div class="container" style="margin-bottom:20px">
+  <div class="promo-banner">
+    <div><h2>✈️ 🚢 Door-to-Door Shipping Worldwide</h2><p>Ebazario handles all freight — sea or air shipping to your destination. Get your shipping quote instantly.</p></div>
+    <button onclick="window.location.href='pages/categories/electronics.html'">Start Sourcing →</button>
+  </div>
+</div>
+
+<!-- NEW ARRIVALS -->
+<div class="section section-bg"><div class="container">
+  <div class="section-header">
+    <div><div class="section-title">New <span>Arrivals</span></div><div class="section-sub">Just listed by verified suppliers</div></div>
+    <a href="pages/categories/healthcare.html" class="view-all">View All →</a>
+  </div>
+  <div class="product-grid">
+    <div class="product-card"><a href="pages/products/food-agriculture-p3.html" style="display:block;text-decoration:none;color:inherit"><div class="product-img"><img src="https://images.unsplash.com/photo-1599940778173-e276d4acb2bf?q=80&w=400&auto=format&fit=crop" alt="Ginger"><span class="product-badge new">NEW</span></div><div class="product-body"><div class="product-name">Fresh Ginger Root Grade A Export Quality</div><div class="product-moq">Min. Order: 5 MTs</div><div class="product-price">$850 <span>/ MT</span></div><div class="product-supplier">🇮🇳 SpiceHub India <span class="verified-badge">✓ Verified</span></div></div></a><div class="product-actions"><button class="btn-inquire" onclick="handleInquiry('Fresh Ginger')">Inquire Now</button><button class="btn-save" onclick="handleWishlist(this)">♡</button></div></div>
+    <div class="product-card"><a href="pages/products/healthcare-p1.html" style="display:block;text-decoration:none;color:inherit"><div class="product-img"><img src="https://images.unsplash.com/photo-1586864387789-628af9feed72?q=80&w=400&auto=format&fit=crop" alt="Masks"><span class="product-badge">HOT</span></div><div class="product-body"><div class="product-name">N95 FFP2 Respirator Mask CE FDA</div><div class="product-moq">Min. Order: 1000 pcs</div><div class="product-price">$0.28 <span>/ piece</span></div><div class="product-supplier">🇨🇳 MedShield PPE <span class="verified-badge">✓ Verified</span></div></div></a><div class="product-actions"><button class="btn-inquire" onclick="handleInquiry('N95 Masks')">Inquire Now</button><button class="btn-save" onclick="handleWishlist(this)">♡</button></div></div>
+    <div class="product-card"><a href="pages/products/construction-p1.html" style="display:block;text-decoration:none;color:inherit"><div class="product-img"><img src="https://images.unsplash.com/photo-1538332576228-eb5b4c4de8f5?q=80&w=400&auto=format&fit=crop" alt="H-Beam"><span class="product-badge">HOT</span></div><div class="product-body"><div class="product-name">Steel H-Beam S355 Structural Grade</div><div class="product-moq">Min. Order: 10 MTs</div><div class="product-price">$680 <span>/ MT</span></div><div class="product-supplier">🇨🇳 SteelWorld China <span class="verified-badge">✓ Verified</span></div></div></a><div class="product-actions"><button class="btn-inquire" onclick="handleInquiry('Steel H-Beam')">Inquire Now</button><button class="btn-save" onclick="handleWishlist(this)">♡</button></div></div>
+    <div class="product-card"><a href="pages/products/auto-parts-p3.html" style="display:block;text-decoration:none;color:inherit"><div class="product-img"><img src="https://images.unsplash.com/photo-1600705722908-bab1e6190b05?q=80&w=400&auto=format&fit=crop" alt="LED Lights"><span class="product-badge new">NEW</span></div><div class="product-body"><div class="product-name">LED Headlight Assembly H7 6000K</div><div class="product-moq">Min. Order: 100 pairs</div><div class="product-price">$24.00 <span>/ pair</span></div><div class="product-supplier">🇨🇳 LightTech Auto <span class="verified-badge">✓ Verified</span></div></div></a><div class="product-actions"><button class="btn-inquire" onclick="handleInquiry('LED Headlights')">Inquire Now</button><button class="btn-save" onclick="handleWishlist(this)">♡</button></div></div>
+    <div class="product-card"><a href="pages/products/furniture-p1.html" style="display:block;text-decoration:none;color:inherit"><div class="product-img"><img src="https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?q=80&w=400&auto=format&fit=crop" alt="Office Chair"><span class="product-badge">HOT</span></div><div class="product-body"><div class="product-name">Ergonomic Office Chair Mesh High Back</div><div class="product-moq">Min. Order: 50 units</div><div class="product-price">$68 <span>/ unit</span></div><div class="product-supplier">🇨🇳 FoShan Furniture <span class="verified-badge">✓ Verified</span></div></div></a><div class="product-actions"><button class="btn-inquire" onclick="handleInquiry('Office Chair')">Inquire Now</button><button class="btn-save" onclick="handleWishlist(this)">♡</button></div></div>
+  </div>
+</div></div>
+
+<!-- FOOTER -->
+<footer>
+<div class="container">
+  <div class="footer-grid">
+    <div class="footer-brand"><img src="./logo.png" alt="Ebazario"><p>The global B2B marketplace connecting buyers and suppliers across 190+ countries with secure, door-to-door trade solutions.</p></div>
+    <div class="footer-col"><h5>Marketplace</h5><a href="pages/categories/electronics.html">Electronics</a><a href="pages/categories/machinery.html">Machinery</a><a href="pages/categories/apparel.html">Apparel</a><a href="pages/categories/food-agriculture.html">Food & Agriculture</a><a href="pages/categories/healthcare.html">Healthcare</a><a href="pages/categories/construction.html">Construction</a></div>
+    <div class="footer-col"><h5>Services</h5><a href="#">Trade Assurance</a><a href="#">Air Freight</a><a href="#">Sea Freight</a><a href="#">Door-to-Door</a><a href="#">Track Shipment</a><a href="#">Customs Clearance</a></div>
+    <div class="footer-col"><h5>Company</h5><a href="#">About Ebazario</a><a href="#">Careers</a><a href="#">Press</a><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Contact Us</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 Ebazario Trading. All rights reserved.</span><div style="display:flex;gap:8px"><span class="pay-badge">VISA</span><span class="pay-badge">Mastercard</span><span class="pay-badge">PayPal</span><span class="pay-badge">T/T</span><span class="pay-badge">L/C</span></div></div>
+</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/main.js"></script>
+<script>
+window.addEventListener('scroll',function(){document.getElementById('mainNav')?.classList.toggle('scrolled',window.scrollY>20)});
+function handleInquiry(n){showToast('Inquiry for "'+n+'" sent! Seller will respond within 24h.','ok')}
+function handleWishlist(b){b.classList.toggle('active');b.textContent=b.classList.contains('active')?'❤':'♡';showToast(b.classList.contains('active')?'Added to wishlist':'Removed from wishlist','ok')}
+function doSearch(){var q=document.getElementById('nav-search').value.trim();if(q)window.location.href='pages/categories/electronics.html'}
+document.getElementById('nav-search')?.addEventListener('keydown',function(e){if(e.key==='Enter')doSearch()});
+
+// ── DYNAMIC HOME PAGE ──
+async function initHomePage() {
+  if (typeof _configured === 'undefined' || !_configured) return;
+  
+  try {
+    // 1. Load Hot Products
+    const { data: hotProds } = await getProducts({ limit: 5 });
+    if (hotProds && hotProds.length > 0) {
+      const container = document.getElementById('hot-products');
+      if (container) {
+        container.innerHTML = hotProds.map(p => {
+          const img = (p.images && p.images[0]) || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop';
+          const pLink = `pages/products/product.html?id=${p.id}`;
+          return `
+            <div class="product-card">
+              <a href="${pLink}" style="display:block;text-decoration:none;color:inherit">
+                <div class="product-img">
+                  <img src="${img}" alt="${p.title}">
+                  ${p.is_featured ? '<span class="product-badge">HOT</span>' : ''}
+                </div>
+                <div class="product-body">
+                  <div class="product-name">${p.title}</div>
+                  <div class="product-moq">Min. Order: ${p.min_order_qty} units</div>
+                  <div class="product-price">${formatUSD(p.buyer_price_usd || p.base_price_usd)} <span>/ unit</span></div>
+                  <div class="product-supplier">
+                    ${p.seller_profiles?.country || ''} ${p.seller_profiles?.company_name || 'Verified Seller'} 
+                    <span class="verified-badge">✓ Verified</span>
+                  </div>
+                </div>
+              </a>
+              <div class="product-actions">
+                <button class="btn-inquire" onclick="handleInquiry('${p.title.replace(/'/g, "\\'")}')">Inquire Now</button>
+                <button class="btn-save" onclick="handleWishlist(this, '${p.id}')">♡</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    // 2. Load Top Suppliers
+    const { data: suppliers } = await sb.from('seller_profiles').select('*').eq('status', 'active').limit(4);
+    if (suppliers && suppliers.length > 0) {
+      const sGrid = document.querySelector('.supplier-grid');
+      if (sGrid) {
+        sGrid.innerHTML = suppliers.map(s => `
+          <div class="supplier-card" onclick="window.location.href='pages/supplier.html?id=${s.id}'">
+            <div class="supplier-logo"><img src="https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?q=80&w=300&auto=format&fit=crop" alt="${s.company_name}"></div>
+            <h4>${s.company_name}</h4>
+            <div class="location">📍 ${s.country}</div>
+            <div class="supplier-tags"><span class="tag">${s.industry || 'Global Trade'}</span><span class="tag">Verified</span></div>
+            <div class="supplier-stats">
+              <div><strong>Rating</strong> ⭐ ${s.avg_rating || '5.0'}</div>
+              <div><strong>Products</strong> ${s.total_products || '0'}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+  } catch(e) {
+    console.warn('[Ebazario] Error loading homepage data:', e);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initHomePage);
+</script>
+</body>
+</html>

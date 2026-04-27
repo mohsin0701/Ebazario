@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin Panel — Ebazario Trading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p:#1AA6DC;--pm:#0088cc;--pl:#49c5f5;--navy:#003D5C;--gold:#c9a227;--gl:#e8c040;
+  --bg:#fbfcfd;--white:#fff;--text:#0f172a;--sub:#475569;--muted:#94a3b8;
+  --border:#edf2f7;--border-strong:#e2e8f0;
+  --ok:#10b981;--okl:#ecfdf5;--okd:#065f46;
+  --warn:#f59e0b;--warnl:#fffbeb;--warnd:#92400e;
+  --danger:#ef4444;--dangerl:#fef2f2;--dangerd:#991b1b;
+  --blue:#3b82f6;--bluel:#eff6ff;
+  --r:14px;--rl:20px;--rxl:28px;
+  --shd:0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+  --shd-md:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+  --shd-lg:0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;letter-spacing:-0.01em}
+h1,h2,h3,h4{font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-0.02em}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
+/* layout */
+.layout{display:flex;min-height:100vh}
+/* sidebar */
+.sidebar{width:240px;background:var(--navy);flex-shrink:0;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:200;overflow-y:auto}
+.sb-brand{padding:16px 18px 13px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.sb-brand img{height:30px;filter:brightness(0) invert(1);opacity:.9}
+.sb-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.3)}
+.sb-admin{padding:11px 18px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.sb-av{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--pl),var(--pa));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.sb-admin strong{display:block;font-size:13px;font-weight:600;color:#fff}
+.sb-admin span{font-size:11px;color:rgba(255,255,255,.38)}
+.sb-nav{flex:1;padding:8px 0}
+.sb-grp{padding:12px 18px 3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.27)}
+.sb-item{display:flex;align-items:center;gap:10px;padding:8px 18px;font-size:13px;font-weight:500;color:rgba(255,255,255,.52);cursor:pointer;transition:all .15s;border-left:3px solid transparent}
+.sb-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.9)}
+.sb-item.active{background:rgba(255,255,255,.1);color:#fff;border-left-color:var(--gl);font-weight:600}
+.si{width:18px;font-size:14px;text-align:center;flex-shrink:0}
+.sb-label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-bdg{background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center;flex-shrink:0}
+.sb-bdg.w{background:var(--warn);color:#1a0a00}.sb-bdg.g{background:var(--ok)}
+.sb-footer{padding:12px 18px;border-top:1px solid rgba(255,255,255,.08)}
+.sb-footer a{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.38);padding:5px 0;transition:color .15s}
+.sb-footer a:hover{color:rgba(255,255,255,.8)}
+/* main */
+.main{flex:1;margin-left:240px;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:var(--shd)}
+.tb-title{font-family:'Sora',sans-serif;font-size:15px;font-weight:700}
+.tb-right{display:flex;align-items:center;gap:9px}
+.tb-search{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);padding:6px 11px;width:196px}
+.tb-search input{border:none;background:transparent;outline:none;font-size:13px;color:var(--text);width:100%;font-family:'DM Sans',sans-serif}
+.tb-search input::placeholder{color:var(--muted)}
+.ibtm{width:34px;height:34px;border-radius:var(--r);border:1.5px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;position:relative;transition:all .15s}
+.ibtm:hover{border-color:var(--pl)}
+.ndot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--danger);border:2px solid #fff}
+.tb-pro{display:flex;align-items:center;gap:8px;padding:4px 10px;border-radius:var(--r);border:1.5px solid var(--border);cursor:pointer;transition:all .15s}
+.tb-pro:hover{border-color:var(--pl)}
+.tb-av{width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,var(--pl),var(--pa));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+/* content */
+.content{padding:20px 24px;flex:1}
+.sec{display:none}.sec.active{display:block}
+/* page header */
+.ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+.ph h1{font-size:19px;font-weight:700}.ph p{font-size:13px;color:var(--sub);margin-top:2px}
+.ph-r{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:var(--rl);padding:16px;position:relative;overflow:hidden;transition:box-shadow .2s}
+.stat:hover{box-shadow:var(--shd-md)}
+.stat-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--rl) var(--rl) 0 0}
+.stat-ico{font-size:22px;margin-bottom:7px}
+.stat-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:3px}
+.stat-val{font-family:'Sora',sans-serif;font-size:21px;font-weight:700;margin-bottom:3px}
+.stat-ch{font-size:12px;font-weight:500}
+.up{color:var(--ok)}.dn{color:var(--danger)}.neu{color:var(--muted)}
+/* grids */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g14{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+/* cards */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--rl);padding:18px;margin-bottom:14px}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
+.card-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:700}
+/* table */
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;padding:9px 12px;background:#f8fafc;font-weight:700;font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl td{padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#fafbfc}
+.tbl-red td{background:#fef2f2!important}
+/* pills */
+.pill{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.p-ok{background:var(--okl);color:var(--okd)}.p-warn{background:var(--warnl);color:var(--warnd)}
+.p-danger{background:var(--dangerl);color:var(--dangerd)}.p-blue{background:var(--bluel);color:#1d4ed8}
+.p-indigo{background:#ede9fe;color:#5b21b6}.p-muted{background:#f1f5f9;color:var(--sub)}
+.p-gold{background:#fef3c7;color:#92400e}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:8px 16px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.btn-p{background:var(--pl);color:#fff}.btn-p:hover{background:var(--pm)}
+.btn-g{background:var(--gold);color:#1a0a00}.btn-g:hover{background:var(--gl)}
+.btn-ok{background:var(--ok);color:#fff}.btn-ok:hover{background:#059669}
+.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{background:#dc2626}
+.btn-warn{background:var(--warn);color:#fff}.btn-warn:hover{background:var(--warnd)}
+.btn-out{background:#fff;color:var(--pl);border:1.5px solid var(--pl)}.btn-out:hover{background:var(--pl);color:#fff}
+.btn-ghost{background:transparent;color:var(--sub);border:1.5px solid var(--border)}.btn-ghost:hover{border-color:var(--pl);color:var(--pl)}
+.btn-sm{padding:5px 11px;font-size:12px;border-radius:6px}
+/* modals */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:1000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px)}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:var(--rxl);width:100%;max-width:600px;max-height:90vh;overflow-y:auto;box-shadow:var(--shd-lg)}
+.modal-lg{max-width:800px}
+.modal-head{padding:15px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:1}
+.modal-head h3{font-size:15px;font-weight:700}
+.modal-close{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.modal-close:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
+.modal-body{padding:20px}
+.modal-foot{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:#fff;position:sticky;bottom:0}
+/* forms */
+.fg{margin-bottom:13px}
+.fg label{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
+.fg input,.fg select,.fg textarea{width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;color:var(--text);transition:border .2s;background:#fff}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--pl)}
+.fg textarea{resize:vertical;min-height:80px;line-height:1.6}
+.frow2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+/* notices */
+.notice{padding:11px 14px;border-radius:var(--r);font-size:13px;line-height:1.6;margin-bottom:14px;display:flex;align-items:flex-start;gap:9px}
+.ni{font-size:15px;flex-shrink:0;margin-top:1px}
+.n-ok{background:var(--okl);border:1px solid #a7f3d0;color:var(--okd)}
+.n-warn{background:var(--warnl);border:1px solid #fde68a;color:var(--warnd)}
+.n-danger{background:var(--dangerl);border:1px solid #fca5a5;color:var(--dangerd)}
+.n-blue{background:var(--bluel);border:1px solid #bfdbfe;color:#1e40af}
+.n-indigo{background:#ede9fe;border:1px solid #c4b5fd;color:#4c1d95}
+/* tabs */
+.tab-bar{display:flex;border-bottom:2px solid var(--border);margin-bottom:16px;overflow-x:auto}
+.tab-btn{padding:8px 15px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none}
+.tab-btn.on{color:var(--pl);border-bottom-color:var(--pl)}
+.tabpane{display:none}.tabpane.on{display:block}
+/* toggle */
+.toggle{width:40px;height:22px;border-radius:11px;background:#cbd5e1;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;display:inline-block}
+.toggle.on{background:var(--ok)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.toggle.on::after{transform:translateX(18px)}
+/* product review cards */
+.prc{background:#fff;border:1.5px solid var(--border);border-radius:var(--rl);padding:15px;display:flex;gap:13px;margin-bottom:10px;transition:all .2s}
+.prc:hover{box-shadow:var(--shd-md);border-color:#c7d2fe}
+.prc-thumb{width:74px;height:74px;border-radius:var(--r);background:linear-gradient(135deg,#e6f6fc,#DCF3FD);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0}
+.prc-info{flex:1;min-width:0}
+.prc-info h4{font-size:14px;font-weight:700;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prc-info p{font-size:12px;color:var(--sub);margin-bottom:5px}
+.prc-meta{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px}
+.prc-acts{display:flex;gap:6px;flex-shrink:0;flex-direction:column}
+/* doc cards */
+.doc-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--r);padding:12px;display:flex;align-items:center;gap:11px;margin-bottom:8px;transition:all .15s}
+.doc-card:hover{border-color:#c7d2fe}
+.doc-ico{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+/* activity feed */
+.act-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.act-item:last-child{border-bottom:none}
+.act-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:1px}
+.ad-ok{background:var(--okl)}.ad-warn{background:var(--warnl)}.ad-danger{background:var(--dangerl)}.ad-blue{background:var(--bluel)}.ad-indigo{background:#ede9fe}
+/* metric bar */
+.mbar{margin-bottom:11px}
+.mbar-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
+.mbar-head span{color:var(--sub)}
+.bar-track{height:7px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.bar-fill{height:100%;border-radius:4px}
+/* sparkline */
+.sparkline{display:flex;align-items:flex-end;gap:3px;height:46px}
+.sp-bar{flex:1;border-radius:3px 3px 0 0;background:var(--pl);opacity:.5;min-width:6px}
+.sp-bar:hover,.sp-bar.hi{opacity:1}
+/* seller avatar */
+.s-av{width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+/* inline field */
+.ifield{padding:6px 9px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px;outline:none;color:var(--text);background:#fff;font-family:'DM Sans',sans-serif;transition:border .2s}
+.ifield:focus{border-color:var(--pl)}
+.ifield-sm{width:78px;text-align:center}
+.ifield-pct{width:68px;text-align:center}
+@media(max-width:1200px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.sidebar{display:none}.main{margin-left:0}.g14,.g2{grid-template-columns:1fr}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+</head>
+<body>
+<div class="layout">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-brand">
+    <a href="../index.html" style="display:flex;align-items:center;gap:10px">
+      <img src="../logo.png" alt="Ebazario">
+      <div><div style="font-size:13px;font-weight:700;color:#fff;font-family:Sora,sans-serif">Ebazario</div><div class="sb-tag">Admin Panel</div></div>
+    </a>
+  </div>
+  <div class="sb-admin">
+    <div class="sb-av">SA</div>
+    <div><strong>Super Admin</strong><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a6c7c2cbcfc8e6c3c4c7dcc7d4cfc988c5c9cb">[email&#160;protected]</a></span></div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-grp">Overview</div>
+    <div class="sb-item active" data-sec="sec-dashboard" onclick="nav(this)"><span class="si">📊</span><span class="sb-label">Dashboard</span></div>
+    <div class="sb-grp">Approvals</div>
+    <div class="sb-item" data-sec="sec-prod-approval" onclick="nav(this)"><span class="si">📦</span><span class="sb-label">Product Approvals</span><span class="sb-bdg">14</span></div>
+    <div class="sb-item" onclick="window.open('approval-products.html','_blank')" style="padding-left:32px;font-size:12px"><span class="si" style="font-size:12px">↗</span><span class="sb-label">Open Full Page</span></div>
+    <div class="sb-item" data-sec="sec-seller-approval" onclick="nav(this)"><span class="si">🏪</span><span class="sb-label">Seller Approvals</span><span class="sb-bdg w">6</span></div>
+    <div class="sb-item" onclick="window.open('approval-sellers.html','_blank')" style="padding-left:32px;font-size:12px"><span class="si" style="font-size:12px">↗</span><span class="sb-label">Open Full Page</span></div>
+    <div class="sb-item" data-sec="sec-doc-approval" onclick="nav(this)"><span class="si">📋</span><span class="sb-label">Document Review</span><span class="sb-bdg w">9</span></div>
+    <div class="sb-item" onclick="window.open('approval-documents.html','_blank')" style="padding-left:32px;font-size:12px"><span class="si" style="font-size:12px">↗</span><span class="sb-label">Open Full Page</span></div>
+    <div class="sb-grp">Management</div>
+    <div class="sb-item" data-sec="sec-sellers" onclick="nav(this)"><span class="si">🏭</span><span class="sb-label">All Sellers</span></div>
+    <div class="sb-item" data-sec="sec-customers" onclick="nav(this)"><span class="si">👥</span><span class="sb-label">Customers</span></div>
+    <div class="sb-item" data-sec="sec-all-products" onclick="nav(this)"><span class="si">🛍️</span><span class="sb-label">All Products</span></div>
+    <div class="sb-item" data-sec="sec-orders" onclick="nav(this)"><span class="si">🛒</span><span class="sb-label">Orders</span><span class="sb-bdg g">4</span></div>
+    <div class="sb-item" data-sec="sec-disputes" onclick="nav(this)"><span class="si">⚖️</span><span class="sb-label">Disputes</span><span class="sb-bdg">2</span></div>
+    <div class="sb-grp">Finance</div>
+    <div class="sb-item" data-sec="sec-revenue" onclick="nav(this)"><span class="si">💰</span><span class="sb-label">Revenue &amp; Finance</span></div>
+    <div class="sb-item" data-sec="sec-margins" onclick="nav(this)"><span class="si">📈</span><span class="sb-label">Profit Margins</span></div>
+    <div class="sb-item" data-sec="sec-payouts" onclick="nav(this)"><span class="si">🏦</span><span class="sb-label">Seller Payouts</span></div>
+    <div class="sb-grp">Platform</div>
+    <div class="sb-item" data-sec="sec-shipping" onclick="nav(this)"><span class="si">🚢</span><span class="sb-label">Shipping Rates</span></div>
+    <div class="sb-item" data-sec="sec-categories" onclick="nav(this)"><span class="si">🗂️</span><span class="sb-label">Categories</span></div>
+    <div class="sb-item" data-sec="sec-settings" onclick="nav(this)"><span class="si">⚙️</span><span class="sb-label">Platform Settings</span></div>
+    <div class="sb-item" data-sec="sec-security" onclick="nav(this)"><span class="si">🔒</span><span class="sb-label">Security &amp; Logs</span></div>
+    <div class="sb-grp">Reports</div>
+    <div class="sb-item" onclick="window.location.href='reports.html'"><span class="si">📊</span><span class="sb-label">Analytics &amp; Reports</span></div>
+  </nav>
+  <div class="sb-footer">
+    <a href="../index.html">🌐 <span>View Marketplace</span></a>
+    <a href="#" onclick="handleGlobalSignOut(event)" style="margin-top:2px">🚪 <span>Sign Out</span></a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-title">Dashboard</div>
+    <div class="tb-right">
+      <div class="tb-search"><span style="color:var(--muted)">🔍</span><input type="text" placeholder="Search sellers, orders, products…"></div>
+      <div class="ibtm" onclick="window.location.href='approval-products.html'">🔔<span class="ndot"></span></div>
+      <div class="ibtm" onclick="showToast('Report exported!','ok')">📥</div>
+      <div class="tb-pro"><div class="tb-av">SA</div><span style="font-size:13px;font-weight:600">Super Admin</span></div>
+    </div>
+  </div>
+  <div class="content">
+
+<!-- ═══════════════ DASHBOARD ═══════════════ -->
+<div id="sec-dashboard" class="sec active">
+<!-- Welcome Human Banner -->
+  <div class="card" style="padding:0; overflow:hidden; border:none; margin-bottom:24px; position:relative; background:linear-gradient(135deg, var(--navy), #0a5b82); color:#fff; display:flex; min-height:180px">
+    <div style="flex:1; padding:32px; display:flex; flex-direction:column; justify-content:center; position:relative; z-index:2">
+      <h1 style="font-size:24px; color:#fff; margin-bottom:8px">Good morning, Admin! 👋</h1>
+      <p style="font-size:14px; color:rgba(255,255,255,0.75); max-width:400px; line-height:1.6">The marketplace is thriving today. You have a few pending tasks that need your unique attention to keep things running smoothly.</p>
+      <div style="margin-top:20px; display:flex; gap:12px">
+        <button class="btn btn-p" style="background:#fff; color:var(--navy); padding:8px 20px" onclick="nav(document.querySelector('[data-sec=sec-prod-approval]'))">Start Verification</button>
+        <button class="btn btn-ghost" style="border-color:rgba(255,255,255,0.2); color:#fff" onclick="window.location.href='reports.html'">View Reports</button>
+      </div>
+    </div>
+    <div style="width:40%; position:relative; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.03)">
+      <img src="../img/dashboard/welcome.png" alt="Welcome" style="width:100%; height:100%; object-fit:cover; opacity:1">
+      <div style="position:absolute; inset:0; background:linear-gradient(90deg, var(--navy) 0%, transparent 100%)"></div>
+    </div>
+  </div>
+
+  <div class="ph" style="margin-bottom:12px">
+    <div><h3 style="font-size:16px; font-weight:700">Platform Pulse</h3></div>
+  </div>
+  <div class="notice n-warn" style="margin-bottom:24px; border-radius:12px; padding:14px 20px; display:flex; align-items:center; gap:12px; background:var(--warnl); border:1px solid rgba(245,158,11,0.2); color:var(--warnd)">
+    <span style="font-size:18px">🔥</span>
+    <div style="font-size:13px; font-weight:500"><strong>Daily Digest:</strong> 14 products pending · 6 new sellers · 9 documents to verify · 2 disputes</div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--ok),#34d399)"></div><div class="stat-ico">💰</div><div class="stat-lbl">Platform Revenue (MTD)</div><div class="stat-val">$2.48M</div><div class="stat-ch up">↑ 18.4% vs last month</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--pl),var(--pa))"></div><div class="stat-ico">🛒</div><div class="stat-lbl">Active Orders</div><div class="stat-val">1,284</div><div class="stat-ch up">↑ 124 orders today</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--gold),var(--gl))"></div><div class="stat-ico">🏪</div><div class="stat-lbl">Verified Sellers</div><div class="stat-val">8,640</div><div class="stat-ch up">↑ 42 new this week</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#06b6d4,#22d3ee)"></div><div class="stat-ico">👥</div><div class="stat-lbl">Registered Buyers</div><div class="stat-val">142K</div><div class="stat-ch up">↑ 2,100 this month</div></div>
+  </div>
+  <div class="g14" style="margin-bottom:16px">
+    <div class="card" style="margin-bottom:0">
+      <div class="card-head"><div><div class="card-title">🚨 Pending Actions</div><div style="font-size:12px;color:var(--muted)">Requires attention</div></div></div>
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:11px;background:#fef3c7;border-radius:var(--r);border:1px solid #fde68a">
+          <div style="display:flex;align-items:center;gap:9px"><span style="font-size:20px">📦</span><div><strong style="font-size:13px;display:block">Product Approvals</strong><span style="font-size:12px;color:var(--warnd)">14 products awaiting review</span></div></div>
+          <button class="btn btn-warn btn-sm" onclick="window.location.href='approval-products.html'">Review →</button>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:11px;background:#ede9fe;border-radius:var(--r);border:1px solid #c4b5fd">
+          <div style="display:flex;align-items:center;gap:9px"><span style="font-size:20px">🏪</span><div><strong style="font-size:13px;display:block">New Seller Applications</strong><span style="font-size:12px;color:#5b21b6">6 sellers waiting for approval</span></div></div>
+          <button class="btn btn-p btn-sm" onclick="window.location.href='approval-sellers.html'">Review →</button>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:11px;background:var(--dangerl);border-radius:var(--r);border:1px solid #fca5a5">
+          <div style="display:flex;align-items:center;gap:9px"><span style="font-size:20px">⚖️</span><div><strong style="font-size:13px;display:block">Open Disputes</strong><span style="font-size:12px;color:var(--dangerd)">2 buyer–seller disputes open</span></div></div>
+          <button class="btn btn-danger btn-sm" onclick="nav(document.querySelector('[data-sec=sec-disputes]'))">Resolve →</button>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:11px;background:var(--bluel);border-radius:var(--r);border:1px solid #bfdbfe">
+          <div style="display:flex;align-items:center;gap:9px"><span style="font-size:20px">📋</span><div><strong style="font-size:13px;display:block">Document Verification</strong><span style="font-size:12px;color:#1d4ed8">9 documents need review</span></div></div>
+          <button class="btn btn-out btn-sm" onclick="window.location.href='approval-documents.html'">Review →</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="card-head"><div class="card-title">📈 Revenue Trend (7 Days)</div><span class="pill p-ok">↑ 18.4%</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+        <div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:600;letter-spacing:.5px">Total GMV</div><div style="font-family:Sora,sans-serif;font-size:26px;font-weight:700">$2.48M</div></div>
+        <div style="text-align:right"><div style="font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:600;letter-spacing:.5px">Platform Fee (5%)</div><div style="font-family:Sora,sans-serif;font-size:26px;font-weight:700;color:var(--ok)">$124K</div></div>
+      </div>
+      <div class="sparkline">
+        <div class="sp-bar" style="height:45%"></div><div class="sp-bar" style="height:60%"></div>
+        <div class="sp-bar" style="height:50%"></div><div class="sp-bar" style="height:75%"></div>
+        <div class="sp-bar" style="height:65%"></div><div class="sp-bar" style="height:85%"></div>
+        <div class="sp-bar hi" style="height:100%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Today</span></div>
+      <div style="border-top:1px solid var(--border);margin-top:13px;padding-top:13px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">
+        <div><div style="font-size:11px;color:var(--muted);font-weight:600">ORDERS</div><div style="font-family:Sora,sans-serif;font-weight:700;font-size:15px">1,284</div></div>
+        <div style="border-left:1px solid var(--border);border-right:1px solid var(--border)"><div style="font-size:11px;color:var(--muted);font-weight:600">AVG ORDER</div><div style="font-family:Sora,sans-serif;font-weight:700;font-size:15px">$1,932</div></div>
+        <div><div style="font-size:11px;color:var(--muted);font-weight:600">PRODUCTS</div><div style="font-family:Sora,sans-serif;font-weight:700;font-size:15px">1.28M</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card" style="margin-bottom:0">
+      <div class="card-head"><div class="card-title">Recent Orders</div><button class="btn btn-ghost btn-sm" onclick="nav(document.querySelector('[data-sec=sec-orders]'))">View All</button></div>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Order</th><th>Buyer</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>#EB-28401</strong></td><td>🇺🇸 James W.</td><td>$57,000</td><td><span class="pill p-ok">Delivered</span></td></tr>
+          <tr><td><strong>#EB-28398</strong></td><td>🇦🇪 Ahmed K.</td><td>$4,750</td><td><span class="pill p-warn">In Transit</span></td></tr>
+          <tr><td><strong>#EB-28395</strong></td><td>🇬🇧 Sarah L.</td><td>$37,000</td><td><span class="pill p-ok">Delivered</span></td></tr>
+          <tr><td><strong>#EB-28390</strong></td><td>🇩🇪 Klaus M.</td><td>$72,500</td><td><span class="pill p-blue">Processing</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="card-head"><div class="card-title">Live Activity</div><span class="pill p-ok" style="font-size:10px">● LIVE</span></div>
+      <div class="act-item"><div class="act-dot ad-ok">✓</div><div><div style="font-size:13px"><strong>Product Approved</strong> — "Rugged Laptop 15.6"" by TechPro CN</div><div style="font-size:11px;color:var(--muted)">2 min ago</div></div></div>
+      <div class="act-item"><div class="act-dot ad-indigo">🏪</div><div><div style="font-size:13px"><strong>New Seller Application</strong> — GlobalTech Vietnam submitted docs</div><div style="font-size:11px;color:var(--muted)">14 min ago</div></div></div>
+      <div class="act-item"><div class="act-dot ad-warn">📋</div><div><div style="font-size:13px"><strong>Document Uploaded</strong> — CE Certificate from TechPro</div><div style="font-size:11px;color:var(--muted)">28 min ago</div></div></div>
+      <div class="act-item"><div class="act-dot ad-danger">⚖️</div><div><div style="font-size:13px"><strong>Dispute Filed</strong> — Order #EB-28371 · Missing items</div><div style="font-size:11px;color:var(--muted)">1h ago</div></div></div>
+      <div class="act-item"><div class="act-dot ad-ok">💰</div><div><div style="font-size:13px"><strong>Payout Processed</strong> — $59,280 to TechPro</div><div style="font-size:11px;color:var(--muted)">2h ago</div></div></div>
+      <div class="act-item"><div class="act-dot ad-blue">📦</div><div><div style="font-size:13px"><strong>Product Rejected</strong> — Missing CE cert · 5G Router</div><div style="font-size:11px;color:var(--muted)">3h ago</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PRODUCT APPROVALS ═══════════════ -->
+<div id="sec-prod-approval" class="sec">
+  <div class="ph">
+    <div><h1>Product Approvals</h1><p>Review and approve / reject products submitted by sellers</p></div>
+    <div class="ph-r">
+      <select class="ifield" style="width:160px"><option>All Categories</option><option>Electronics</option><option>Machinery</option><option>Apparel</option><option>Healthcare</option></select>
+      <button class="btn btn-ghost btn-sm" onclick="showToast('Sorted!','ok')">Sort: Oldest First</button>
+    </div>
+  </div>
+  <div data-tabs>
+    <div class="tab-bar">
+      <button class="tab-btn on" onclick="showTab('pap-pending',this)">⏳ Pending (14)</button>
+      <button class="tab-btn" onclick="showTab('pap-approved',this)">✅ Approved Today (28)</button>
+      <button class="tab-btn" onclick="showTab('pap-rejected',this)">❌ Rejected (7)</button>
+    </div>
+    <div id="pap-pending" class="tabpane on">
+      <div class="notice n-blue"><span class="ni">ℹ️</span><div>Review each product carefully: image quality, description, pricing, valid certifications, and seller status. Approved products go live immediately.</div></div>
+      <div class="prc">
+        <div class="prc-thumb">💻</div>
+        <div class="prc-info">
+          <h4>Industrial Rugged Laptop 15.6" Core i7 IP65 MIL-STD-810H</h4>
+          <p>By <strong>Shenzhen TechPro Electronics</strong> · ⭐ Gold Seller · Verified · Submitted 2h ago</p>
+          <div class="prc-meta"><span class="pill p-blue">Electronics</span><span class="pill p-muted">$285/unit</span><span class="pill p-muted">MOQ: 50</span><span class="pill p-ok">CE ✓</span><span class="pill p-ok">FCC ✓</span><span class="pill p-ok">6 Photos</span></div>
+          <div style="font-size:12px;color:var(--sub)">450 word description · 12 specs · 3 price tiers · CE, FCC, RoHS, MIL-STD-810H</div>
+        </div>
+        <div class="prc-acts">
+          <button class="btn btn-ok btn-sm" onclick="approveProduct(this,'Industrial Rugged Laptop')">✓ Approve</button>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-prod-review')">👁 Review</button>
+          <button class="btn btn-danger btn-sm" onclick="openModal('modal-reject-prod')">✕ Reject</button>
+        </div>
+      </div>
+      <div class="prc">
+        <div class="prc-thumb">📡</div>
+        <div class="prc-info">
+          <h4>5G Industrial Router 4-Port Gigabit DIN Rail Mount</h4>
+          <p>By <strong>Shenzhen TechPro Electronics</strong> · ⭐ Gold Seller · Submitted 6h ago</p>
+          <div class="prc-meta"><span class="pill p-blue">Electronics</span><span class="pill p-muted">$78/unit</span><span class="pill p-muted">MOQ: 100</span><span class="pill p-danger">CE Missing ✕</span><span class="pill p-ok">4 Photos</span></div>
+          <div style="font-size:12px;color:var(--dangerd);font-weight:600">⚠️ CE certificate required for electronics sold in EU markets — not uploaded</div>
+        </div>
+        <div class="prc-acts">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-prod-review')">👁 Review</button>
+          <button class="btn btn-danger btn-sm" onclick="openModal('modal-reject-prod')">✕ Reject</button>
+        </div>
+      </div>
+      <div class="prc">
+        <div class="prc-thumb">👗</div>
+        <div class="prc-info">
+          <h4>Premium Cotton T-Shirts 180gsm OEM Custom Logo Printing</h4>
+          <p>By <strong>Dhaka Textiles International</strong> · 🥈 Silver Seller · Verified · 8h ago</p>
+          <div class="prc-meta"><span class="pill p-blue">Apparel</span><span class="pill p-muted">$1.80/piece</span><span class="pill p-muted">MOQ: 500</span><span class="pill p-ok">OEKO-TEX ✓</span><span class="pill p-ok">6 Photos</span></div>
+          <div style="font-size:12px;color:var(--sub)">320 words · Sizes XS–5XL · 24 colors · Lead time: 25–35 days</div>
+        </div>
+        <div class="prc-acts">
+          <button class="btn btn-ok btn-sm" onclick="approveProduct(this,'Cotton T-Shirts')">✓ Approve</button>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-prod-review')">👁 Review</button>
+          <button class="btn btn-danger btn-sm" onclick="openModal('modal-reject-prod')">✕ Reject</button>
+        </div>
+      </div>
+      <div class="prc">
+        <div class="prc-thumb">⚙️</div>
+        <div class="prc-info">
+          <h4>CNC Milling Machine VMC850 3-Axis Vertical Machining Center</h4>
+          <p>By <strong>Precision Manufacturing GmbH</strong> · 💎 Platinum Seller · Verified · 1d ago</p>
+          <div class="prc-meta"><span class="pill p-blue">Machinery</span><span class="pill p-muted">$18,500/unit</span><span class="pill p-muted">MOQ: 1</span><span class="pill p-ok">CE ✓</span><span class="pill p-ok">ISO ✓</span><span class="pill p-ok">Video ✓</span></div>
+          <div style="font-size:12px;color:var(--sub)">Complete specs, CE+ISO certified, factory video — excellent submission</div>
+        </div>
+        <div class="prc-acts">
+          <button class="btn btn-ok btn-sm" onclick="approveProduct(this,'CNC Milling Machine')">✓ Approve</button>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-prod-review')">👁 Review</button>
+          <button class="btn btn-danger btn-sm" onclick="openModal('modal-reject-prod')">✕ Reject</button>
+        </div>
+      </div>
+      <div class="prc" style="border-color:#fca5a5;background:#fff8f8">
+        <div class="prc-thumb" style="background:linear-gradient(135deg,#fee2e2,#fecaca)">🏥</div>
+        <div class="prc-info">
+          <h4>Surgical N95 Respirator Mask 5-Layer KN95</h4>
+          <p>By <strong>MedSupply Co.</strong> · Free Seller · <strong style="color:var(--danger)">NOT Verified</strong> · 1d ago</p>
+          <div class="prc-meta"><span class="pill p-blue">Healthcare</span><span class="pill p-muted">$0.45/piece</span><span class="pill p-muted">MOQ: 10,000</span><span class="pill p-danger">FDA Missing</span><span class="pill p-danger">CE Missing</span><span class="pill p-warn">Not Verified</span></div>
+          <div style="font-size:12px;color:var(--dangerd);font-weight:600">⚠️ Medical products require FDA + CE/ISO 13485. Seller is unverified. Cannot approve.</div>
+        </div>
+        <div class="prc-acts">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-prod-review')">👁 Review</button>
+          <button class="btn btn-danger btn-sm" onclick="openModal('modal-reject-prod')">✕ Reject</button>
+        </div>
+      </div>
+    </div>
+    <div id="pap-approved" class="tabpane">
+      <div class="notice n-ok"><span class="ni">✅</span><div>28 products approved today and now live on the marketplace.</div></div>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Product</th><th>Seller</th><th>Category</th><th>Price</th><th>Approved</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Rugged Laptop 15.6"</strong></td><td>TechPro CN</td><td><span class="pill p-blue">Electronics</span></td><td>$285</td><td>10:24 AM</td></tr>
+          <tr><td><strong>LiFePO4 Battery 100Ah</strong></td><td>EnergyCo</td><td><span class="pill p-blue">Electronics</span></td><td>$145</td><td>9:15 AM</td></tr>
+          <tr><td><strong>Cotton OEM Shirts</strong></td><td>Dhaka Textiles</td><td><span class="pill p-gold">Apparel</span></td><td>$1.80</td><td>8:50 AM</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div id="pap-rejected" class="tabpane">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Product</th><th>Seller</th><th>Rejection Reason</th><th>Date</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><strong>5G Router DIN Rail</strong></td><td>TechPro CN</td><td><span class="pill p-danger">Missing CE Certificate</span></td><td>Today</td><td><button class="btn btn-ghost btn-sm" onclick="openModal('modal-prod-review')">View</button></td></tr>
+          <tr><td><strong>Industrial Monitor 24"</strong></td><td>DisplayPro</td><td><span class="pill p-danger">Watermarked Images</span></td><td>Yesterday</td><td><button class="btn btn-ghost btn-sm">View</button></td></tr>
+          <tr><td><strong>KN95 Mask Bulk</strong></td><td>MedSupply</td><td><span class="pill p-danger">No FDA/CE Certification</span></td><td>Yesterday</td><td><button class="btn btn-ghost btn-sm">View</button></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SELLER APPROVALS ═══════════════ -->
+<div id="sec-seller-approval" class="sec">
+  <div class="ph"><div><h1>Seller Approvals</h1><p>Review new seller applications and grant marketplace access</p></div></div>
+  <div class="notice n-indigo"><span class="ni">🏪</span><div><strong>6 new sellers</strong> waiting for account approval. Review submitted documents and business details. Rejected sellers receive an email explaining the reason.</div></div>
+  <div data-tabs>
+    <div class="tab-bar">
+      <button class="tab-btn on" onclick="showTab('sap-pending',this)">⏳ Pending (6)</button>
+      <button class="tab-btn" onclick="showTab('sap-approved',this)">✅ Approved This Week (18)</button>
+      <button class="tab-btn" onclick="showTab('sap-rejected',this)">❌ Rejected (4)</button>
+    </div>
+    <div id="sap-pending" class="tabpane on">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Company</th><th>Country</th><th>Industry</th><th>Plan</th><th>Docs</th><th>Submitted</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">🏭</div><div><strong style="display:block">GlobalTech Vietnam Co.</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5532393a3734392130363d15233b7b363a38">[email&#160;protected]</a></span></div></div></td>
+            <td>🇻🇳 Vietnam</td><td><span class="pill p-blue">Electronics</span></td><td><span class="pill p-gold">⭐ Gold</span></td>
+            <td><span class="pill p-ok">3/3 ✓</span></td><td style="font-size:12px;color:var(--muted)">2h ago</td>
+            <td><div style="display:flex;gap:5px">
+              <button class="btn btn-ok btn-sm" onclick="approveSeller(this,'GlobalTech Vietnam')">✓ Approve</button>
+              <button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-review')">View Docs</button>
+              <button class="btn btn-danger btn-sm" onclick="openModal('modal-reject-seller')">✕ Reject</button>
+            </div></td>
+          </tr>
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">👗</div><div><strong style="display:block">Istanbul Fashion Export</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="761f181019361f0502171814031a1017051e1f1918580204">[email&#160;protected]</a></span></div></div></td>
+            <td>🇹🇷 Turkey</td><td><span class="pill p-gold">Apparel</span></td><td><span class="pill p-muted">🥈 Silver</span></td>
+            <td><span class="pill p-warn">2/3 ⚠</span></td><td style="font-size:12px;color:var(--muted)">5h ago</td>
+            <td><div style="display:flex;gap:5px">
+              <button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-review')">View Docs</button>
+              <button class="btn btn-warn btn-sm" onclick="openModal('modal-request-docs')">Request Docs</button>
+              <button class="btn btn-danger btn-sm" onclick="openModal('modal-reject-seller')">✕ Reject</button>
+            </div></td>
+          </tr>
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">🔧</div><div><strong style="display:block">AutoParts Korea Ltd.</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="87f4e6ebe2f4c7e6f2f3e8f7e6f5f3f4a9ecf5">[email&#160;protected]</a></span></div></div></td>
+            <td>🇰🇷 South Korea</td><td><span class="pill p-blue">Auto Parts</span></td><td><span class="pill p-indigo">💎 Platinum</span></td>
+            <td><span class="pill p-ok">4/4 ✓</span></td><td style="font-size:12px;color:var(--muted)">1d ago</td>
+            <td><div style="display:flex;gap:5px">
+              <button class="btn btn-ok btn-sm" onclick="approveSeller(this,'AutoParts Korea')">✓ Approve</button>
+              <button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-review')">View Docs</button>
+              <button class="btn btn-danger btn-sm" onclick="openModal('modal-reject-seller')">✕ Reject</button>
+            </div></td>
+          </tr>
+          <tr class="tbl-red">
+            <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">⚠️</div><div><strong style="display:block">AgroExport Nigeria</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="21484f474e614046534e4459514e53550f4f46">[email&#160;protected]</a></span></div></div></td>
+            <td>🇳🇬 Nigeria</td><td><span class="pill p-ok">Food &amp; Agri</span></td><td><span class="pill p-muted">Free</span></td>
+            <td><span class="pill p-danger">1/3 ✕</span></td><td style="font-size:12px;color:var(--muted)">2d ago</td>
+            <td><div style="display:flex;gap:5px">
+              <button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-review')">View Docs</button>
+              <button class="btn btn-warn btn-sm" onclick="openModal('modal-request-docs')">Request Docs</button>
+            </div></td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div id="sap-approved" class="tabpane">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Seller</th><th>Country</th><th>Plan</th><th>Products</th><th>Approved</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Precision Mfg GmbH</strong></td><td>🇩🇪 Germany</td><td><span class="pill p-indigo">💎 Platinum</span></td><td>860</td><td>Mon 9:00</td><td><span class="pill p-ok">Active</span></td></tr>
+          <tr><td><strong>TechPro Electronics</strong></td><td>🇨🇳 China</td><td><span class="pill p-gold">⭐ Gold</span></td><td>2,480</td><td>Mon 11:30</td><td><span class="pill p-ok">Active</span></td></tr>
+          <tr><td><strong>Dhaka Textiles Intl</strong></td><td>🇧🇩 Bangladesh</td><td><span class="pill p-muted">🥈 Silver</span></td><td>3,100</td><td>Tue 14:15</td><td><span class="pill p-ok">Active</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div id="sap-rejected" class="tabpane">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Seller</th><th>Country</th><th>Rejection Reason</th><th>Date</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Fake Electronics Co.</strong></td><td>🇷🇺 Russia</td><td><span class="pill p-danger">Fraudulent Documents</span></td><td>Mon</td></tr>
+          <tr><td><strong>NoDoc Seller</strong></td><td>Unknown</td><td><span class="pill p-danger">Incomplete Application</span></td><td>Sun</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ DOCUMENT REVIEW ═══════════════ -->
+<div id="sec-doc-approval" class="sec">
+  <div class="ph"><div><h1>Document Verification</h1><p>Review and approve seller-uploaded compliance documents</p></div></div>
+  <div class="notice n-warn"><span class="ni">⚠️</span><div><strong>9 documents</strong> awaiting review. Medical and electronics certifications are high-priority. Approved documents unlock product listings in relevant categories.</div></div>
+  <div class="g14">
+    <div>
+      <div class="doc-card">
+        <div class="doc-ico" style="background:#ede9fe">📄</div>
+        <div style="flex:1;min-width:0"><strong style="display:block;font-size:13px">CE_Certificate_Electronics_2024.pdf</strong><span style="font-size:12px;color:var(--sub)">Shenzhen TechPro · 2.4 MB · 2h ago</span></div>
+        <span class="pill p-warn">Pending</span>
+        <div style="display:flex;gap:5px">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-doc-review')">👁 View</button>
+          <button class="btn btn-ok btn-sm" onclick="approveDoc(this)">✓ Approve</button>
+          <button class="btn btn-danger btn-sm" onclick="openModal('modal-reject-doc')">✕ Reject</button>
+        </div>
+      </div>
+      <div class="doc-card">
+        <div class="doc-ico" style="background:#ede9fe">📄</div>
+        <div style="flex:1;min-width:0"><strong style="display:block;font-size:13px">Business_License_GlobalTech_VN.pdf</strong><span style="font-size:12px;color:var(--sub)">GlobalTech Vietnam · 1.8 MB · 5h ago</span></div>
+        <span class="pill p-warn">Pending</span>
+        <div style="display:flex;gap:5px">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-doc-review')">👁 View</button>
+          <button class="btn btn-ok btn-sm" onclick="approveDoc(this)">✓ Approve</button>
+          <button class="btn btn-danger btn-sm" onclick="openModal('modal-reject-doc')">✕ Reject</button>
+        </div>
+      </div>
+      <div class="doc-card" style="border-color:#fca5a5">
+        <div class="doc-ico" style="background:var(--dangerl)">📄</div>
+        <div style="flex:1;min-width:0"><strong style="display:block;font-size:13px">FDA_Approval_KN95_Masks.pdf</strong><span style="font-size:12px;color:var(--sub)">MedSupply Co. · Healthcare · 3.1 MB · 1d ago</span></div>
+        <span class="pill p-danger">High Priority</span>
+        <div style="display:flex;gap:5px">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-doc-review')">👁 View</button>
+          <button class="btn btn-ok btn-sm" onclick="approveDoc(this)">✓ Approve</button>
+          <button class="btn btn-danger btn-sm" onclick="openModal('modal-reject-doc')">✕ Reject</button>
+        </div>
+      </div>
+      <div class="doc-card">
+        <div class="doc-ico" style="background:var(--okl)">📄</div>
+        <div style="flex:1;min-width:0"><strong style="display:block;font-size:13px">ISO9001_Certificate_TechPro_2024.pdf</strong><span style="font-size:12px;color:var(--sub)">TechPro CN · 1.2 MB · Today 8am</span></div>
+        <span class="pill p-ok">Approved ✓</span>
+        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-doc-review')">👁 View</button>
+      </div>
+      <div class="doc-card">
+        <div class="doc-ico" style="background:var(--dangerl)">📄</div>
+        <div style="flex:1;min-width:0"><strong style="display:block;font-size:13px">Safety_Cert_Expired_2022.pdf</strong><span style="font-size:12px;color:var(--sub)">BadActor Ltd. · Expired document · 2d ago</span></div>
+        <span class="pill p-danger">Rejected ✕</span>
+        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-doc-review')">👁 View</button>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title" style="margin-bottom:13px">Document Stats (This Month)</div>
+        <div class="mbar"><div class="mbar-head"><span>Approved</span><strong style="color:var(--ok)">148 (74%)</strong></div><div class="bar-track"><div class="bar-fill" style="width:74%;background:var(--ok)"></div></div></div>
+        <div class="mbar"><div class="mbar-head"><span>Pending</span><strong style="color:var(--warn)">9 (4%)</strong></div><div class="bar-track"><div class="bar-fill" style="width:4%;background:var(--warn)"></div></div></div>
+        <div class="mbar"><div class="mbar-head"><span>Rejected</span><strong style="color:var(--danger)">44 (22%)</strong></div><div class="bar-track"><div class="bar-fill" style="width:22%;background:var(--danger)"></div></div></div>
+        <div style="border-top:1px solid var(--border);padding-top:11px;margin-top:4px;font-size:12px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--muted)">Avg Review Time</span><strong>4.2 hours</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Most Common Rejection</span><strong>Expired Docs</strong></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:12px">Required Doc Types</div>
+        <div style="font-size:13px;display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between"><span>Business License</span><span class="pill p-ok">Required</span></div>
+          <div style="display:flex;justify-content:space-between"><span>CE Certificate (Electronics)</span><span class="pill p-danger">Required</span></div>
+          <div style="display:flex;justify-content:space-between"><span>FDA (Healthcare)</span><span class="pill p-danger">Required</span></div>
+          <div style="display:flex;justify-content:space-between"><span>ISO 9001</span><span class="pill p-warn">Recommended</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Export License</span><span class="pill p-warn">Recommended</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Factory Audit Report</span><span class="pill p-muted">Optional</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ ALL SELLERS ═══════════════ -->
+<div id="sec-sellers" class="sec">
+  <div class="ph">
+    <div><h1>All Sellers (8,640)</h1></div>
+    <div class="ph-r">
+      <input class="ifield" type="text" placeholder="Search sellers…" style="width:190px">
+      <select class="ifield" style="width:120px"><option>All Plans</option><option>Free</option><option>Silver</option><option>Gold</option><option>Platinum</option></select>
+      <select class="ifield" style="width:120px"><option>All Status</option><option>Active</option><option>Suspended</option><option>Pending</option></select>
+      <button class="btn btn-ghost btn-sm" onclick="showToast('Exported!','ok')">📥 Export</button>
+    </div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Seller</th><th>Country</th><th>Plan</th><th>Products</th><th>Revenue (MTD)</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">🔌</div><div><strong style="display:block">Shenzhen TechPro Electronics</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="463223252e36342906352e23283c2e23286825292b">[email&#160;protected]</a> · Since 2006</span></div></div></td>
+          <td>🇨🇳 China</td><td><span class="pill p-gold">⭐ Gold</span></td><td>2,480</td><td>$48,200</td><td>⭐ 4.9</td><td><span class="pill p-ok">Active</span></td>
+          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-profile')">View</button><button class="btn btn-warn btn-sm" onclick="if(confirm('Suspend seller?'))showToast('Seller suspended','warn')">Suspend</button></div></td>
+        </tr>
+        <tr>
+          <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">⚙️</div><div><strong style="display:block">Precision Manufacturing GmbH</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="86efe8e0e9c6f6f4e3e5eff5efe9e8ebe0e1a8e2e3">[email&#160;protected]</a> · Since 2014</span></div></div></td>
+          <td>🇩🇪 Germany</td><td><span class="pill p-indigo">💎 Platinum</span></td><td>860</td><td>$124,000</td><td>⭐ 5.0</td><td><span class="pill p-ok">Active</span></td>
+          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-profile')">View</button><button class="btn btn-warn btn-sm" onclick="if(confirm('Suspend?'))showToast('Suspended','warn')">Suspend</button></div></td>
+        </tr>
+        <tr>
+          <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">👗</div><div><strong style="display:block">Dhaka Textiles International</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c7aea9a1a887a3afa6aca6b3a2bfb3aeaba2b4e9a5a3">[email&#160;protected]</a> · Since 2018</span></div></div></td>
+          <td>🇧🇩 Bangladesh</td><td><span class="pill p-muted">🥈 Silver</span></td><td>3,100</td><td>$18,400</td><td>⭐ 4.7</td><td><span class="pill p-ok">Active</span></td>
+          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-profile')">View</button><button class="btn btn-warn btn-sm" onclick="if(confirm('Suspend?'))showToast('Suspended','warn')">Suspend</button></div></td>
+        </tr>
+        <tr class="tbl-red">
+          <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">💀</div><div><strong style="display:block">BadActor Trading Ltd.</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5a2f343134352d341a292f292a3f392e74282f">[email&#160;protected]</a> · Flagged</span></div></div></td>
+          <td>🇷🇺 Russia</td><td><span class="pill p-muted">Free</span></td><td>0</td><td>$0</td><td>—</td><td><span class="pill p-danger">Suspended</span></td>
+          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-profile')">View</button><button class="btn btn-ok btn-sm" onclick="showToast('Reinstated','ok')">Reinstate</button><button class="btn btn-danger btn-sm" onclick="if(confirm('Delete?'))showToast('Deleted','warn')">Delete</button></div></td>
+        </tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════════ CUSTOMERS ═══════════════ -->
+<div id="sec-customers" class="sec">
+  <div class="ph">
+    <div><h1>Customers (142,000)</h1></div>
+    <div class="ph-r"><input class="ifield" type="text" placeholder="Search customers…" style="width:200px"><button class="btn btn-ghost btn-sm" onclick="showToast('Exported!','ok')">📥 Export CSV</button></div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-bar" style="background:var(--ok)"></div><div class="stat-lbl">Total Registered</div><div class="stat-val">142K</div><div class="stat-ch up">↑ 2,100 this month</div></div>
+    <div class="stat"><div class="stat-bar" style="background:var(--pl)"></div><div class="stat-lbl">Active Buyers (30d)</div><div class="stat-val">38,420</div><div class="stat-ch neu">27% of total</div></div>
+    <div class="stat"><div class="stat-bar" style="background:var(--gold)"></div><div class="stat-lbl">Avg Order Value</div><div class="stat-val">$1,932</div><div class="stat-ch up">↑ 8% vs last month</div></div>
+    <div class="stat"><div class="stat-bar" style="background:var(--danger)"></div><div class="stat-lbl">Flagged Accounts</div><div class="stat-val">3</div><div class="stat-ch neu">Needs review</div></div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Customer</th><th>Country</th><th>Orders</th><th>Total Spent</th><th>Last Order</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td><div><strong>James Wilson</strong><div style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="cea4afa3abbd8ebaabada6ada1bcbee0ada1a3">[email&#160;protected]</a></div></div></td><td>🇺🇸 USA</td><td>14</td><td>$284,000</td><td>Jan 15</td><td><span class="pill p-ok">Active</span></td><td><button class="btn btn-ghost btn-sm" onclick="openModal('modal-customer-view')">View</button></td></tr>
+        <tr><td><div><strong>Ahmed Al-Khatib</strong><div style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="82e3eaefe7e6c2f7e3e7e4ebf0eface3e7">[email&#160;protected]</a></div></div></td><td>🇦🇪 UAE</td><td>8</td><td>$142,500</td><td>Jan 10</td><td><span class="pill p-ok">Active</span></td><td><button class="btn btn-ghost btn-sm" onclick="openModal('modal-customer-view')">View</button></td></tr>
+        <tr><td><div><strong>Sarah Lawrence</strong><div style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3f4c5e4d5e577f4a5456524f504d4b115c50114a54">[email&#160;protected]</a></div></div></td><td>🇬🇧 UK</td><td>6</td><td>$98,000</td><td>Dec 28</td><td><span class="pill p-ok">Active</span></td><td><button class="btn btn-ghost btn-sm" onclick="openModal('modal-customer-view')">View</button></td></tr>
+        <tr class="tbl-red"><td><div><strong>Suspicious User</strong><div style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7d1b0f1c08193d0e080e0d181e09531e1210">[email&#160;protected]</a></div></div></td><td>🌐 Unknown</td><td>0</td><td>$0</td><td>Never</td><td><span class="pill p-danger">Flagged</span></td><td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm">View</button><button class="btn btn-danger btn-sm" onclick="if(confirm('Ban?'))showToast('Banned','warn')">Ban</button></div></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════════ ALL PRODUCTS ═══════════════ -->
+<div id="sec-all-products" class="sec">
+  <div class="ph">
+    <div><h1>All Products (1.28M)</h1></div>
+    <div class="ph-r">
+      <input class="ifield" type="text" placeholder="Search products…" style="width:190px">
+      <select class="ifield" style="width:150px"><option>All Categories</option><option>Electronics</option><option>Machinery</option><option>Apparel</option></select>
+      <select class="ifield" style="width:120px"><option>All Status</option><option>Live</option><option>Pending</option><option>Rejected</option></select>
+    </div>
+  </div>
+  <div class="notice n-blue"><span class="ni">ℹ️</span><div>Edit the <strong>Margin %</strong> column to adjust platform markup per product. Changes take effect immediately. Buyer Price = Seller Base × (1 + margin%).</div></div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Product</th><th>Seller</th><th>Category</th><th>Base Price</th><th>Margin %</th><th>Buyer Price</th><th>Views</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Industrial Laptop 15.6"</strong></td><td>TechPro CN</td><td><span class="pill p-blue">Electronics</span></td><td>$250</td><td><input class="ifield ifield-pct" type="number" value="12"></td><td style="font-weight:700;color:var(--ok)">$280</td><td>12,480</td><td><span class="pill p-ok">Live</span></td><td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm">Edit</button><button class="btn btn-danger btn-sm" onclick="if(confirm('Remove?'))showToast('Removed','warn')">Remove</button></div></td></tr>
+        <tr><td><strong>CNC Machine VMC850</strong></td><td>Precision DE</td><td><span class="pill p-blue">Machinery</span></td><td>$16,818</td><td><input class="ifield ifield-pct" type="number" value="10"></td><td style="font-weight:700;color:var(--ok)">$18,500</td><td>3,200</td><td><span class="pill p-ok">Live</span></td><td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm">Edit</button><button class="btn btn-danger btn-sm" onclick="if(confirm('Remove?'))showToast('Removed','warn')">Remove</button></div></td></tr>
+        <tr><td><strong>Cotton T-Shirts OEM</strong></td><td>Dhaka Textiles</td><td><span class="pill p-gold">Apparel</span></td><td>$1.53</td><td><input class="ifield ifield-pct" type="number" value="18"></td><td style="font-weight:700;color:var(--ok)">$1.80</td><td>8,900</td><td><span class="pill p-ok">Live</span></td><td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm">Edit</button><button class="btn btn-danger btn-sm" onclick="if(confirm('Remove?'))showToast('Removed','warn')">Remove</button></div></td></tr>
+        <tr><td><strong>5G Router DIN Rail</strong></td><td>TechPro CN</td><td><span class="pill p-blue">Electronics</span></td><td>$66</td><td><input class="ifield ifield-pct" type="number" value="12" disabled></td><td style="color:var(--muted)">—</td><td>—</td><td><span class="pill p-danger">Rejected</span></td><td><button class="btn btn-ghost btn-sm">View</button></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════════ ORDERS ═══════════════ -->
+<div id="sec-orders" class="sec">
+  <div class="ph">
+    <div><h1>All Orders</h1></div>
+    <div class="ph-r">
+      <input class="ifield" type="text" placeholder="Order ID, buyer…" style="width:170px">
+      <select class="ifield" style="width:150px"><option>All Statuses</option><option>Processing</option><option>In Transit</option><option>Delivered</option><option>Disputed</option></select>
+      <button class="btn btn-ghost btn-sm" onclick="showToast('Exported!','ok')">📥 Export</button>
+    </div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Order ID</th><th>Date</th><th>Buyer</th><th>Seller</th><th>Product</th><th>Qty</th><th>Amount</th><th>Ship Method</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td><strong>#EB-28401</strong></td><td>Jan 15</td><td>🇺🇸 James W.</td><td>TechPro</td><td>Rugged Laptop</td><td>200</td><td>$57,000</td><td>✈️ Air</td><td><span class="pill p-ok">Delivered</span></td><td><button class="btn btn-ghost btn-sm" onclick="openModal('modal-order-view')">View</button></td></tr>
+        <tr><td><strong>#EB-28398</strong></td><td>Jan 10</td><td>🇦🇪 Ahmed K.</td><td>Suntech</td><td>Solar Panel</td><td>50</td><td>$4,750</td><td>🚢 Sea</td><td><span class="pill p-warn">In Transit</span></td><td><button class="btn btn-ghost btn-sm" onclick="openModal('modal-order-view')">View</button></td></tr>
+        <tr><td><strong>#EB-28390</strong></td><td>Dec 20</td><td>🇩🇪 Klaus M.</td><td>TechPro</td><td>Industrial Tablet</td><td>500</td><td>$72,500</td><td>🚢 Sea</td><td><span class="pill p-blue">Processing</span></td><td><button class="btn btn-p btn-sm" onclick="openModal('modal-order-view')">Manage</button></td></tr>
+        <tr class="tbl-red"><td><strong>#EB-28371</strong></td><td>Dec 12</td><td>🇦🇺 Mark T.</td><td>FoShan</td><td>Office Chairs ×100</td><td>100</td><td>$8,400</td><td>🚢 Sea</td><td><span class="pill p-danger">Disputed</span></td><td><button class="btn btn-danger btn-sm" onclick="nav(document.querySelector('[data-sec=sec-disputes]'))">Resolve</button></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════════ DISPUTES ═══════════════ -->
+<div id="sec-disputes" class="sec">
+  <div class="ph"><div><h1>Disputes &amp; Resolution</h1><p>Mediate and resolve buyer–seller disputes</p></div></div>
+  <div class="notice n-danger"><span class="ni">⚖️</span><div><strong>2 open disputes</strong> require admin resolution. Review evidence from both parties and issue a binding decision. Unresolved disputes auto-escalate after 14 days.</div></div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:18px">
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span class="pill p-danger">Open</span>
+          <strong style="font-size:15px">Order #EB-28371 — Missing Items</strong>
+        </div>
+        <div style="font-size:13px;color:var(--sub);margin-bottom:10px">🇦🇺 Mark T. (Buyer) vs. FoShan Furniture (Seller) · Filed Jan 12 · $8,400</div>
+        <div style="background:#f8fafc;border:1px solid var(--border);border-radius:var(--r);padding:11px;font-size:13px;margin-bottom:8px"><strong>Buyer:</strong> "Received 80 chairs instead of 100. 20 units missing from shipment. Seller not responding."</div>
+        <div style="background:#f8fafc;border:1px solid var(--border);border-radius:var(--r);padding:11px;font-size:13px"><strong>Seller:</strong> "All 100 units shipped per bill of lading #BL-20240112. Check with customs/freight."</div>
+      </div>
+      <div style="flex-shrink:0;display:flex;flex-direction:column;gap:7px;min-width:155px">
+        <button class="btn btn-ok" onclick="openModal('modal-dispute-resolve')">⚖️ Issue Decision</button>
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Message sent to both parties','ok')">✉️ Message Parties</button>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span class="pill p-warn">Pending Evidence</span>
+          <strong style="font-size:15px">Order #EB-28355 — Quality Issue</strong>
+        </div>
+        <div style="font-size:13px;color:var(--sub);margin-bottom:10px">🇳🇬 Emeka O. (Buyer) vs. ChemPro (Seller) · Filed Jan 8 · $12,000</div>
+        <div style="background:#f8fafc;border:1px solid var(--border);border-radius:var(--r);padding:11px;font-size:13px"><strong>Buyer:</strong> "Chemical purity is 94%, not 99.5% as advertised. Lab test attached. Requesting full refund."</div>
+      </div>
+      <div style="flex-shrink:0;display:flex;flex-direction:column;gap:7px;min-width:155px">
+        <button class="btn btn-warn" onclick="openModal('modal-dispute-resolve')">⚖️ Issue Decision</button>
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Reminder sent to seller','ok')">⏰ Remind Seller</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ REVENUE & FINANCE ═══════════════ -->
+<div id="sec-revenue" class="sec">
+  <div class="ph"><div><h1>Revenue &amp; Finance</h1></div><div class="ph-r"><button class="btn btn-ghost btn-sm" onclick="showToast('Report exported!','ok')">📥 Export</button></div></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-bar" style="background:var(--ok)"></div><div class="stat-lbl">Total GMV (MTD)</div><div class="stat-val">$2.48M</div><div class="stat-ch up">↑ 18%</div></div>
+    <div class="stat"><div class="stat-bar" style="background:var(--pl)"></div><div class="stat-lbl">Platform Fee (5%)</div><div class="stat-val">$124K</div><div class="stat-ch up">↑ 18%</div></div>
+    <div class="stat"><div class="stat-bar" style="background:var(--gold)"></div><div class="stat-lbl">Subscription Revenue</div><div class="stat-val">$48,400</div><div class="stat-ch up">↑ 5%</div></div>
+    <div class="stat"><div class="stat-bar" style="background:#06b6d4"></div><div class="stat-lbl">Pending Payouts</div><div class="stat-val">$284K</div><div class="stat-ch neu">Due Feb 1</div></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><div class="card-title">Revenue by Category</div></div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Category</th><th>Orders</th><th>GMV</th><th>Margin %</th><th>Platform Fee (5%)</th><th>Net Revenue</th></tr></thead>
+      <tbody>
+        <tr><td>🔌 Electronics</td><td>480</td><td>$1,240,000</td><td><input class="ifield ifield-pct" type="number" value="12">%</td><td>$62,000</td><td><strong>$148,800</strong></td></tr>
+        <tr><td>⚙️ Machinery</td><td>84</td><td>$840,000</td><td><input class="ifield ifield-pct" type="number" value="10">%</td><td>$42,000</td><td><strong>$84,000</strong></td></tr>
+        <tr><td>👗 Apparel</td><td>1,240</td><td>$186,000</td><td><input class="ifield ifield-pct" type="number" value="18">%</td><td>$9,300</td><td><strong>$33,480</strong></td></tr>
+        <tr><td>🌿 Food &amp; Agri</td><td>320</td><td>$480,000</td><td><input class="ifield ifield-pct" type="number" value="8">%</td><td>$24,000</td><td><strong>$38,400</strong></td></tr>
+        <tr><td>🏥 Healthcare</td><td>240</td><td>$620,000</td><td><input class="ifield ifield-pct" type="number" value="15">%</td><td>$31,000</td><td><strong>$93,000</strong></td></tr>
+        <tr style="background:#f0fdf4;font-weight:700"><td>TOTAL</td><td>2,364</td><td>$3,366,000</td><td>—</td><td>$168,300</td><td style="color:var(--ok)">$397,680</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════════ PROFIT MARGINS ═══════════════ -->
+<div id="sec-margins" class="sec">
+  <div class="ph"><div><h1>Profit Margin Control</h1><p>Set platform markup per category and per individual product</p></div><div class="ph-r"><button class="btn btn-p" onclick="showToast('All margins saved!','ok')">💾 Save All Changes</button></div></div>
+  <div class="notice n-blue"><span class="ni">ℹ️</span><div><strong>How it works:</strong> Ebazario adds the set margin % to the seller's base price before showing to buyers. A separate 5% commission fee is charged on each transaction. Sellers see base price; buyers see the marked-up price.</div></div>
+  <div class="card">
+    <div class="card-head"><div class="card-title">Category-Level Margins</div></div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Category</th><th>Active Products</th><th>Current Margin</th><th>Set New %</th><th>Example (buyer price)</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>🔌 Electronics</td><td>246,380</td><td><strong style="color:var(--pl)">12%</strong></td><td><input class="ifield ifield-pct" type="number" value="12" id="m-electronics">%</td><td style="font-size:12px;color:var(--ok)">$250 base → $280</td><td><button class="btn btn-p btn-sm" onclick="saveMargin(this,'Electronics','m-electronics')">Save</button></td></tr>
+        <tr><td>⚙️ Machinery</td><td>184,220</td><td><strong style="color:var(--pl)">10%</strong></td><td><input class="ifield ifield-pct" type="number" value="10" id="m-machinery">%</td><td style="font-size:12px;color:var(--ok)">$1,000 base → $1,100</td><td><button class="btn btn-p btn-sm" onclick="saveMargin(this,'Machinery','m-machinery')">Save</button></td></tr>
+        <tr><td>👗 Apparel</td><td>312,800</td><td><strong style="color:var(--pl)">18%</strong></td><td><input class="ifield ifield-pct" type="number" value="18" id="m-apparel">%</td><td style="font-size:12px;color:var(--ok)">$1.53 base → $1.80</td><td><button class="btn btn-p btn-sm" onclick="saveMargin(this,'Apparel','m-apparel')">Save</button></td></tr>
+        <tr><td>🌿 Food &amp; Agriculture</td><td>98,400</td><td><strong style="color:var(--pl)">8%</strong></td><td><input class="ifield ifield-pct" type="number" value="8" id="m-food">%</td><td style="font-size:12px;color:var(--ok)">$100 base → $108</td><td><button class="btn btn-p btn-sm" onclick="saveMargin(this,'Food','m-food')">Save</button></td></tr>
+        <tr><td>⚗️ Chemicals</td><td>74,600</td><td><strong style="color:var(--pl)">9%</strong></td><td><input class="ifield ifield-pct" type="number" value="9" id="m-chemicals">%</td><td style="font-size:12px;color:var(--ok)">$1,000 base → $1,090</td><td><button class="btn btn-p btn-sm" onclick="saveMargin(this,'Chemicals','m-chemicals')">Save</button></td></tr>
+        <tr><td>🏗️ Construction</td><td>128,900</td><td><strong style="color:var(--pl)">10%</strong></td><td><input class="ifield ifield-pct" type="number" value="10" id="m-construction">%</td><td style="font-size:12px;color:var(--ok)">$500 base → $550</td><td><button class="btn btn-p btn-sm" onclick="saveMargin(this,'Construction','m-construction')">Save</button></td></tr>
+        <tr><td>🚗 Auto Parts</td><td>218,400</td><td><strong style="color:var(--pl)">14%</strong></td><td><input class="ifield ifield-pct" type="number" value="14" id="m-auto">%</td><td style="font-size:12px;color:var(--ok)">$200 base → $228</td><td><button class="btn btn-p btn-sm" onclick="saveMargin(this,'Auto Parts','m-auto')">Save</button></td></tr>
+        <tr><td>🏥 Healthcare</td><td>142,600</td><td><strong style="color:var(--pl)">15%</strong></td><td><input class="ifield ifield-pct" type="number" value="15" id="m-healthcare">%</td><td style="font-size:12px;color:var(--ok)">$10 base → $11.50</td><td><button class="btn btn-p btn-sm" onclick="saveMargin(this,'Healthcare','m-healthcare')">Save</button></td></tr>
+        <tr><td>🪑 Furniture &amp; Home</td><td>186,200</td><td><strong style="color:var(--pl)">16%</strong></td><td><input class="ifield ifield-pct" type="number" value="16" id="m-furniture">%</td><td style="font-size:12px;color:var(--ok)">$84 base → $97.44</td><td><button class="btn btn-p btn-sm" onclick="saveMargin(this,'Furniture','m-furniture')">Save</button></td></tr>
+        <tr><td>🔧 Tools &amp; Hardware</td><td>94,700</td><td><strong style="color:var(--pl)">11%</strong></td><td><input class="ifield ifield-pct" type="number" value="11" id="m-tools">%</td><td style="font-size:12px;color:var(--ok)">$50 base → $55.50</td><td><button class="btn btn-p btn-sm" onclick="saveMargin(this,'Tools','m-tools')">Save</button></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><div class="card-title">Product-Level Override</div><span style="font-size:12px;color:var(--muted)">Override margin for a specific product</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end">
+      <div class="fg" style="margin-bottom:0"><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">Product ID or Name</label><input type="text" class="ifield" style="width:100%" placeholder="e.g. #P-12045 or Industrial Laptop"></div>
+      <div class="fg" style="margin-bottom:0"><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">Override Margin %</label><input type="number" class="ifield" style="width:100%" placeholder="e.g. 20"></div>
+      <button class="btn btn-p" onclick="showToast('Product override saved!','ok')">Apply</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SELLER PAYOUTS ═══════════════ -->
+<div id="sec-payouts" class="sec">
+  <div class="ph"><div><h1>Seller Payouts</h1></div><div class="ph-r"><button class="btn btn-ok" onclick="showToast('All pending payouts processed!','ok')">💸 Process All Pending</button></div></div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Seller</th><th>Period</th><th>Orders</th><th>Gross Revenue</th><th>Platform Fee (5%)</th><th>Net Payout</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Shenzhen TechPro</strong></td><td>Jan 2025</td><td>84</td><td>$48,200</td><td>$2,410</td><td><strong>$45,790</strong></td><td><span class="pill p-warn">Pending</span></td><td><button class="btn btn-ok btn-sm" onclick="showToast('Payout processed!','ok')">Pay Now</button></td></tr>
+        <tr><td><strong>Precision Mfg GmbH</strong></td><td>Jan 2025</td><td>12</td><td>$124,000</td><td>$6,200</td><td><strong>$117,800</strong></td><td><span class="pill p-warn">Pending</span></td><td><button class="btn btn-ok btn-sm" onclick="showToast('Payout processed!','ok')">Pay Now</button></td></tr>
+        <tr><td><strong>Dhaka Textiles</strong></td><td>Jan 2025</td><td>240</td><td>$18,400</td><td>$920</td><td><strong>$17,480</strong></td><td><span class="pill p-warn">Pending</span></td><td><button class="btn btn-ok btn-sm" onclick="showToast('Payout processed!','ok')">Pay Now</button></td></tr>
+        <tr><td><strong>TechPro Electronics</strong></td><td>Dec 2024</td><td>78</td><td>$62,400</td><td>$3,120</td><td><strong>$59,280</strong></td><td><span class="pill p-ok">Paid ✓</span></td><td><button class="btn btn-ghost btn-sm">Receipt</button></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════════ SHIPPING RATES ═══════════════ -->
+<div id="sec-shipping" class="sec">
+  <div class="ph"><div><h1>Shipping Rate Manager</h1></div><div class="ph-r"><button class="btn btn-p" onclick="showToast('All rates saved!','ok')">💾 Save All Rates</button><button class="btn btn-ghost btn-sm" onclick="showToast('Destination added!','ok')">+ Add Destination</button></div></div>
+  <div class="notice n-blue"><span class="ni">🚢</span><div>Ebazario manages all freight on behalf of buyers. These rates are applied to orders based on shipment weight and the buyer's chosen delivery method.</div></div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Destination</th><th>Air ($/kg)</th><th>Sea FCL ($ flat)</th><th>Sea LCL ($/cbm)</th><th>Door-to-Door ($/kg)</th><th>Est. Transit</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>🇦🇪 UAE / Dubai</td><td><input class="ifield ifield-sm" type="number" value="4.50" step="0.10"></td><td><input class="ifield ifield-sm" type="number" value="1200"></td><td><input class="ifield ifield-sm" type="number" value="95"></td><td><input class="ifield ifield-sm" type="number" value="6.80" step="0.10"></td><td style="font-size:12px;color:var(--muted)">Air 3–5d · Sea 18–25d</td><td><button class="btn btn-p btn-sm" onclick="showToast('UAE rates saved!','ok')">Save</button></td></tr>
+        <tr><td>🇸🇦 Saudi Arabia</td><td><input class="ifield ifield-sm" type="number" value="4.80" step="0.10"></td><td><input class="ifield ifield-sm" type="number" value="1350"></td><td><input class="ifield ifield-sm" type="number" value="105"></td><td><input class="ifield ifield-sm" type="number" value="7.20" step="0.10"></td><td style="font-size:12px;color:var(--muted)">Air 3–6d · Sea 20–28d</td><td><button class="btn btn-p btn-sm" onclick="showToast('KSA rates saved!','ok')">Save</button></td></tr>
+        <tr><td>🇺🇸 United States</td><td><input class="ifield ifield-sm" type="number" value="5.20" step="0.10"></td><td><input class="ifield ifield-sm" type="number" value="1800"></td><td><input class="ifield ifield-sm" type="number" value="120"></td><td><input class="ifield ifield-sm" type="number" value="8.50" step="0.10"></td><td style="font-size:12px;color:var(--muted)">Air 5–7d · Sea 25–35d</td><td><button class="btn btn-p btn-sm" onclick="showToast('US rates saved!','ok')">Save</button></td></tr>
+        <tr><td>🇬🇧 United Kingdom</td><td><input class="ifield ifield-sm" type="number" value="5.60" step="0.10"></td><td><input class="ifield ifield-sm" type="number" value="1600"></td><td><input class="ifield ifield-sm" type="number" value="115"></td><td><input class="ifield ifield-sm" type="number" value="8.00" step="0.10"></td><td style="font-size:12px;color:var(--muted)">Air 4–6d · Sea 22–30d</td><td><button class="btn btn-p btn-sm" onclick="showToast('UK rates saved!','ok')">Save</button></td></tr>
+        <tr><td>🇩🇪 Germany</td><td><input class="ifield ifield-sm" type="number" value="5.40" step="0.10"></td><td><input class="ifield ifield-sm" type="number" value="1550"></td><td><input class="ifield ifield-sm" type="number" value="112"></td><td><input class="ifield ifield-sm" type="number" value="7.90" step="0.10"></td><td style="font-size:12px;color:var(--muted)">Air 4–6d · Sea 22–30d</td><td><button class="btn btn-p btn-sm" onclick="showToast('DE rates saved!','ok')">Save</button></td></tr>
+        <tr><td>🇦🇺 Australia</td><td><input class="ifield ifield-sm" type="number" value="6.20" step="0.10"></td><td><input class="ifield ifield-sm" type="number" value="2100"></td><td><input class="ifield ifield-sm" type="number" value="140"></td><td><input class="ifield ifield-sm" type="number" value="9.80" step="0.10"></td><td style="font-size:12px;color:var(--muted)">Air 5–8d · Sea 28–35d</td><td><button class="btn btn-p btn-sm" onclick="showToast('AU rates saved!','ok')">Save</button></td></tr>
+        <tr><td>🇮🇳 India</td><td><input class="ifield ifield-sm" type="number" value="3.80" step="0.10"></td><td><input class="ifield ifield-sm" type="number" value="900"></td><td><input class="ifield ifield-sm" type="number" value="75"></td><td><input class="ifield ifield-sm" type="number" value="5.20" step="0.10"></td><td style="font-size:12px;color:var(--muted)">Air 2–4d · Sea 12–18d</td><td><button class="btn btn-p btn-sm" onclick="showToast('India rates saved!','ok')">Save</button></td></tr>
+        <tr><td>🇳🇬 Nigeria</td><td><input class="ifield ifield-sm" type="number" value="7.50" step="0.10"></td><td><input class="ifield ifield-sm" type="number" value="2400"></td><td><input class="ifield ifield-sm" type="number" value="165"></td><td><input class="ifield ifield-sm" type="number" value="11.20" step="0.10"></td><td style="font-size:12px;color:var(--muted)">Air 5–8d · Sea 30–40d</td><td><button class="btn btn-p btn-sm" onclick="showToast('NG rates saved!','ok')">Save</button></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════════ CATEGORIES ═══════════════ -->
+<div id="sec-categories" class="sec">
+  <div class="ph"><div><h1>Category Management</h1></div><div class="ph-r"><button class="btn btn-p" onclick="showToast('Category added!','ok')">+ Add Category</button></div></div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Category</th><th>Products</th><th>Sellers</th><th>Required Certifications</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td><strong>🔌 Electronics &amp; Electrical</strong></td><td>246,380</td><td>4,200</td><td><span class="pill p-blue">CE</span> <span class="pill p-blue">FCC</span> <span class="pill p-blue">RoHS</span></td><td><span class="pill p-ok">Active</span></td><td><button class="btn btn-ghost btn-sm">Edit</button></td></tr>
+        <tr><td><strong>⚙️ Machinery &amp; Equipment</strong></td><td>184,220</td><td>1,840</td><td><span class="pill p-blue">CE</span> <span class="pill p-blue">ISO 9001</span></td><td><span class="pill p-ok">Active</span></td><td><button class="btn btn-ghost btn-sm">Edit</button></td></tr>
+        <tr><td><strong>🏥 Health &amp; Medical</strong></td><td>142,600</td><td>920</td><td><span class="pill p-danger">FDA</span> <span class="pill p-danger">CE/ISO 13485</span> <span class="pill p-blue">WHO-GMP</span></td><td><span class="pill p-ok">Active</span></td><td><button class="btn btn-ghost btn-sm">Edit</button></td></tr>
+        <tr><td><strong>🌿 Food &amp; Agriculture</strong></td><td>98,400</td><td>2,100</td><td><span class="pill p-blue">HACCP</span> <span class="pill p-blue">Halal/Kosher</span></td><td><span class="pill p-ok">Active</span></td><td><button class="btn btn-ghost btn-sm">Edit</button></td></tr>
+        <tr><td><strong>⚗️ Chemicals &amp; Plastics</strong></td><td>74,600</td><td>840</td><td><span class="pill p-danger">REACH</span> <span class="pill p-blue">UN Cert</span> <span class="pill p-blue">SDS</span></td><td><span class="pill p-ok">Active</span></td><td><button class="btn btn-ghost btn-sm">Edit</button></td></tr>
+        <tr><td><strong>👗 Apparel &amp; Textiles</strong></td><td>312,800</td><td>3,400</td><td><span class="pill p-blue">OEKO-TEX</span></td><td><span class="pill p-ok">Active</span></td><td><button class="btn btn-ghost btn-sm">Edit</button></td></tr>
+        <tr><td><strong>🚗 Auto Parts &amp; Accessories</strong></td><td>218,400</td><td>2,200</td><td><span class="pill p-blue">ISO/TS 16949</span></td><td><span class="pill p-ok">Active</span></td><td><button class="btn btn-ghost btn-sm">Edit</button></td></tr>
+        <tr><td><strong>🪑 Furniture &amp; Home</strong></td><td>186,200</td><td>1,900</td><td><span class="pill p-muted">None required</span></td><td><span class="pill p-ok">Active</span></td><td><button class="btn btn-ghost btn-sm">Edit</button></td></tr>
+        <tr><td><strong>🏗️ Construction &amp; Real Estate</strong></td><td>128,900</td><td>1,100</td><td><span class="pill p-blue">CE</span> <span class="pill p-blue">ISO 9001</span></td><td><span class="pill p-ok">Active</span></td><td><button class="btn btn-ghost btn-sm">Edit</button></td></tr>
+        <tr><td><strong>🔧 Tools &amp; Hardware</strong></td><td>94,700</td><td>1,450</td><td><span class="pill p-muted">None required</span></td><td><span class="pill p-ok">Active</span></td><td><button class="btn btn-ghost btn-sm">Edit</button></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════════ PLATFORM SETTINGS ═══════════════ -->
+<div id="sec-settings" class="sec">
+  <div class="ph"><div><h1>Platform Settings</h1></div><div class="ph-r"><button class="btn btn-p" onclick="showToast('All settings saved!','ok')">💾 Save All</button></div></div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:15px">💰 Platform Fees</div>
+      <div class="fg"><label>Commission % per Transaction</label><input type="number" value="5" class="ifield" style="width:100%"></div>
+      <div class="fg"><label>Payment Processing Fee %</label><input type="number" value="2.5" step="0.1" class="ifield" style="width:100%"></div>
+      <div class="fg"><label>Minimum Order Value (USD)</label><input type="number" value="100" class="ifield" style="width:100%"></div>
+      <div class="fg"><label>Max Trade Assurance Coverage (USD)</label><input type="number" value="500000" class="ifield" style="width:100%"></div>
+      <button class="btn btn-p" onclick="showToast('Fee settings saved!','ok')">Save Fees</button>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:15px">⭐ Subscription Plan Pricing</div>
+      <div class="fg"><label>Free Plan — Max Products</label><input type="number" value="10" class="ifield" style="width:100%"></div>
+      <div class="fg"><label>Silver Plan Price ($/month)</label><input type="number" value="49" class="ifield" style="width:100%"></div>
+      <div class="fg"><label>Gold Plan Price ($/month)</label><input type="number" value="149" class="ifield" style="width:100%"></div>
+      <div class="fg"><label>Platinum Plan Price ($/month)</label><input type="number" value="349" class="ifield" style="width:100%"></div>
+      <button class="btn btn-g" onclick="showToast('Plan prices updated!','ok')">Update Plans</button>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:15px">📢 Platform Announcements</div>
+      <div class="fg"><label>Banner Message (shown on homepage)</label><textarea style="width:100%">Welcome to Ebazario Trading — Global B2B Marketplace. Trade with confidence.</textarea></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span style="font-size:13px;font-weight:600">Show Announcement Banner</span>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <button class="btn btn-p" onclick="showToast('Announcement saved!','ok')">Publish</button>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:15px">🔧 Feature Toggles</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><div><strong style="font-size:13px;display:block">Trade Assurance Escrow</strong><span style="font-size:12px;color:var(--muted)">Buyer payment protection</span></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><div><strong style="font-size:13px;display:block">New Seller Registrations</strong><span style="font-size:12px;color:var(--muted)">Allow new sellers to apply</span></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><div><strong style="font-size:13px;display:block">Buyer Registration</strong><span style="font-size:12px;color:var(--muted)">Allow new buyer accounts</span></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><div><strong style="font-size:13px;display:block">Maintenance Mode</strong><span style="font-size:12px;color:var(--muted)">Show maintenance page to visitors</span></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><div><strong style="font-size:13px;display:block">Auto-Approve (Platinum Only)</strong><span style="font-size:12px;color:var(--muted)">Skip manual review for Platinum sellers</span></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SECURITY & LOGS ═══════════════ -->
+<div id="sec-security" class="sec">
+  <div class="ph"><div><h1>Security &amp; Audit Logs</h1></div><div class="ph-r"><button class="btn btn-ghost btn-sm" onclick="showToast('Logs exported!','ok')">📥 Export Logs</button></div></div>
+  <div class="g2" style="margin-bottom:16px">
+    <div class="card" style="margin-bottom:0">
+      <div class="card-head"><div class="card-title">🚨 Security Alerts</div></div>
+      <div class="act-item"><div class="act-dot ad-danger">🚨</div><div><div style="font-size:13px"><strong>Failed Login ×3</strong> — <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a4d1cacfcacbd3cae4d7d1d7d4c1c7d08ad6d1">[email&#160;protected]</a> — IP: 185.234.x.x</div><div style="font-size:11px;color:var(--muted)">Today 06:18 · Auto-blocked</div></div></div>
+      <div class="act-item"><div class="act-dot ad-warn">⚠️</div><div><div style="font-size:13px"><strong>Suspicious Upload</strong> — BadActor Ltd. uploaded expired safety cert</div><div style="font-size:11px;color:var(--muted)">Yesterday 14:22 · Flagged</div></div></div>
+      <div class="act-item"><div class="act-dot ad-ok">✓</div><div><div style="font-size:13px"><strong>Admin Login</strong> — <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9efffaf3f7f0defbfcffe4ffecf7f1b0fdf1f3">[email&#160;protected]</a> — 2FA verified</div><div style="font-size:11px;color:var(--muted)">Today 09:24 · IP: 192.168.1.1</div></div></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="card-head"><div class="card-title">📊 Security Overview</div></div>
+      <div style="font-size:13px;display:flex;flex-direction:column;gap:11px">
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Failed logins today</span><strong style="color:var(--danger)">14</strong></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Blocked IPs</span><strong>3</strong></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Flagged accounts</span><strong style="color:var(--warn)">2</strong></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Last backup</span><strong style="color:var(--ok)">Today 05:00 ✓</strong></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">SSL Certificate</span><strong style="color:var(--ok)">Valid · 284 days</strong></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Two-Factor Auth (Admin)</span><strong style="color:var(--ok)">Enabled ✓</strong></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><div class="card-title">Audit Log</div></div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Timestamp</th><th>User</th><th>Role</th><th>Action</th><th>IP Address</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td style="font-size:12px;white-space:nowrap">Today 09:24</td><td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="aecfcac3c7c0eecbcccfd4cfdcc7c180cdc1c3">[email&#160;protected]</a></td><td><span class="pill p-danger" style="font-size:10px">Admin</span></td><td>Login (2FA)</td><td>192.168.1.1</td><td><span class="pill p-ok">Success</span></td></tr>
+        <tr><td style="font-size:12px;white-space:nowrap">Today 09:18</td><td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="88e9ece5e1e6c8edeae9f2e9fae1e7a6ebe7e5">[email&#160;protected]</a></td><td><span class="pill p-danger" style="font-size:10px">Admin</span></td><td>Product Approved: Industrial Laptop</td><td>192.168.1.1</td><td><span class="pill p-ok">Success</span></td></tr>
+        <tr><td style="font-size:12px;white-space:nowrap">Today 08:42</td><td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fd89989e958d8f92bd8e95989387959893d39e9290">[email&#160;protected]</a></td><td><span class="pill p-indigo" style="font-size:10px">Seller</span></td><td>Product Submitted: 5G Router</td><td>58.246.100.2</td><td><span class="pill p-ok">Success</span></td></tr>
+        <tr><td style="font-size:12px;white-space:nowrap">Today 07:15</td><td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bdd7dcd0d8cefdc9d8ded5ded2cfcd93ded2d0">[email&#160;protected]</a></td><td><span class="pill p-warn" style="font-size:10px">Buyer</span></td><td>Order Placed #EB-28401 — $57,000</td><td>12.34.56.78</td><td><span class="pill p-ok">Success</span></td></tr>
+        <tr class="tbl-red"><td style="font-size:12px;white-space:nowrap">Today 06:18</td><td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="23564d484d4c544d63505650534640570d5156">[email&#160;protected]</a></td><td><span class="pill p-muted" style="font-size:10px">Unknown</span></td><td>Failed Login ×3</td><td>185.234.x.x</td><td><span class="pill p-danger">Blocked</span></td></tr>
+        <tr><td style="font-size:12px;white-space:nowrap">Today 05:00</td><td>system</td><td><span class="pill p-blue" style="font-size:10px">System</span></td><td>Automated Database Backup</td><td>Internal</td><td><span class="pill p-ok">Success</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- ════════════════ MODALS ════════════════ -->
+
+<!-- PRODUCT FULL REVIEW -->
+<div id="modal-prod-review" class="modal-bg" onclick="if(event.target===this)closeModal('modal-prod-review')">
+  <div class="modal modal-lg">
+    <div class="modal-head"><h3>📦 Product Review — Industrial Rugged Laptop 15.6"</h3><button class="modal-close" onclick="closeModal('modal-prod-review')">✕</button></div>
+    <div class="modal-body">
+      <div class="g2" style="margin-bottom:14px">
+        <div>
+          <div style="background:#e6f6fc;border-radius:var(--r);padding:20px;text-align:center;font-size:52px;margin-bottom:10px">💻</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap">
+            <div style="flex:1;min-width:52px;height:46px;background:#e6f6fc;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px">💻</div>
+            <div style="flex:1;min-width:52px;height:46px;background:#e6f6fc;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px">🔌</div>
+            <div style="flex:1;min-width:52px;height:46px;background:#e6f6fc;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px">⌨️</div>
+            <div style="flex:1;min-width:52px;height:46px;background:#e6f6fc;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px">📦</div>
+          </div>
+        </div>
+        <div>
+          <h4 style="font-size:14px;margin-bottom:7px">Industrial Rugged Laptop 15.6" Core i7 IP65 MIL-STD-810H</h4>
+          <div style="font-size:13px;color:var(--sub);margin-bottom:11px">By <strong>Shenzhen TechPro Electronics</strong> · ⭐ Gold Verified Seller</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;font-size:12px;margin-bottom:12px">
+            <div><span style="color:var(--muted)">Price:</span> <strong>$285/unit</strong></div>
+            <div><span style="color:var(--muted)">MOQ:</span> <strong>50 units</strong></div>
+            <div><span style="color:var(--muted)">Category:</span> <strong>Electronics</strong></div>
+            <div><span style="color:var(--muted)">Origin:</span> <strong>China</strong></div>
+            <div><span style="color:var(--muted)">Lead time:</span> <strong>15–25 days</strong></div>
+            <div><span style="color:var(--muted)">Supply/mo:</span> <strong>5,000 units</strong></div>
+          </div>
+          <div style="background:#f9fafb;border-radius:var(--r);padding:11px;font-size:12px">
+            <strong style="display:block;margin-bottom:6px">Checklist:</strong>
+            <label style="display:flex;align-items:center;gap:8px;margin-bottom:5px;cursor:pointer"><input type="checkbox" checked> Clear, descriptive product title</label>
+            <label style="display:flex;align-items:center;gap:8px;margin-bottom:5px;cursor:pointer"><input type="checkbox" checked> High-quality images (no watermarks)</label>
+            <label style="display:flex;align-items:center;gap:8px;margin-bottom:5px;cursor:pointer"><input type="checkbox" checked> Description min 100 words</label>
+            <label style="display:flex;align-items:center;gap:8px;margin-bottom:5px;cursor:pointer"><input type="checkbox" checked> Pricing and MOQ are realistic</label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Required certifications present</label>
+          </div>
+        </div>
+      </div>
+      <div class="fg"><label>Admin Notes (sent to seller on rejection)</label><textarea placeholder="Optional feedback for seller…" style="width:100%;height:70px"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-prod-review')">Cancel</button>
+      <button class="btn btn-danger" onclick="openModal('modal-reject-prod');closeModal('modal-prod-review')">✕ Reject</button>
+      <button class="btn btn-ok" onclick="approveProduct(null,'this product');closeModal('modal-prod-review')">✓ Approve &amp; Go Live</button>
+    </div>
+  </div>
+</div>
+
+<!-- REJECT PRODUCT -->
+<div id="modal-reject-prod" class="modal-bg" onclick="if(event.target===this)closeModal('modal-reject-prod')">
+  <div class="modal">
+    <div class="modal-head"><h3>✕ Reject Product</h3><button class="modal-close" onclick="closeModal('modal-reject-prod')">✕</button></div>
+    <div class="modal-body">
+      <div class="notice n-warn"><span class="ni">⚠️</span><div>The seller will receive an email with your rejection reason and can fix the issues and resubmit.</div></div>
+      <div class="fg"><label>Rejection Reason *</label>
+        <select style="width:100%">
+          <option>Missing required certification (CE / FCC / FDA)</option>
+          <option>Poor image quality / watermarked images</option>
+          <option>Incomplete or insufficient product description</option>
+          <option>Incorrect pricing or unrealistic MOQ</option>
+          <option>Prohibited or restricted product</option>
+          <option>Duplicate listing</option>
+          <option>Other (specify below)</option>
+        </select>
+      </div>
+      <div class="fg"><label>Detailed Feedback for Seller</label><textarea placeholder="Explain specifically what needs to be fixed…" style="width:100%;height:90px"></textarea></div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked> Send email notification to seller</label>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-reject-prod')">Cancel</button>
+      <button class="btn btn-danger" onclick="showToast('Product rejected. Seller notified.','warn');closeModal('modal-reject-prod')">Confirm Rejection</button>
+    </div>
+  </div>
+</div>
+
+<!-- SELLER FULL REVIEW -->
+<div id="modal-seller-review" class="modal-bg" onclick="if(event.target===this)closeModal('modal-seller-review')">
+  <div class="modal modal-lg">
+    <div class="modal-head"><h3>🏪 Seller Application — GlobalTech Vietnam Co.</h3><button class="modal-close" onclick="closeModal('modal-seller-review')">✕</button></div>
+    <div class="modal-body">
+      <div class="g2" style="margin-bottom:14px">
+        <div style="background:#f9fafb;border-radius:var(--r);padding:14px;font-size:13px;line-height:2">
+          <div><span style="color:var(--muted)">Company:</span> <strong>GlobalTech Vietnam Co., Ltd.</strong></div>
+          <div><span style="color:var(--muted)">Country:</span> 🇻🇳 Vietnam</div>
+          <div><span style="color:var(--muted)">Industry:</span> Electronics Manufacturing</div>
+          <div><span style="color:var(--muted)">Established:</span> 2010</div>
+          <div><span style="color:var(--muted)">Employees:</span> 250–500</div>
+          <div><span style="color:var(--muted)">Plan:</span> <span class="pill p-gold">⭐ Gold ($149/mo)</span></div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:9px">Documents (3/3)</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;padding:8px;background:var(--okl);border-radius:6px"><span>📄</span><span style="font-size:13px;flex:1">Business_License.pdf</span><span class="pill p-ok">Verified ✓</span></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;padding:8px;background:var(--okl);border-radius:6px"><span>📄</span><span style="font-size:13px;flex:1">CE_Certificate.pdf</span><span class="pill p-ok">Verified ✓</span></div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--okl);border-radius:6px"><span>📄</span><span style="font-size:13px;flex:1">Export_License_2024.pdf</span><span class="pill p-ok">Verified ✓</span></div>
+        </div>
+      </div>
+      <div class="fg"><label>Admin Notes (sent to seller on decision)</label><textarea placeholder="Optional message…" style="width:100%;height:70px"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-seller-review')">Cancel</button>
+      <button class="btn btn-warn" onclick="openModal('modal-request-docs');closeModal('modal-seller-review')">Request More Docs</button>
+      <button class="btn btn-danger" onclick="openModal('modal-reject-seller');closeModal('modal-seller-review')">✕ Reject</button>
+      <button class="btn btn-ok" onclick="approveSeller(null,'GlobalTech Vietnam');closeModal('modal-seller-review')">✓ Approve Seller</button>
+    </div>
+  </div>
+</div>
+
+<!-- REJECT SELLER -->
+<div id="modal-reject-seller" class="modal-bg" onclick="if(event.target===this)closeModal('modal-reject-seller')">
+  <div class="modal">
+    <div class="modal-head"><h3>✕ Reject Seller Application</h3><button class="modal-close" onclick="closeModal('modal-reject-seller')">✕</button></div>
+    <div class="modal-body">
+      <div class="fg"><label>Rejection Reason *</label>
+        <select style="width:100%"><option>Incomplete documentation</option><option>Fraudulent / unverifiable documents</option><option>Business not registered</option><option>Prohibited industry</option><option>Duplicate account</option><option>Other</option></select>
+      </div>
+      <div class="fg"><label>Message to Seller</label><textarea placeholder="Explain why the application was rejected and what they can do to reapply…" style="width:100%;height:90px"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-reject-seller')">Cancel</button>
+      <button class="btn btn-danger" onclick="showToast('Seller rejected. Email sent.','warn');closeModal('modal-reject-seller')">Confirm Rejection</button>
+    </div>
+  </div>
+</div>
+
+<!-- REQUEST MORE DOCS -->
+<div id="modal-request-docs" class="modal-bg" onclick="if(event.target===this)closeModal('modal-request-docs')">
+  <div class="modal">
+    <div class="modal-head"><h3>📋 Request Additional Documents</h3><button class="modal-close" onclick="closeModal('modal-request-docs')">✕</button></div>
+    <div class="modal-body">
+      <div class="notice n-blue"><span class="ni">ℹ️</span><div>The seller will be notified by email. They have 7 days to upload the required documents before the application expires.</div></div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked> Business License / Registration Certificate</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> CE Certificate (Electronics)</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked> ISO 9001 Quality Certificate</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> Factory Audit Report (SGS / Bureau Veritas)</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> Export License</label>
+      </div>
+      <div class="fg"><label>Additional Instructions</label><textarea placeholder="Specific format or validity requirements…" style="width:100%;height:70px"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-request-docs')">Cancel</button>
+      <button class="btn btn-p" onclick="showToast('Document request sent to seller!','ok');closeModal('modal-request-docs')">Send Request</button>
+    </div>
+  </div>
+</div>
+
+<!-- DOCUMENT VIEW -->
+<div id="modal-doc-review" class="modal-bg" onclick="if(event.target===this)closeModal('modal-doc-review')">
+  <div class="modal">
+    <div class="modal-head"><h3>📄 Document Review — CE Certificate</h3><button class="modal-close" onclick="closeModal('modal-doc-review')">✕</button></div>
+    <div class="modal-body">
+      <div style="background:#e6f6fc;border-radius:var(--rl);padding:36px 20px;text-align:center;margin-bottom:14px;border:2px dashed #c7d2fe">
+        <div style="font-size:44px;margin-bottom:7px">📄</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:3px">CE_Certificate_Electronics_2024.pdf</div>
+        <div style="font-size:12px;color:var(--muted)">2.4 MB · Shenzhen TechPro · Uploaded 2h ago</div>
+        <button class="btn btn-out btn-sm" style="margin-top:11px" onclick="showToast('Opening document…','ok')">🔍 Open Full Document</button>
+      </div>
+      <div class="frow2">
+        <div class="fg"><label>Document Type</label><select style="width:100%"><option selected>CE Certificate</option><option>Business License</option><option>ISO Certificate</option><option>FDA Approval</option></select></div>
+        <div class="fg"><label>Expiry Date</label><input type="date" value="2026-12-31" style="width:100%"></div>
+      </div>
+      <div class="fg"><label>Reviewer Notes</label><textarea placeholder="Notes about this document…" style="width:100%;height:70px"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-doc-review')">Cancel</button>
+      <button class="btn btn-danger" onclick="openModal('modal-reject-doc');closeModal('modal-doc-review')">✕ Reject</button>
+      <button class="btn btn-ok" onclick="approveDoc(null);closeModal('modal-doc-review')">✓ Approve Document</button>
+    </div>
+  </div>
+</div>
+
+<!-- REJECT DOCUMENT -->
+<div id="modal-reject-doc" class="modal-bg" onclick="if(event.target===this)closeModal('modal-reject-doc')">
+  <div class="modal">
+    <div class="modal-head"><h3>✕ Reject Document</h3><button class="modal-close" onclick="closeModal('modal-reject-doc')">✕</button></div>
+    <div class="modal-body">
+      <div class="fg"><label>Rejection Reason</label><select style="width:100%"><option>Document is expired</option><option>Document is not authentic / unverifiable</option><option>Wrong document type uploaded</option><option>Document is not legible</option><option>Company name mismatch</option></select></div>
+      <div class="fg"><label>Notes to Seller</label><textarea placeholder="What's wrong and what to reupload…" style="width:100%;height:80px"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-reject-doc')">Cancel</button>
+      <button class="btn btn-danger" onclick="showToast('Document rejected. Seller notified.','warn');closeModal('modal-reject-doc')">Confirm Rejection</button>
+    </div>
+  </div>
+</div>
+
+<!-- DISPUTE RESOLVE -->
+<div id="modal-dispute-resolve" class="modal-bg" onclick="if(event.target===this)closeModal('modal-dispute-resolve')">
+  <div class="modal">
+    <div class="modal-head"><h3>⚖️ Issue Dispute Decision — #EB-28371</h3><button class="modal-close" onclick="closeModal('modal-dispute-resolve')">✕</button></div>
+    <div class="modal-body">
+      <div class="notice n-warn"><span class="ni">⚖️</span><div>Your decision is <strong>final and binding</strong>. Both parties will be notified by email. Funds will be released or refunded according to your ruling.</div></div>
+      <div class="fg"><label>Decision</label>
+        <select style="width:100%">
+          <option>Rule in favor of Buyer — Full refund</option>
+          <option>Rule in favor of Buyer — Partial refund (specify %)</option>
+          <option>Rule in favor of Seller — Release full payment</option>
+          <option>Split decision — Partial refund + partial release</option>
+          <option>Request re-shipment of missing items</option>
+        </select>
+      </div>
+      <div class="fg"><label>Refund Amount (USD) — if applicable</label><input type="number" placeholder="e.g. 1680" style="width:100%"></div>
+      <div class="fg"><label>Decision Explanation *</label><textarea placeholder="Explain your reasoning — sent to both buyer and seller…" style="width:100%;height:100px"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-dispute-resolve')">Cancel</button>
+      <button class="btn btn-p" onclick="showToast('Decision issued. Both parties notified.','ok');closeModal('modal-dispute-resolve')">Issue Decision</button>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER VIEW -->
+<div id="modal-order-view" class="modal-bg" onclick="if(event.target===this)closeModal('modal-order-view')">
+  <div class="modal modal-lg">
+    <div class="modal-head"><h3>🛒 Order #EB-28401 Details</h3><button class="modal-close" onclick="closeModal('modal-order-view')">✕</button></div>
+    <div class="modal-body">
+      <div class="g2" style="margin-bottom:13px">
+        <div style="background:#f9fafb;border-radius:var(--r);padding:13px;font-size:13px;line-height:1.9"><strong>Buyer:</strong> James Wilson<br><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="93f9f2fef6e0d3e7f6f0fbf0fce1e3bdf0fcfe">[email&#160;protected]</a> · 🇺🇸 USA</div>
+        <div style="background:#f9fafb;border-radius:var(--r);padding:13px;font-size:13px;line-height:1.9"><strong>Seller:</strong> Shenzhen TechPro<br><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="403425232830322f003328252e3a28252e6e232f2d">[email&#160;protected]</a> · 🇨🇳 China</div>
+      </div>
+      <div style="background:#f9fafb;border-radius:var(--r);padding:13px;margin-bottom:13px;display:flex;justify-content:space-between;align-items:center">
+        <div><div style="font-size:13px;font-weight:700">Industrial Rugged Laptop 15.6" × 200 units</div><div style="font-size:12px;color:var(--muted)">$285/unit · ✈️ Air Freight · Shipped Jan 16</div></div>
+        <div style="font-family:Sora,sans-serif;font-size:20px;font-weight:700;color:var(--ok)">$57,000</div>
+      </div>
+      <div class="fg"><label>Update Status</label><select style="width:100%"><option>Delivered</option><option>In Transit</option><option>Processing</option><option>Disputed</option><option>Cancelled</option></select></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-order-view')">Close</button>
+      <button class="btn btn-p" onclick="showToast('Order updated!','ok');closeModal('modal-order-view')">Update Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOMER VIEW -->
+<div id="modal-customer-view" class="modal-bg" onclick="if(event.target===this)closeModal('modal-customer-view')">
+  <div class="modal">
+    <div class="modal-head"><h3>👤 Customer — James Wilson</h3><button class="modal-close" onclick="closeModal('modal-customer-view')">✕</button></div>
+    <div class="modal-body">
+      <div style="font-size:13px;line-height:2;margin-bottom:13px">
+        <div><span style="color:var(--muted)">Email:</span> <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8de7ece0e8fecdf9e8eee5eee2fffda3eee2e0">[email&#160;protected]</a></strong></div>
+        <div><span style="color:var(--muted)">Country:</span> 🇺🇸 USA · Member since Jan 2023</div>
+        <div><span style="color:var(--muted)">Total Orders:</span> <strong>14</strong></div>
+        <div><span style="color:var(--muted)">Total Spent:</span> <strong style="color:var(--ok)">$284,000</strong></div>
+        <div><span style="color:var(--muted)">Status:</span> <span class="pill p-ok">Active</span></div>
+      </div>
+      <div class="fg"><label>Account Action</label><select style="width:100%"><option>Active — No action</option><option>Suspend Account</option><option>Ban Account</option><option>Flag for Review</option></select></div>
+      <div class="fg"><label>Admin Notes</label><textarea placeholder="Internal notes…" style="width:100%;height:70px"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-customer-view')">Close</button>
+      <button class="btn btn-p" onclick="showToast('Customer updated!','ok');closeModal('modal-customer-view')">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- SELLER PROFILE -->
+<div id="modal-seller-profile" class="modal-bg" onclick="if(event.target===this)closeModal('modal-seller-profile')">
+  <div class="modal modal-lg">
+    <div class="modal-head"><h3>🏪 Seller — Shenzhen TechPro Electronics</h3><button class="modal-close" onclick="closeModal('modal-seller-profile')">✕</button></div>
+    <div class="modal-body">
+      <div class="g2" style="margin-bottom:13px">
+        <div style="background:#f9fafb;border-radius:var(--r);padding:13px;font-size:13px;line-height:1.9">
+          <div>🇨🇳 Shenzhen, China</div>
+          <div>Plan: <span class="pill p-gold">⭐ Gold</span></div>
+          <div>Products: <strong>2,480</strong></div>
+          <div>Revenue MTD: <strong style="color:var(--ok)">$48,200</strong></div>
+          <div>Rating: <strong>⭐ 4.9/5</strong></div>
+        </div>
+        <div style="background:#f9fafb;border-radius:var(--r);padding:13px">
+          <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:10px">Performance</div>
+          <div class="mbar"><div class="mbar-head"><span>Response Rate</span><strong>98.4%</strong></div><div class="bar-track"><div class="bar-fill" style="width:98.4%;background:var(--ok)"></div></div></div>
+          <div class="mbar"><div class="mbar-head"><span>On-time Delivery</span><strong>99.2%</strong></div><div class="bar-track"><div class="bar-fill" style="width:99.2%;background:var(--ok)"></div></div></div>
+          <div class="mbar"><div class="mbar-head"><span>Dispute Rate</span><strong style="color:var(--ok)">0.4%</strong></div><div class="bar-track"><div class="bar-fill" style="width:0.4%;background:var(--danger)"></div></div></div>
+        </div>
+      </div>
+      <div class="fg"><label>Account Action</label>
+        <select style="width:100%"><option>Active — No action</option><option>Suspend Account (temporary)</option><option>Downgrade Plan</option><option>Flag for Review</option><option>Permanently Delete Account</option></select>
+      </div>
+      <div class="fg"><label>Admin Notes</label><textarea placeholder="Internal notes about this seller…" style="width:100%;height:70px"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-seller-profile')">Close</button>
+      <button class="btn btn-warn" onclick="showToast('Seller suspended!','warn');closeModal('modal-seller-profile')">Suspend</button>
+      <button class="btn btn-p" onclick="showToast('Seller updated!','ok');closeModal('modal-seller-profile')">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script>
+// ── NAVIGATION ──────────────────────────────────────────────
+function nav(el) {
+  if (!el) return;
+  var id = el.getAttribute('data-sec');
+  if (!id) return;
+  document.querySelectorAll('.sec').forEach(function(s){ s.classList.remove('active'); });
+  document.querySelectorAll('.sb-item').forEach(function(s){ s.classList.remove('active'); });
+  var sec = document.getElementById(id);
+  if (sec) sec.classList.add('active');
+  el.classList.add('active');
+  var lbl = el.querySelector('.sb-label');
+  var tb = document.querySelector('.tb-title');
+  if (tb) tb.textContent = lbl ? lbl.textContent.trim() : 'Admin Panel';
+  window.scrollTo(0,0);
+}
+
+// ── TABS ────────────────────────────────────────────────────
+function showTab(id, btn) {
+  var par = btn.closest('[data-tabs]');
+  par.querySelectorAll('.tab-btn').forEach(function(t){ t.classList.remove('on'); });
+  par.querySelectorAll('.tabpane').forEach(function(t){ t.classList.remove('on'); });
+  btn.classList.add('on');
+  var p = document.getElementById(id);
+  if (p) p.classList.add('on');
+}
+
+// ── MODALS ──────────────────────────────────────────────────
+function openModal(id){ var m=document.getElementById(id); if(m)m.classList.add('show'); }
+function closeModal(id){ var m=document.getElementById(id); if(m)m.classList.remove('show'); }
+
+// ── TOAST ────────────────────────────────────────────────────
+function showToast(msg, type) {
+  document.querySelectorAll('.adm-toast').forEach(function(t){ t.remove(); });
+  var t = document.createElement('div');
+  t.className = 'adm-toast';
+  var c = {
+    ok:    ['#dcfce7','#86efac','#15803d'],
+    warn:  ['#fef3c7','#fcd34d','#92400e'],
+    danger:['#fee2e2','#fca5a5','#991b1b']
+  }[type] || ['#dcfce7','#86efac','#15803d'];
+  t.style.cssText = 'position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.12);max-width:360px;font-family:DM Sans,sans-serif;border:1px solid '+c[1]+';background:'+c[0]+';color:'+c[2];
+  t.textContent = (type==='ok'?'✓ ':type==='warn'?'⚠ ':'✕ ') + msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ t.style.transition='opacity .3s'; t.style.opacity='0'; setTimeout(function(){ t.remove(); },300); },3000);
+}
+
+// ── PRODUCT APPROVAL ────────────────────────────────────────
+function approveProduct(btn, name) {
+  var card = btn ? btn.closest('.prc') : null;
+  if (card) {
+    card.style.transition = 'all .35s';
+    card.style.opacity = '0';
+    card.style.transform = 'translateX(24px)';
+    setTimeout(function(){ if(card.parentNode) card.remove(); }, 350);
+  }
+  var badge = document.querySelector('[data-sec=sec-prod-approval] .sb-bdg');
+  if (badge) badge.textContent = Math.max(0, parseInt(badge.textContent||0) - 1);
+  showToast((name||'Product') + ' approved!', 'ok');
+}
+
+function rejectProduct(reason, notes) {
+  closeModal('modal-reject-prod');
+  showToast('Product rejected. Seller notified.', 'warn');
+}
+
+// ── SELLER APPROVAL ─────────────────────────────────────────
+function approveSeller(btn, name) {
+  var row = btn ? btn.closest('tr') : null;
+  if (row) { row.style.transition='opacity .3s'; row.style.opacity='0'; setTimeout(function(){ if(row.parentNode)row.remove(); },300); }
+  var badge = document.querySelector('[data-sec=sec-seller-approval] .sb-bdg');
+  if (badge) badge.textContent = Math.max(0, parseInt(badge.textContent||0) - 1);
+  showToast((name||'Seller') + ' approved!', 'ok');
+}
+
+// ── DOCUMENT APPROVAL ───────────────────────────────────────
+function approveDoc(btn) {
+  var card = btn ? btn.closest('.doc-card') : null;
+  if (card) {
+    card.querySelectorAll('.pill').forEach(function(p){ p.className='pill p-ok'; p.textContent='Approved ✓'; });
+    card.querySelectorAll('button').forEach(function(b){ if(b.textContent.includes('Approve')||b.textContent.includes('Reject')) b.remove(); });
+  }
+  var badge = document.querySelector('[data-sec=sec-doc-approval] .sb-bdg');
+  if (badge) badge.textContent = Math.max(0, parseInt(badge.textContent||0) - 1);
+  showToast('Document approved!', 'ok');
+}
+
+// ── SAVE MARGIN ─────────────────────────────────────────────
+function saveMargin(btn, cat, inputId) {
+  var inp = document.getElementById(inputId);
+  var val = inp ? inp.value : '?';
+  var row = btn ? btn.closest('tr') : null;
+  if (row && row.cells[2]) row.cells[2].innerHTML = '<strong style="color:var(--pl)">'+val+'%</strong>';
+  showToast(cat + ' margin updated to ' + val + '%', 'ok');
+}
+
+// ── TOGGLE ───────────────────────────────────────────────────
+function toggle(el){ el.classList.toggle('on'); }
+
+// ── SIGN OUT ─────────────────────────────────────────────────
+function adminSignOut() {
+  if (_configured) {
+    sb.auth.signOut().then(function(){
+      window.location.href = 'login-admin.html';
+    });
+  } else {
+    window.location.href = 'login-admin.html';
+  }
+}
+
+// ── ADMIN INIT - NO REDIRECT LOOP ───────────────────────────
+(async function initAdmin() {
+  // Demo mode - just show dashboard without auth check
+  if (!_configured) {
+    console.warn('[Ebazario] Demo mode - no auth check');
+    return;
+  }
+
+  try {
+    const auth = await requireRole('admin', 'login-admin.html');
+    if (!auth) return;
+    const { session, profile } = auth;
+    var userId = session.user.id;
+    var userEmail = session.user.email;
+
+    console.log('[Admin] Session found for:', userEmail);
+    
+    // In demo mode or if just created, we might need to ensure profile exists
+    let { data: profileRes, error: profileErr } = await getProfile(userId);
+    if (profileErr || !profileRes) {
+      console.warn('[Admin] Profile not found, creating base profile...');
+      await sb.from('profiles').upsert({
+        id: userId,
+        email: userEmail,
+        role: 'admin',
+        first_name: 'Super',
+        last_name: 'Admin',
+        is_active: true
+      });
+      // Refresh profile
+      const p2 = await getProfile(userId);
+      profileRes = p2.data;
+    }
+
+    var profile = profileRes;
+    console.log('[Admin] Profile role:', profile.role);
+
+    // Role check
+    if (profile.role !== 'admin') {
+      console.warn('[Admin] Role is not admin:', profile.role, '- signing out');
+      await sb.auth.signOut();
+      window.location.href = 'login-admin.html';
+      return;
+    }
+
+    // SUCCESS - update UI
+    window._adminId = userId;
+    window._adminEmail = userEmail;
+
+    var fullName = ((profile.first_name||'') + ' ' + (profile.last_name||'')).trim() || 'Admin';
+    document.querySelectorAll('.tb-pro span').forEach(function(el){ el.textContent = fullName; });
+    document.querySelectorAll('.sb-admin strong').forEach(function(el){ el.textContent = fullName; });
+    document.querySelectorAll('.sb-admin span').forEach(function(el){ el.textContent = userEmail; });
+
+    console.log('[Admin] Dashboard loaded for:', userEmail);
+
+    // Load counts (non-blocking)
+    setTimeout(async function(){
+      try {
+        var selectors = [
+          { query: sb.from('products').select('id',{count:'exact',head:true}).eq('status','pending_review'), badge: '[data-sec=sec-prod-approval] .sb-bdg' },
+          { query: sb.from('seller_profiles').select('id',{count:'exact',head:true}).eq('status','pending'), badge: '[data-sec=sec-seller-approval] .sb-bdg' },
+          { query: sb.from('seller_documents').select('id',{count:'exact',head:true}).eq('status','pending'), badge: '[data-sec=sec-doc-approval] .sb-bdg' },
+          { query: sb.from('disputes').select('id',{count:'exact',head:true}).eq('status','open'), badge: '[data-sec=sec-disputes] .sb-bdg' }
+        ];
+        for (var i=0; i<selectors.length; i++) {
+          var r = await selectors[i].query;
+          if (r.count != null) {
+            var b = document.querySelector(selectors[i].badge);
+            if (b) b.textContent = r.count;
+          }
+        }
+      } catch(e){ console.warn('Counts error:', e); }
+    }, 1000);
+
+  } catch(e) {
+    console.error('[Admin] Unexpected error:', e);
+    // Don't redirect on unexpected errors - just show dashboard
+  }
+})();
+</script>
+</body>
+</html>

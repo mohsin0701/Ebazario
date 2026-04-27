@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Product Approvals — Ebazario Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--p:#1e1b4b;--pl:#4338ca;--ok:#10b981;--okl:#d1fae5;--okd:#065f46;--danger:#ef4444;--dangerl:#fee2e2;--dangerd:#991b1b;--warn:#f59e0b;--warnl:#fef3c7;--warnd:#92400e;--blue:#3b82f6;--bluel:#dbeafe;--gold:#f59e0b;--bg:#f8fafc;--white:#fff;--text:#0f172a;--sub:#475569;--muted:#94a3b8;--border:#e2e8f0;--r:8px;--rl:12px}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+h1,h2,h3,h4{font-family:'Sora',sans-serif}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tb-left{display:flex;align-items:center;gap:14px}
+.tb-back{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sub);text-decoration:none;padding:6px 10px;border-radius:var(--r);border:1.5px solid var(--border);transition:all .15s}
+.tb-back:hover{border-color:var(--pl);color:var(--pl)}
+.tb-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:700}
+.tb-right{display:flex;align-items:center;gap:10px}
+.content{padding:24px;max-width:1200px;margin:0 auto}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.ph h1{font-size:20px;font-weight:700}.ph p{font-size:13px;color:var(--sub);margin-top:3px}
+.ph-r{display:flex;gap:8px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:var(--rl);padding:16px;position:relative;overflow:hidden}
+.stat-bar{position:absolute;top:0;left:0;right:0;height:3px}
+.stat-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px}
+.stat-val{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;margin-bottom:3px}
+.stat-ch{font-size:12px;font-weight:500;color:var(--ok)}
+/* TABS */
+.tab-bar{display:flex;border-bottom:2px solid var(--border);margin-bottom:18px;overflow-x:auto}
+.tab-btn{padding:10px 18px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif}
+.tab-btn.on{color:var(--pl);border-bottom-color:var(--pl)}
+.tabpane{display:none}.tabpane.on{display:block}
+/* PRODUCT REVIEW CARD */
+.prc{background:var(--white);border:1.5px solid var(--border);border-radius:var(--rl);padding:18px;display:flex;gap:16px;margin-bottom:12px;transition:all .2s}
+.prc:hover{box-shadow:0 4px 12px rgba(0,0,0,.08);border-color:#c7d2fe}
+.prc.flagged{border-color:#fca5a5;background:#fff8f8}
+.prc-thumb{width:80px;height:80px;border-radius:var(--r);background:linear-gradient(135deg,#e6f6fc,#DCF3FD);display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0}
+.prc-info{flex:1;min-width:0}
+.prc-info h4{font-size:14px;font-weight:700;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prc-info .seller-line{font-size:12px;color:var(--sub);margin-bottom:7px}
+.prc-meta{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.prc-desc{font-size:12px;color:var(--sub)}
+.prc-acts{display:flex;gap:6px;flex-shrink:0;flex-direction:column;justify-content:flex-start;min-width:110px}
+/* PILLS */
+.pill{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.p-ok{background:var(--okl);color:var(--okd)}.p-warn{background:var(--warnl);color:var(--warnd)}
+.p-danger{background:var(--dangerl);color:var(--dangerd)}.p-blue{background:var(--bluel);color:#1d4ed8}
+.p-indigo{background:#ede9fe;color:#5b21b6}.p-muted{background:#f1f5f9;color:var(--sub)}.p-gold{background:#fef3c7;color:#92400e}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:8px 16px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.btn-p{background:var(--pl);color:#fff}.btn-p:hover{background:#3730a3}
+.btn-ok{background:var(--ok);color:#fff}.btn-ok:hover{background:#059669}
+.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{background:#dc2626}
+.btn-warn{background:var(--warn);color:#fff}.btn-warn:hover{background:#d97706}
+.btn-ghost{background:transparent;color:var(--sub);border:1.5px solid var(--border)}.btn-ghost:hover{border-color:var(--pl);color:var(--pl)}
+.btn-sm{padding:5px 12px;font-size:12px;border-radius:6px}
+.btn-xs{padding:3px 8px;font-size:11px;border-radius:5px}
+/* NOTICE */
+.notice{padding:12px 15px;border-radius:var(--r);font-size:13px;line-height:1.6;margin-bottom:16px;display:flex;align-items:flex-start;gap:9px}
+.n-blue{background:var(--bluel);border:1px solid #bfdbfe;color:#1e40af}
+.n-warn{background:var(--warnl);border:1px solid #fde68a;color:var(--warnd)}
+.n-ok{background:var(--okl);border:1px solid #a7f3d0;color:var(--okd)}
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;padding:9px 12px;background:#f8fafc;font-weight:700;font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl td{padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#fafbff}
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:1000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px)}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,.15)}
+.modal-lg{max-width:820px}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:1}
+.modal-head h3{font-size:15px;font-weight:700}
+.modal-close{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.modal-close:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
+.modal-body{padding:22px}
+.modal-foot{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:#fff;position:sticky;bottom:0}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
+.fg select,.fg textarea,.fg input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;color:var(--text);transition:border .2s;background:#fff}
+.fg select:focus,.fg textarea:focus,.fg input:focus{border-color:var(--pl)}
+.fg textarea{resize:vertical;min-height:90px;line-height:1.6}
+.checklist{background:#e6f6fc;border-radius:var(--r);padding:14px;margin-bottom:14px}
+.checklist-item{display:flex;align-items:center;gap:8px;margin-bottom:7px;cursor:pointer;font-size:13px}
+.checklist-item:last-child{margin-bottom:0}
+.checklist-item input{accent-color:var(--pl)}
+/* PAGINATION */
+.pagination{display:flex;justify-content:center;gap:8px;padding:16px 0}
+.pg-btn{padding:6px 12px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--sub);transition:all .15s}
+.pg-btn:hover,.pg-btn.active{background:var(--pl);color:#fff;border-color:var(--pl)}
+/* LOADING */
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.8);z-index:2000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--pl);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-state .es-icon{font-size:48px;margin-bottom:14px}
+.empty-state h3{font-size:16px;font-weight:700;color:var(--sub);margin-bottom:6px}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <a href="admin-dashboard.html" class="tb-back">← Admin Panel</a>
+    <div class="tb-title">📦 Product Approvals</div>
+  </div>
+  <div class="tb-right">
+    <select id="filter-category" class="btn btn-ghost btn-sm" onchange="loadProducts()" style="cursor:pointer">
+      <option value="">All Categories</option>
+      <option value="electronics">Electronics</option>
+      <option value="machinery">Machinery</option>
+      <option value="apparel">Apparel</option>
+      <option value="healthcare">Healthcare</option>
+      <option value="food-agri">Food & Agriculture</option>
+      <option value="chemicals">Chemicals</option>
+      <option value="auto-parts">Auto Parts</option>
+      <option value="construction">Construction</option>
+      <option value="furniture">Furniture</option>
+      <option value="tools">Tools & Hardware</option>
+    </select>
+    <button class="btn btn-ghost btn-sm" onclick="loadProducts()">🔄 Refresh</button>
+    <button class="btn btn-ok btn-sm" id="btn-approve-all" onclick="approveAll()">✓ Approve All Visible</button>
+  </div>
+</div>
+
+<div class="content">
+  <div class="ph">
+    <div>
+      <h1>Product Approvals</h1>
+      <p>Review seller-submitted products before they go live on the marketplace</p>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--warn),#fbbf24)"></div><div class="stat-lbl">Pending Review</div><div class="stat-val" id="count-pending">—</div><div class="stat-ch" style="color:var(--warn)">Needs action</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--ok),#4ade80)"></div><div class="stat-lbl">Approved Today</div><div class="stat-val" id="count-approved">—</div><div class="stat-ch">Live on marketplace</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--danger),#f87171)"></div><div class="stat-lbl">Rejected Today</div><div class="stat-val" id="count-rejected">—</div><div class="stat-ch" style="color:var(--muted)">Notified</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--pl),var(--blue))"></div><div class="stat-lbl">Avg Review Time</div><div class="stat-val" id="count-time">—</div><div class="stat-ch" style="color:var(--muted)">hours</div></div>
+  </div>
+
+  <div data-tabs>
+    <div class="tab-bar">
+      <button class="tab-btn on" onclick="switchTab('pending',this)">⏳ Pending (<span id="tab-count-pending">0</span>)</button>
+      <button class="tab-btn" onclick="switchTab('approved',this)">✅ Approved Today</button>
+      <button class="tab-btn" onclick="switchTab('rejected',this)">❌ Rejected</button>
+      <button class="tab-btn" onclick="switchTab('all',this)">📋 All Products</button>
+    </div>
+
+    <!-- PENDING -->
+    <div id="tab-pending" class="tabpane on">
+      <div class="notice n-blue"><span>ℹ️</span><div>Check each product carefully: image quality, description completeness, correct pricing, valid certifications, and seller status. Approved products go live immediately.</div></div>
+      <div id="pending-list">
+        <div class="empty-state"><div class="spinner"></div><p style="margin-top:12px;color:var(--muted)">Loading products…</p></div>
+      </div>
+      <div class="pagination" id="pending-pagination"></div>
+    </div>
+
+    <!-- APPROVED -->
+    <div id="tab-approved" class="tabpane">
+      <div id="approved-list"><div class="empty-state"><div class="es-icon">⏳</div><h3>Loading…</h3></div></div>
+    </div>
+
+    <!-- REJECTED -->
+    <div id="tab-rejected" class="tabpane">
+      <div id="rejected-list"><div class="empty-state"><div class="es-icon">⏳</div><h3>Loading…</h3></div></div>
+    </div>
+
+    <!-- ALL -->
+    <div id="tab-all" class="tabpane">
+      <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <input type="text" id="search-all" placeholder="Search products…" style="flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;min-width:200px" oninput="filterAll()">
+        <select id="filter-status-all" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px" onchange="filterAll()">
+          <option value="">All Status</option>
+          <option value="approved">Approved</option>
+          <option value="pending_review">Pending</option>
+          <option value="rejected">Rejected</option>
+          <option value="draft">Draft</option>
+        </select>
+      </div>
+      <div id="all-list"><div class="empty-state"><div class="es-icon">⏳</div><h3>Loading…</h3></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Full Product Review -->
+<div id="modal-review" class="modal-bg" onclick="if(event.target===this)closeModal('modal-review')">
+  <div class="modal modal-lg">
+    <div class="modal-head"><h3>📦 Full Product Review</h3><button class="modal-close" onclick="closeModal('modal-review')">✕</button></div>
+    <div class="modal-body" id="modal-review-body">Loading…</div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-review')">Cancel</button>
+      <button class="btn btn-danger btn-sm" onclick="closeModal('modal-review');openModal('modal-reject')">✕ Reject</button>
+      <button class="btn btn-ok" onclick="doApproveCurrentProduct();closeModal('modal-review')">✓ Approve & Go Live</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Reject Product -->
+<div id="modal-reject" class="modal-bg" onclick="if(event.target===this)closeModal('modal-reject')">
+  <div class="modal">
+    <div class="modal-head"><h3>✕ Reject Product</h3><button class="modal-close" onclick="closeModal('modal-reject')">✕</button></div>
+    <div class="modal-body">
+      <div class="notice n-warn"><span>⚠️</span><div>The seller will receive an email explaining why their product was rejected and what needs to be fixed before resubmission.</div></div>
+      <div class="fg"><label>Rejection Reason *</label>
+        <select id="reject-reason">
+          <option value="missing_certification">Missing required certification (CE / FCC / FDA)</option>
+          <option value="poor_images">Poor image quality or watermarked images</option>
+          <option value="incomplete_description">Incomplete or insufficient product description</option>
+          <option value="pricing_issue">Incorrect pricing or unrealistic MOQ</option>
+          <option value="duplicate">Duplicate listing</option>
+          <option value="prohibited">Prohibited or restricted product</option>
+          <option value="other">Other (explain below)</option>
+        </select>
+      </div>
+      <div class="fg"><label>Detailed Feedback for Seller</label>
+        <textarea id="reject-notes" placeholder="Explain specifically what needs to be fixed so the seller can resubmit successfully…"></textarea>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+        <input type="checkbox" id="notify-seller" checked style="accent-color:var(--pl)">
+        Send email notification to seller with this feedback
+      </label>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-reject')">Cancel</button>
+      <button class="btn btn-danger" onclick="doRejectCurrentProduct()">Confirm Rejection</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script>
+var currentProductId = null;
+var currentPage = 1;
+var PAGE_SIZE = 10;
+
+// ── DEMO DATA (shown when Supabase not configured) ──────────────────────────
+var DEMO_PRODUCTS = [
+  { id: 'p1', title: 'Industrial Rugged Laptop 15.6" Core i7 IP65 MIL-STD-810H', status: 'pending_review', base_price_usd: 285, min_order_qty: 50, unit: 'unit', images: [], certifications: ['CE','FCC','RoHS','MIL-STD-810H'], created_at: new Date(Date.now()-7200000).toISOString(), categories: {name:'Electronics',icon:'🔌'}, seller_profiles: {company_name:'Shenzhen TechPro Electronics',plan:'gold',avg_rating:4.9,status:'active'}, description: '450 words · 12 specs · 3 price tiers · CE, FCC, RoHS certified' },
+  { id: 'p2', title: '5G Industrial Router 4-Port Gigabit DIN Rail Mount', status: 'pending_review', base_price_usd: 78, min_order_qty: 100, unit: 'unit', images: [], certifications: ['FCC'], created_at: new Date(Date.now()-21600000).toISOString(), categories: {name:'Electronics',icon:'🔌'}, seller_profiles: {company_name:'Shenzhen TechPro Electronics',plan:'gold',avg_rating:4.9,status:'active'}, description: '⚠️ CE certificate missing — required for EU markets', flagged: true },
+  { id: 'p3', title: 'Premium Cotton T-Shirts 180gsm OEM Custom Logo Printing', status: 'pending_review', base_price_usd: 1.80, min_order_qty: 500, unit: 'piece', images: [], certifications: ['OEKO-TEX'], created_at: new Date(Date.now()-28800000).toISOString(), categories: {name:'Apparel',icon:'👗'}, seller_profiles: {company_name:'Dhaka Textiles International',plan:'silver',avg_rating:4.7,status:'active'}, description: '320 words · Sizes XS-5XL · 24 colors · 25-35 day lead time' },
+  { id: 'p4', title: 'CNC Milling Machine VMC850 3-Axis Vertical Machining Center', status: 'pending_review', base_price_usd: 18500, min_order_qty: 1, unit: 'unit', images: [], certifications: ['CE','ISO 9001'], created_at: new Date(Date.now()-86400000).toISOString(), categories: {name:'Machinery',icon:'⚙️'}, seller_profiles: {company_name:'Precision Manufacturing GmbH',plan:'platinum',avg_rating:5.0,status:'active'}, description: 'Complete specs · CE + ISO certified · Factory video included · Excellent submission' },
+  { id: 'p5', title: 'Surgical N95 Respirator Mask 5-Layer KN95 — BULK', status: 'pending_review', base_price_usd: 0.45, min_order_qty: 10000, unit: 'piece', images: [], certifications: [], created_at: new Date(Date.now()-86400000).toISOString(), categories: {name:'Healthcare',icon:'🏥'}, seller_profiles: {company_name:'MedSupply Co.',plan:'free',avg_rating:0,status:'active'}, description: '⚠️ FDA + CE/ISO 13485 missing · Seller unverified · Cannot approve', flagged: true }
+];
+var DEMO_APPROVED = [
+  { id: 'a1', title: 'Rugged Laptop 15.6" IP65', base_price_usd: 285, categories: {name:'Electronics',icon:'🔌'}, seller_profiles: {company_name:'TechPro CN'}, reviewed_at: new Date().toISOString() },
+  { id: 'a2', title: 'LiFePO4 Battery 100Ah', base_price_usd: 145, categories: {name:'Electronics',icon:'🔌'}, seller_profiles: {company_name:'EnergyCo'}, reviewed_at: new Date().toISOString() }
+];
+var DEMO_REJECTED = [
+  { id: 'r1', title: '5G Router (missing CE)', rejection_reason: 'missing_certification', rejection_notes: 'CE certificate required for EU sales', categories: {name:'Electronics',icon:'🔌'}, seller_profiles: {company_name:'TechPro CN'}, reviewed_at: new Date(Date.now()-86400000).toISOString() },
+  { id: 'r2', title: 'Unmarked Safety Helmet', rejection_reason: 'missing_certification', rejection_notes: 'No CE marking found', categories: {name:'Construction',icon:'🏗️'}, seller_profiles: {company_name:'BuildSafe Ltd'}, reviewed_at: new Date(Date.now()-172800000).toISOString() }
+];
+
+function formatPrice(n) { return '$' + (n < 1 ? n.toFixed(2) : n >= 1000 ? (n/1000).toFixed(1)+'K' : n.toLocaleString()); }
+function timeAgo(d) { var s=(Date.now()-new Date(d))/1000; return s<3600 ? Math.floor(s/60)+'m ago' : s<86400 ? Math.floor(s/3600)+'h ago' : Math.floor(s/86400)+'d ago'; }
+function planPill(plan) {
+  var map = {free:'p-muted Free',silver:'p-muted 🥈 Silver',gold:'p-gold ⭐ Gold',platinum:'p-indigo 💎 Platinum'};
+  var v = (map[plan] || 'p-muted '+plan).split(' '); return '<span class="pill '+v[0]+'" style="font-size:10px">'+v.slice(1).join(' ')+'</span>';
+}
+
+function makeCard(p) {
+  var certs = (p.certifications || []);
+  var certHtml = certs.map(function(c){ return '<span class="pill p-ok" style="font-size:10px">'+c+' ✓</span>'; }).join('');
+  if (!certHtml) certHtml = '<span class="pill p-danger" style="font-size:10px">No Certs ✗</span>';
+  return '<div class="prc'+(p.flagged?' flagged':'')+'" id="prc-'+p.id+'">'
+    +'<div class="prc-thumb">'+(p.categories ? p.categories.icon : '📦')+'</div>'
+    +'<div class="prc-info">'
+      +'<h4>'+p.title+'</h4>'
+      +'<div class="seller-line">By <strong>'+(p.seller_profiles ? p.seller_profiles.company_name : 'Unknown')+'</strong> · '+planPill(p.seller_profiles ? p.seller_profiles.plan : 'free')+' · ⭐ '+(p.seller_profiles ? p.seller_profiles.avg_rating : 0)+' · Submitted '+timeAgo(p.created_at)+'</div>'
+      +'<div class="prc-meta"><span class="pill p-blue" style="font-size:10px">'+(p.categories ? p.categories.name : '—')+'</span>'
+      +'<span class="pill p-muted" style="font-size:10px">'+formatPrice(p.base_price_usd)+'/'+p.unit+'</span>'
+      +'<span class="pill p-muted" style="font-size:10px">MOQ: '+p.min_order_qty+'</span>'
+      +certHtml+'</div>'
+      +'<div class="prc-desc">'+(p.description || 'No description provided')+'</div>'
+    +'</div>'
+    +'<div class="prc-acts">'
+      +'<button class="btn btn-ok btn-sm" onclick="doApproveProduct(\''+p.id+'\',\''+p.title.replace(/'/g,"\\'").substring(0,40)+'\')">✓ Approve</button>'
+      +'<button class="btn btn-ghost btn-sm" onclick="openReviewModal(\''+p.id+'\')">👁 Review</button>'
+      +'<button class="btn btn-danger btn-sm" onclick="openRejectModal(\''+p.id+'\')">✕ Reject</button>'
+    +'</div>'
+  +'</div>';
+}
+
+function renderPendingList(products) {
+  var el = document.getElementById('pending-list');
+  if (!products || products.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="es-icon">🎉</div><h3>All caught up!</h3><p>No products pending review.</p></div>';
+    return;
+  }
+  el.innerHTML = products.map(makeCard).join('');
+  document.getElementById('tab-count-pending').textContent = products.length;
+  document.getElementById('count-pending').textContent = products.length;
+}
+
+function renderApprovedList(products) {
+  var el = document.getElementById('approved-list');
+  if (!products || products.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="es-icon">📭</div><h3>No approvals today yet</h3></div>'; return;
+  }
+  var rows = products.map(function(p){ return '<tr><td><strong>'+p.title+'</strong></td><td>'+(p.categories ? p.categories.icon+' '+p.categories.name : '—')+'</td><td>'+(p.seller_profiles ? p.seller_profiles.company_name : '—')+'</td><td>'+formatPrice(p.base_price_usd)+'</td><td>'+timeAgo(p.reviewed_at)+'</td><td><button class="btn btn-ghost btn-xs" onclick="openReviewModal(\''+p.id+'\')">View</button></td></tr>'; }).join('');
+  el.innerHTML = '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Product</th><th>Category</th><th>Seller</th><th>Price</th><th>Approved</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+
+function renderRejectedList(products) {
+  var el = document.getElementById('rejected-list');
+  if (!products || products.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="es-icon">✅</div><h3>No rejections today</h3></div>'; return;
+  }
+  var reasonMap = {missing_certification:'Missing Certification',poor_images:'Poor Images',incomplete_description:'Incomplete Description',pricing_issue:'Pricing Issue',duplicate:'Duplicate',prohibited:'Prohibited',other:'Other'};
+  var rows = products.map(function(p){ return '<tr><td><strong>'+p.title+'</strong></td><td>'+(p.seller_profiles ? p.seller_profiles.company_name : '—')+'</td><td><span class="pill p-danger" style="font-size:11px">'+(reasonMap[p.rejection_reason] || p.rejection_reason || 'Unknown')+'</span></td><td style="font-size:12px;color:var(--sub);max-width:200px">'+(p.rejection_notes || '—')+'</td><td>'+timeAgo(p.reviewed_at)+'</td></tr>'; }).join('');
+  el.innerHTML = '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Product</th><th>Seller</th><th>Reason</th><th>Notes</th><th>When</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+
+async function loadProducts() {
+  if (!_configured) {
+    renderPendingList(DEMO_PRODUCTS);
+    renderApprovedList(DEMO_APPROVED);
+    renderRejectedList(DEMO_REJECTED);
+    document.getElementById('count-approved').textContent = DEMO_APPROVED.length;
+    document.getElementById('count-rejected').textContent = DEMO_REJECTED.length;
+    document.getElementById('count-time').textContent = '3.8';
+    return;
+  }
+  var cat = document.getElementById('filter-category').value;
+  document.getElementById('pending-list').innerHTML = '<div class="empty-state"><div class="spinner"></div></div>';
+  try {
+    // 1. Get Categories mapping for filtering
+    let catId;
+    if (cat) {
+      const { data: catData } = await sb.from('categories').select('id').eq('slug', cat).single();
+      if (catData) catId = catData.id;
+    }
+
+    // 2. Load Pending
+    let q = sb.from('products').select('*, categories(name,icon), seller_profiles(company_name,plan,avg_rating,status)').eq('status','pending_review').order('created_at', {ascending:true});
+    if (cat && typeof catId !== 'undefined') q = q.eq('category_id', catId);
+    
+    const r = await q;
+    renderPendingList(r.data || []);
+
+    // 3. Load Today's Approved/Rejected
+    const today = new Date(); today.setHours(0,0,0,0);
+    const ra = await sb.from('products').select('*, categories(name,icon), seller_profiles(company_name)').eq('status','approved').gte('reviewed_at', today.toISOString()).order('reviewed_at', {ascending:false});
+    renderApprovedList(ra.data || []);
+    document.getElementById('count-approved').textContent = (ra.data || []).length;
+
+    const rr = await sb.from('products').select('*, seller_profiles(company_name)').eq('status','rejected').gte('reviewed_at', today.toISOString()).order('reviewed_at', {ascending:false});
+    renderRejectedList(rr.data || []);
+    document.getElementById('count-rejected').textContent = (rr.data || []).length;
+
+  } catch(e) { 
+    console.error(e);
+    showToast('Failed to load products: ' + e.message, 'danger'); 
+  }
+}
+
+async function doApproveProduct(id, name) {
+  if (!_configured || !window._adminId) {
+    demoRemoveCard(id, name, 'approved');
+    return;
+  }
+
+  try {
+    const res = await moderateProduct(id, window._adminId, 'approved');
+    if (res.error) throw res.error;
+    
+    // Notification for seller
+    await sb.from('notifications').insert({
+      user_id: res.data.seller_id,
+      type: 'order_update',
+      title: 'Product Approved! 🎉',
+      body: 'Your product "' + (name || 'Product') + '" has been approved and is now live.',
+      icon: '✅'
+    });
+
+    demoRemoveCard(id, name, 'approved');
+    showToast('Product approved!', 'ok');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'danger');
+  }
+}
+
+async function doRejectCurrentProduct() {
+  const id = rejectProductId;
+  const reason = document.getElementById('reject-reason').value;
+  const notes = document.getElementById('reject-notes').value;
+  
+  if (!notes.trim()) { alert('Please provide feedback for the seller.'); return; }
+  
+  if (!_configured || !window._adminId) {
+    closeModal('modal-reject');
+    demoRemoveCard(id, 'Product', 'rejected');
+    return;
+  }
+
+  try {
+    const res = await moderateProduct(id, window._adminId, 'rejected', notes);
+    if (res.error) throw res.error;
+
+    // Notification for seller
+    await sb.from('notifications').insert({
+      user_id: res.data.seller_id,
+      type: 'order_update',
+      title: 'Product Rejected ❌',
+      body: 'Your product submission was rejected. Reason: ' + reason,
+      icon: '⚠️'
+    });
+
+    closeModal('modal-reject');
+    demoRemoveCard(id, 'Product', 'rejected');
+    showToast('Product rejected.', 'warn');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'danger');
+  }
+}
+
+function demoRemoveCard(id, name, status) {
+  var card = document.getElementById('prc-' + id);
+  if (card) {
+    card.style.transition = 'all .35s';
+    card.style.opacity = '0';
+    card.style.transform = status === 'approved' ? 'translateX(24px)' : 'translateX(-24px)';
+    setTimeout(function(){ if(card.parentNode) card.remove(); }, 350);
+  }
+  var pending = document.getElementById('count-pending');
+  if (pending) pending.textContent = Math.max(0, parseInt(pending.textContent||0) - 1);
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('on'); });
+  document.querySelectorAll('.tabpane').forEach(function(p){ p.classList.remove('on'); });
+  btn.classList.add('on');
+  document.getElementById('tab-'+tab).classList.add('on');
+}
+
+function filterAll() {
+  var search = document.getElementById('search-all').value.toLowerCase();
+  var status = document.getElementById('filter-status-all').value;
+  // In demo mode just re-render
+  showToast('Filtered (demo mode)', 'ok');
+}
+
+var reviewProductId = null;
+function openReviewModal(id) {
+  reviewProductId = id;
+  var allProds = DEMO_PRODUCTS.concat(DEMO_APPROVED).concat(DEMO_REJECTED);
+  var p = allProds.find(function(x){ return x.id === id; });
+  if (p) {
+    document.getElementById('modal-review-body').innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px"><div><div style="background:#e6f6fc;border-radius:8px;padding:24px;text-align:center;font-size:56px;margin-bottom:10px">'+(p.categories ? p.categories.icon : '📦')+'</div></div><div><h4 style="font-size:14px;font-weight:700;margin-bottom:8px">'+p.title+'</h4><div style="font-size:13px;color:var(--sub);margin-bottom:10px">By <strong>'+(p.seller_profiles ? p.seller_profiles.company_name : 'Unknown')+'</strong> · '+planPill(p.seller_profiles ? p.seller_profiles.plan : 'free')+'</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px"><div><span style="color:var(--muted)">Price:</span> <strong>'+formatPrice(p.base_price_usd)+'/'+p.unit+'</strong></div><div><span style="color:var(--muted)">MOQ:</span> <strong>'+p.min_order_qty+' '+p.unit+'s</strong></div><div><span style="color:var(--muted)">Category:</span> <strong>'+(p.categories ? p.categories.name : '—')+'</strong></div><div><span style="color:var(--muted)">Certs:</span> <strong>'+((p.certifications||[]).join(', ') || 'None')+'</strong></div></div></div></div><div class="checklist"><strong style="font-size:12px;display:block;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--sub)">Review Checklist</strong><label class="checklist-item"><input type="checkbox" checked> Clear, descriptive product title</label><label class="checklist-item"><input type="checkbox" checked> High-quality images (no watermarks)</label><label class="checklist-item"><input type="checkbox" checked> Description is complete (100+ words)</label><label class="checklist-item"><input type="checkbox" checked> Pricing and MOQ are realistic</label><label class="checklist-item"><input type="checkbox" '+(p.certifications && p.certifications.length > 0 ? 'checked' : '')+'>Required certifications present</label></div><div class="fg"><label>Admin Notes (optional — sent to seller if rejecting)</label><textarea id="review-admin-notes" placeholder="Optional feedback…"></textarea></div>';
+  }
+  openModal('modal-review');
+}
+
+var rejectProductId = null;
+function openRejectModal(id) {
+  rejectProductId = id;
+  openModal('modal-reject');
+}
+
+function doApproveCurrentProduct() {
+  if (reviewProductId) doApproveProduct(reviewProductId);
+}
+
+async function doApproveProduct(id, name) {
+  var card = document.getElementById('prc-' + id);
+  if (card) {
+    card.style.transition = 'all .35s';
+    card.style.opacity = '0';
+    card.style.transform = 'translateX(24px)';
+    setTimeout(function(){ if(card.parentNode) card.remove(); }, 350);
+  }
+  var pending = document.getElementById('count-pending');
+  if (pending) pending.textContent = Math.max(0, parseInt(pending.textContent||0) - 1);
+  showToast((name || 'Product') + ' approved and is now live!', 'ok');
+  if (_configured && window._adminId) {
+    try { await adminApproveProduct(id, window._adminId); } catch(e) { console.error(e); }
+  }
+}
+
+async function doRejectCurrentProduct() {
+  var id = rejectProductId;
+  var reason = document.getElementById('reject-reason').value;
+  var notes = document.getElementById('reject-notes').value;
+  if (!notes.trim()) { alert('Please provide feedback for the seller.'); return; }
+  closeModal('modal-reject');
+  var card = document.getElementById('prc-' + id);
+  if (card) { card.style.transition='all .35s'; card.style.opacity='0'; card.style.transform='translateX(-24px)'; setTimeout(function(){ if(card.parentNode)card.remove(); },350); }
+  var pending = document.getElementById('count-pending');
+  if (pending) pending.textContent = Math.max(0, parseInt(pending.textContent||0) - 1);
+  showToast('Product rejected. Seller notified by email.', 'warn');
+  if (_configured && window._adminId) {
+    try { await adminRejectProduct(id, window._adminId, reason, notes); } catch(e) { console.error(e); }
+  }
+}
+
+function approveAll() {
+  var cards = document.querySelectorAll('#pending-list .prc');
+  if (cards.length === 0) { showToast('No products to approve', 'warn'); return; }
+  if (!confirm('Approve all ' + cards.length + ' visible products?')) return;
+  cards.forEach(function(card, i){
+    setTimeout(function(){ card.style.transition='all .3s'; card.style.opacity='0'; card.style.transform='translateX(20px)'; setTimeout(function(){ if(card.parentNode)card.remove(); },300); }, i * 80);
+  });
+  var pending = document.getElementById('count-pending');
+  if (pending) pending.textContent = 0;
+  showToast('All ' + cards.length + ' products approved!', 'ok');
+}
+
+function openModal(id) { var m = document.getElementById(id); if(m) m.classList.add('show'); }
+function closeModal(id) { var m = document.getElementById(id); if(m) m.classList.remove('show'); }
+
+function showToast(msg, type) {
+  document.querySelectorAll('.pga-toast').forEach(function(t){ t.remove(); });
+  var t = document.createElement('div'); t.className='pga-toast';
+  var c={ok:['#dcfce7','#86efac','#15803d'],warn:['#fef3c7','#fcd34d','#92400e'],danger:['#fee2e2','#fca5a5','#991b1b']}[type]||['#dcfce7','#86efac','#15803d'];
+  t.style.cssText='position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.12);max-width:360px;font-family:DM Sans,sans-serif;border:1px solid '+c[1]+';background:'+c[0]+';color:'+c[2];
+  t.textContent=(type==='ok'?'✓ ':type==='warn'?'⚠ ':'✕ ')+msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ t.style.transition='opacity .3s'; t.style.opacity='0'; setTimeout(function(){ t.remove(); },300); },3000);
+}
+
+// Init
+(async function(){
+  if(_configured){ 
+    const auth = await requireRole('admin', 'login-admin.html');
+    if (!auth) return;
+    window._adminId = auth.session.user.id;
+  }
+  loadProducts();
+})();
+</script>
+</body>
+</html>
+
