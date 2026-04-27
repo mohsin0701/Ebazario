@@ -7,3 +7,6 @@ dist/
 build/
 .env
 .vscode/
+
+scratch/
+*.zip

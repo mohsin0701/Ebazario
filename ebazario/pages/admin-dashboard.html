@@ -1417,15 +1417,32 @@ function adminSignOut() {
 
     console.log('[Admin] Dashboard loaded for:', userEmail);
 
-    // Load counts (non-blocking)
+    // Load counts and dynamic data
     setTimeout(async function(){
       try {
+        // 1. Load Stats
+        const { count: prodCount } = await sb.from('products').select('*', { count: 'exact', head: true }).eq('status', 'approved');
+        const { count: sellerCount } = await sb.from('seller_profiles').select('*', { count: 'exact', head: true }).eq('status', 'active');
+        const { count: buyerCount } = await sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'customer');
+        const { data: orderData } = await sb.from('orders').select('total_usd');
+        
+        const totalGMV = orderData ? orderData.reduce((acc, o) => acc + parseFloat(o.total_usd || 0), 0) : 0;
+        const platformFee = totalGMV * 0.05;
+
+        const statVals = document.querySelectorAll('.stat-val');
+        if (statVals[0]) statVals[0].textContent = '$' + (totalGMV/1000000).toFixed(2) + 'M';
+        if (statVals[1]) statVals[1].textContent = orderData ? orderData.length : 0;
+        if (statVals[2]) statVals[2].textContent = sellerCount || 0;
+        if (statVals[3]) statVals[3].textContent = (buyerCount/1000).toFixed(1) + 'K';
+
+        // 2. Load Pending Actions Counts
         var selectors = [
           { query: sb.from('products').select('id',{count:'exact',head:true}).eq('status','pending_review'), badge: '[data-sec=sec-prod-approval] .sb-bdg' },
           { query: sb.from('seller_profiles').select('id',{count:'exact',head:true}).eq('status','pending'), badge: '[data-sec=sec-seller-approval] .sb-bdg' },
           { query: sb.from('seller_documents').select('id',{count:'exact',head:true}).eq('status','pending'), badge: '[data-sec=sec-doc-approval] .sb-bdg' },
           { query: sb.from('disputes').select('id',{count:'exact',head:true}).eq('status','open'), badge: '[data-sec=sec-disputes] .sb-bdg' }
         ];
+        
         for (var i=0; i<selectors.length; i++) {
           var r = await selectors[i].query;
           if (r.count != null) {
@@ -1433,7 +1450,43 @@ function adminSignOut() {
             if (b) b.textContent = r.count;
           }
         }
-      } catch(e){ console.warn('Counts error:', e); }
+
+        // 3. Load Recent Orders
+        const { data: recentOrders } = await sb.from('orders').select('order_number, total_usd, status, profiles(first_name, last_name, country)').order('created_at', { ascending: false }).limit(5);
+        if (recentOrders && recentOrders.length > 0) {
+            const orderTbody = document.querySelector('#sec-dashboard .tbl tbody');
+            if (orderTbody) {
+                orderTbody.innerHTML = recentOrders.map(o => `
+                    <tr>
+                        <td><strong>${o.order_number}</strong></td>
+                        <td>${o.profiles?.first_name || 'User'} ${o.profiles?.last_name || ''}</td>
+                        <td>$${parseFloat(o.total_usd).toLocaleString()}</td>
+                        <td><span class="pill ${o.status === 'delivered' ? 'p-ok' : (o.status === 'disputed' ? 'p-danger' : 'p-blue')}">${o.status}</span></td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // 4. Load Live Activity (Audit Log)
+        const { data: logs } = await sb.from('audit_log').select('*').order('created_at', { ascending: false }).limit(6);
+        if (logs && logs.length > 0) {
+            const actContainer = document.querySelector('.card:has(.pill)');
+            if (actContainer && actContainer.querySelector('.pill').textContent.includes('LIVE')) {
+                const head = actContainer.querySelector('.card-head').outerHTML;
+                const logHtml = logs.map(l => `
+                    <div class="act-item">
+                        <div class="act-dot ${l.action.includes('Approved') ? 'ad-ok' : 'ad-blue'}">${l.action.includes('Login') ? '👤' : '✓'}</div>
+                        <div>
+                            <div style="font-size:13px"><strong>${l.action}</strong> — ${l.entity_type || 'System'}</div>
+                            <div style="font-size:11px;color:var(--muted)">${new Date(l.created_at).toLocaleTimeString()}</div>
+                        </div>
+                    </div>
+                `).join('');
+                actContainer.innerHTML = head + logHtml;
+            }
+        }
+
+      } catch(e){ console.warn('Dashboard data load error:', e); }
     }, 1000);
 
   } catch(e) {
