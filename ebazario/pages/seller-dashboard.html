@@ -322,7 +322,7 @@ a{text-decoration:none;color:inherit}
   <div class="sb-bottom">
     <a href="reports.html">📊 <span>Analytics &amp; Reports</span></a>
     <a href="../index.html" style="margin-top:2px">🌐 <span>View Marketplace</span></a>
-    <a href="#" onclick="handleGlobalSignOut(event)" style="margin-top:2px">🚪 <span>Sign Out</span></a>
+    <a href="#" onclick="event.preventDefault(); signOut();" style="margin-top:2px">🚪 <span>Sign Out</span></a>
   </div>
 </div>
 

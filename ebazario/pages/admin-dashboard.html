@@ -234,7 +234,7 @@ button{font-family:inherit;cursor:pointer}
   </nav>
   <div class="sb-footer">
     <a href="../index.html">🌐 <span>View Marketplace</span></a>
-    <a href="#" onclick="handleGlobalSignOut(event)" style="margin-top:2px">🚪 <span>Sign Out</span></a>
+    <a href="#" onclick="event.preventDefault(); signOut();" style="margin-top:2px">🚪 <span>Sign Out</span></a>
   </div>
 </aside>
 
