@@ -624,7 +624,7 @@ button{font-family:inherit;cursor:pointer}
     <div class="ph-r"><input class="ifield" type="text" placeholder="Search customers…" style="width:200px"><button class="btn btn-ghost btn-sm" onclick="showToast('Exported!','ok')">📥 Export CSV</button></div>
   </div>
   <div class="stats">
-    <div class="stat"><div class="stat-bar" style="background:var(--ok)"></div><div class="stat-lbl">Total Registered</div><div class="stat-val">142K</div><div class="stat-ch up">↑ 2,100 this month</div></div>
+    <div class="stat"><div class="stat-bar" style="background:var(--ok)"></div><div class="stat-lbl">Total Registered</div><div class="stat-val"><span id="stat-buyers">142K</div><div class="stat-ch up">↑ 2,100 this month</div></div>
     <div class="stat"><div class="stat-bar" style="background:var(--pl)"></div><div class="stat-lbl">Active Buyers (30d)</div><div class="stat-val">38,420</div><div class="stat-ch neu">27% of total</div></div>
     <div class="stat"><div class="stat-bar" style="background:var(--gold)"></div><div class="stat-lbl">Avg Order Value</div><div class="stat-val">$1,932</div><div class="stat-ch up">↑ 8% vs last month</div></div>
     <div class="stat"><div class="stat-bar" style="background:var(--danger)"></div><div class="stat-lbl">Flagged Accounts</div><div class="stat-val">3</div><div class="stat-ch neu">Needs review</div></div>
@@ -730,7 +730,7 @@ button{font-family:inherit;cursor:pointer}
 <div id="sec-revenue" class="sec">
   <div class="ph"><div><h1>Revenue &amp; Finance</h1></div><div class="ph-r"><button class="btn btn-ghost btn-sm" onclick="showToast('Report exported!','ok')">📥 Export</button></div></div>
   <div class="stats">
-    <div class="stat"><div class="stat-bar" style="background:var(--ok)"></div><div class="stat-lbl">Total GMV (MTD)</div><div class="stat-val">$2.48M</div><div class="stat-ch up">↑ 18%</div></div>
+    <div class="stat"><div class="stat-bar" style="background:var(--ok)"></div><div class="stat-lbl">Total GMV (MTD)</div><div class="stat-val"><span id="stat-revenue">$2.48M</div><div class="stat-ch up">↑ 18%</div></div>
     <div class="stat"><div class="stat-bar" style="background:var(--pl)"></div><div class="stat-lbl">Platform Fee (5%)</div><div class="stat-val">$124K</div><div class="stat-ch up">↑ 18%</div></div>
     <div class="stat"><div class="stat-bar" style="background:var(--gold)"></div><div class="stat-lbl">Subscription Revenue</div><div class="stat-val">$48,400</div><div class="stat-ch up">↑ 5%</div></div>
     <div class="stat"><div class="stat-bar" style="background:#06b6d4"></div><div class="stat-lbl">Pending Payouts</div><div class="stat-val">$284K</div><div class="stat-ch neu">Due Feb 1</div></div>
@@ -1652,5 +1652,6 @@ function adminSignOut() {
 </script>
 </body>
 </html>
+
 
 

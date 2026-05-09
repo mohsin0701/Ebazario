@@ -212,8 +212,8 @@ var DEMO_APPROVED = [
   { id: 'sa3', company_name: 'Dhaka Textiles International', country: 'Bangladesh', industry: 'Apparel', plan: 'silver', total_products: 3100, approved_at: new Date(Date.now()-259200000).toISOString() }
 ];
 
-var countryFlag = {'China':'????','Germany':'????','Vietnam':'????','Turkey':'????','Bangladesh':'????','South Korea':'????','India':'????','UAE':'????','Nigeria':'????','United States':'????','Pakistan':'????'};
-function flag(c){ return (countryFlag[c] || '??') + ' ' + c; }
+var countryFlag = {'China':'&#x1F1E8;&#x1F1F3;','Germany':'&#x1F1E9;&#x1F1EA;','Vietnam':'&#x1F1FB;&#x1F1F3;','Turkey':'&#x1F1F9;&#x1F1F7;','Bangladesh':'&#x1F1E7;&#x1F1E9;','South Korea':'&#x1F1F0;&#x1F1F7;','India':'&#x1F1EE;&#x1F1F3;','UAE':'&#x1F1E6;&#x1F1EA;','Nigeria':'&#x1F1F3;&#x1F1EC;','United States':'&#x1F1FA;&#x1F1F8;','Pakistan':'&#x1F1F5;&#x1F1F0;'};
+function flag(c){ return (countryFlag[c] || '&#x1F310;' + ' ' + c; }
 function planPill(p){ var m={free:'p-muted',silver:'p-muted',gold:'p-gold',platinum:'p-indigo'}; var l={free:'Free',silver:'&#x1F3EA; Silver',gold:'&#x1F3EA; Gold',platinum:'&#x1F3EA; Platinum'}; return '<span class="pill '+( m[p]||'p-muted')+'" style="font-size:10px">'+(l[p]||p)+'</span>'; }
 function timeAgo(d){ var s=(Date.now()-new Date(d))/1000; return s<3600?Math.floor(s/60)+'m ago':s<86400?Math.floor(s/3600)+'h ago':Math.floor(s/86400)+'d ago'; }
 
@@ -223,7 +223,7 @@ function makeSellerCard(s) {
   return '<div class="seller-card'+(s.flagged?' flagged':'')+'" id="sc-'+s.id+'">'
     +'<div class="sc-head">'
       +'<div style="display:flex;gap:12px;align-items:flex-start">'
-        +'<div class="sc-logo">??</div>'
+        +'<div class="sc-logo">&#x1F3EA;</div>'
         +'<div class="sc-info"><h3>'+s.company_name+'</h3><div class="meta">'+flag(s.country)+' � '+s.industry+' � Est. '+s.established_year+' � '+s.employee_count+' employees</div>'
           +'<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">'+planPill(s.plan)
           +'<span class="pill '+docColor+'" style="font-size:10px">'+docText+'</span>'
@@ -251,7 +251,7 @@ function makeSellerCard(s) {
 function renderPendingList(sellers) {
   var el = document.getElementById('pending-list');
   if (!sellers || sellers.length === 0) {
-    el.innerHTML = '<div class="empty-state"><div class="es-icon">??</div><h3>No pending applications</h3><p>All seller applications have been reviewed.</p></div>'; return;
+    el.innerHTML = '<div class="empty-state"><div class="es-icon">&#x1F3EA;</div><h3>No pending applications</h3><p>All seller applications have been reviewed.</p></div>'; return;
   }
   el.innerHTML = sellers.map(makeSellerCard).join('');
   document.getElementById('tab-count').textContent = sellers.length;
@@ -260,7 +260,7 @@ function renderPendingList(sellers) {
 
 function renderApprovedList(sellers) {
   var el = document.getElementById('approved-list');
-  if (!sellers || sellers.length === 0) { el.innerHTML = '<div class="empty-state"><div class="es-icon">??</div><h3>No approvals yet</h3></div>'; return; }
+  if (!sellers || sellers.length === 0) { el.innerHTML = '<div class="empty-state"><div class="es-icon">&#x1F3EA;</div><h3>No approvals yet</h3></div>'; return; }
   var rows = sellers.map(function(s){ return '<tr><td><strong>'+s.company_name+'</strong></td><td>'+flag(s.country)+'</td><td>'+s.industry+'</td><td>'+planPill(s.plan)+'</td><td>'+s.total_products+'</td><td>'+timeAgo(s.approved_at)+'</td><td><span class="pill p-ok">Active ?</span></td></tr>'; }).join('');
   el.innerHTML = '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Company</th><th>Country</th><th>Industry</th><th>Plan</th><th>Products</th><th>Approved</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
@@ -375,5 +375,6 @@ function showToast(msg, type) {
 </script>
 </body>
 </html>
+
 
 

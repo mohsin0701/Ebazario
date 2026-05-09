@@ -198,7 +198,7 @@ function timeAgo(d){ var s=(Date.now()-new Date(d))/1000; return s<3600?Math.flo
 
 function makeDocCard(d) {
   var icoClass = d.status === 'approved' ? 'dic-approved' : d.status === 'rejected' ? 'dic-rejected' : d.priority ? 'dic-priority' : 'dic-pending';
-  var statusPill = d.status === 'approved' ? '<span class="pill p-ok">Approved ?</span>' : d.status === 'rejected' ? '<span class="pill p-danger">Rejected ?</span>' : d.priority ? '<span class="pill p-danger">High Priority !</span>' : '<span class="pill p-warn">Pending</span>';
+  var statusPill = d.status === 'approved' ? '<span class="pill p-ok">Approved &#x2713;</span>' : d.status === 'rejected' ? '<span class="pill p-danger">Rejected &#x2715;</span>' : d.priority ? '<span class="pill p-danger">High Priority !</span>' : '<span class="pill p-warn">Pending</span>';
   var actions = '';
   if (d.status === 'pending') {
     actions = '<button class="btn btn-ghost btn-sm" onclick="openDocView(\''+d.id+'\')">&#x1F441; View</button>'
@@ -208,7 +208,7 @@ function makeDocCard(d) {
     actions = '<button class="btn btn-ghost btn-sm" onclick="openDocView(\''+d.id+'\')">&#x1F441; View</button>';
   }
   return '<div class="doc-card'+(d.status==='approved'?' approved':d.priority?' priority':'')+'" id="dc-'+d.id+'">'
-    +'<div class="doc-ico '+icoClass+'">??</div>'
+    +'<div class="doc-ico '+icoClass+'">&#x1F4CB;</div>'
     +'<div class="doc-info"><h4>'+d.name+'</h4>'
       +'<div class="meta">'+d.seller+' � '+d.type_label+' � '+formatBytes(d.file_size_bytes)+' � '+timeAgo(d.created_at)+(d.expiry_date?' � Expires: '+d.expiry_date:'')+'</div>'
     +'</div>'
@@ -221,7 +221,7 @@ function renderDocs(list, containerId, filter) {
   var el = document.getElementById(containerId);
   var filtered = filter ? list.filter(function(d){ return d.status === filter; }) : list;
   if (!filtered || filtered.length === 0) {
-    el.innerHTML = '<div class="empty-state"><div class="es-icon">??</div><h3>No documents in this category</h3></div>'; return;
+    el.innerHTML = '<div class="empty-state"><div class="es-icon">&#x1F4CB;</div><h3>No documents in this category</h3></div>'; return;
   }
   el.innerHTML = filtered.map(makeDocCard).join('');
   if (filter === 'pending') {
@@ -270,10 +270,10 @@ function openDocView(id) {
   if (d) {
     document.getElementById('modal-doc-body').innerHTML =
       '<div style="background:#e6f6fc;border-radius:12px;padding:36px 20px;text-align:center;margin-bottom:16px;border:2px dashed #c7d2fe">'
-        +'<div style="font-size:48px;margin-bottom:8px">??</div>'
+        +'<div style="font-size:48px;margin-bottom:8px">&#x1F4CB;</div>'
         +'<div style="font-size:14px;font-weight:700;margin-bottom:4px">'+d.name+'</div>'
         +'<div style="font-size:12px;color:var(--muted)">'+formatBytes(d.file_size_bytes)+' � Uploaded by '+d.seller+' � '+timeAgo(d.created_at)+'</div>'
-        +'<button class="btn btn-ghost btn-sm" style="margin-top:12px" onclick="showToast(\'Opening document�\',\'ok\')">?? Open Full Document</button>'
+        +'<button class="btn btn-ghost btn-sm" style="margin-top:12px" onclick="showToast(\'Opening document�\',\'ok\')">&#x1F441; Open Full Document</button>'
       +'</div>'
       +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">'
         +'<div class="fg"><label>Document Type</label><select><option>'+(d.type_label)+'</option><option>Business License</option><option>CE Certificate</option><option>FDA Approval</option><option>ISO 9001</option></select></div>'
@@ -356,5 +356,7 @@ function showToast(msg, type) {
 </script>
 </body>
 </html>
+
+
 
 
