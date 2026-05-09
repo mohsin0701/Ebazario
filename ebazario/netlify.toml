@@ -2,7 +2,7 @@
 # Forces UTF-8 charset on all HTML pages to prevent emoji corruption
 
 [build]
-  publish = "ebazario"
+  publish = "."
 
 # ── REDIRECTS ────────────────────────────────────────────────
 [[redirects]]
