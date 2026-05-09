@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Seller Approvals — Ebazario Admin</title>
+<title>Seller Approvals ï¿½ Ebazario Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -86,11 +86,11 @@ h1,h2,h3,h4{font-family:'Sora',sans-serif}
 <body>
 <div class="topbar">
   <div style="display:flex;align-items:center;gap:14px">
-    <a href="admin-dashboard.html" class="tb-back">? Admin Panel</a>
-    <div class="tb-title">?? Seller Approvals</div>
+    <a href="admin-dashboard.html" class="tb-back">&#x2190; Admin Panel</a>
+    <div class="tb-title">&#x1F3EA; Seller Approvals</div>
   </div>
   <div style="display:flex;gap:10px">
-    <button class="btn btn-ghost btn-sm" onclick="loadSellers()">?? Refresh</button>
+    <button class="btn btn-ghost btn-sm" onclick="loadSellers()">&#x1F504; Refresh</button>
   </div>
 </div>
 
@@ -100,32 +100,32 @@ h1,h2,h3,h4{font-family:'Sora',sans-serif}
   </div>
 
   <div class="stats">
-    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div><div class="stat-lbl">Pending Applications</div><div class="stat-val" id="count-pending">—</div><div style="font-size:12px;color:var(--warn)">Awaiting review</div></div>
-    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#10b981,#4ade80)"></div><div class="stat-lbl">Approved This Month</div><div class="stat-val" id="count-approved">—</div><div style="font-size:12px;color:var(--ok)">Active sellers</div></div>
-    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#ef4444,#f87171)"></div><div class="stat-lbl">Rejected This Month</div><div class="stat-val" id="count-rejected">—</div><div style="font-size:12px;color:var(--muted)">Notified</div></div>
-    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#4338ca,#6366f1)"></div><div class="stat-lbl">Total Active Sellers</div><div class="stat-val" id="count-total">—</div><div style="font-size:12px;color:var(--muted)">On platform</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div><div class="stat-lbl">Pending Applications</div><div class="stat-val" id="count-pending">ï¿½</div><div style="font-size:12px;color:var(--warn)">Awaiting review</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#10b981,#4ade80)"></div><div class="stat-lbl">Approved This Month</div><div class="stat-val" id="count-approved">ï¿½</div><div style="font-size:12px;color:var(--ok)">Active sellers</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#ef4444,#f87171)"></div><div class="stat-lbl">Rejected This Month</div><div class="stat-val" id="count-rejected">ï¿½</div><div style="font-size:12px;color:var(--muted)">Notified</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#4338ca,#6366f1)"></div><div class="stat-lbl">Total Active Sellers</div><div class="stat-val" id="count-total">ï¿½</div><div style="font-size:12px;color:var(--muted)">On platform</div></div>
   </div>
 
   <div data-tabs>
     <div class="tab-bar">
-      <button class="tab-btn on" onclick="switchTab('pending',this)">? Pending (<span id="tab-count">0</span>)</button>
-      <button class="tab-btn" onclick="switchTab('approved',this)">? Approved</button>
-      <button class="tab-btn" onclick="switchTab('rejected',this)">? Rejected</button>
-      <button class="tab-btn" onclick="switchTab('suspended',this)">?? Suspended</button>
+      <button class="tab-btn on" onclick="switchTab('pending',this)">&#x1F550; Pending (<span id="tab-count">0</span>)</button>
+      <button class="tab-btn" onclick="switchTab('approved',this)">&#x2705; Approved</button>
+      <button class="tab-btn" onclick="switchTab('rejected',this)">&#x274C; Rejected</button>
+      <button class="tab-btn" onclick="switchTab('suspended',this)">&#x1F3EA; Suspended</button>
     </div>
 
     <div id="tab-pending" class="tabpane on">
-      <div class="notice n-indigo"><span>??</span><div>Review each seller's business documents, company information, and industry. Approved sellers can immediately list products. Rejected applications receive an email with your reason.</div></div>
-      <div id="pending-list"><div class="empty-state"><div class="spinner"></div><p style="margin-top:12px;color:var(--muted)">Loading applications…</p></div></div>
+      <div class="notice n-indigo"><span>&#x26A0;&#xFE0F;</span><div>Review each seller's business documents, company information, and industry. Approved sellers can immediately list products. Rejected applications receive an email with your reason.</div></div>
+      <div id="pending-list"><div class="empty-state"><div class="spinner"></div><p style="margin-top:12px;color:var(--muted)">Loading applicationsï¿½</p></div></div>
     </div>
     <div id="tab-approved" class="tabpane">
-      <div id="approved-list"><div class="empty-state"><div class="es-icon">?</div><h3>Loading…</h3></div></div>
+      <div id="approved-list"><div class="empty-state"><div class="es-icon">&#x1F3EA;</div><h3>Loadingï¿½</h3></div></div>
     </div>
     <div id="tab-rejected" class="tabpane">
-      <div id="rejected-list"><div class="empty-state"><div class="es-icon">?</div><h3>Loading…</h3></div></div>
+      <div id="rejected-list"><div class="empty-state"><div class="es-icon">&#x1F3EA;</div><h3>Loadingï¿½</h3></div></div>
     </div>
     <div id="tab-suspended" class="tabpane">
-      <div id="suspended-list"><div class="empty-state"><div class="es-icon">?</div><h3>Loading…</h3></div></div>
+      <div id="suspended-list"><div class="empty-state"><div class="es-icon">&#x1F3EA;</div><h3>Loadingï¿½</h3></div></div>
     </div>
   </div>
 </div>
@@ -133,13 +133,13 @@ h1,h2,h3,h4{font-family:'Sora',sans-serif}
 <!-- MODAL: Full Seller Review -->
 <div id="modal-seller-detail" class="modal-bg" onclick="if(event.target===this)closeModal('modal-seller-detail')">
   <div class="modal modal-lg">
-    <div class="modal-head"><h3>?? Seller Application Review</h3><button class="modal-close" onclick="closeModal('modal-seller-detail')">?</button></div>
-    <div class="modal-body" id="modal-seller-body">Loading…</div>
+    <div class="modal-head"><h3>&#x1F3EA; Seller Application Review</h3><button class="modal-close" onclick="closeModal('modal-seller-detail')">&#x2715;</button></div>
+    <div class="modal-body" id="modal-seller-body">Loadingï¿½</div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeModal('modal-seller-detail')">Cancel</button>
-      <button class="btn btn-warn btn-sm" onclick="closeModal('modal-seller-detail');openModal('modal-request-docs')">?? Request Docs</button>
-      <button class="btn btn-danger btn-sm" onclick="closeModal('modal-seller-detail');openModal('modal-reject-seller')">? Reject</button>
-      <button class="btn btn-ok" id="modal-approve-btn">? Approve Seller</button>
+      <button class="btn btn-warn btn-sm" onclick="closeModal('modal-seller-detail');openModal('modal-request-docs')">&#x1F3EA; Request Docs</button>
+      <button class="btn btn-danger btn-sm" onclick="closeModal('modal-seller-detail');openModal('modal-reject-seller')">&#x274C; Reject</button>
+      <button class="btn btn-ok" id="modal-approve-btn">&#x2705; Approve Seller</button>
     </div>
   </div>
 </div>
@@ -147,9 +147,9 @@ h1,h2,h3,h4{font-family:'Sora',sans-serif}
 <!-- MODAL: Reject Seller -->
 <div id="modal-reject-seller" class="modal-bg" onclick="if(event.target===this)closeModal('modal-reject-seller')">
   <div class="modal">
-    <div class="modal-head"><h3>? Reject Seller Application</h3><button class="modal-close" onclick="closeModal('modal-reject-seller')">?</button></div>
+    <div class="modal-head"><h3>&#x274C; Reject Seller Application</h3><button class="modal-close" onclick="closeModal('modal-reject-seller')">&#x2715;</button></div>
     <div class="modal-body">
-      <div class="notice n-indigo" style="margin-bottom:14px"><span>??</span><div>The seller will receive an email with your rejection reason. They may reapply after addressing the issues.</div></div>
+      <div class="notice n-indigo" style="margin-bottom:14px"><span>&#x26A0;&#xFE0F;</span><div>The seller will receive an email with your rejection reason. They may reapply after addressing the issues.</div></div>
       <div class="fg"><label>Rejection Reason *</label>
         <select id="seller-reject-reason">
           <option value="incomplete_application">Incomplete application / missing information</option>
@@ -161,7 +161,7 @@ h1,h2,h3,h4{font-family:'Sora',sans-serif}
         </select>
       </div>
       <div class="fg"><label>Message to Seller *</label>
-        <textarea id="seller-reject-notes" placeholder="Explain why the application was rejected and what they need to do to reapply successfully…"></textarea>
+        <textarea id="seller-reject-notes" placeholder="Explain why the application was rejected and what they need to do to reapply successfullyï¿½"></textarea>
       </div>
     </div>
     <div class="modal-foot">
@@ -174,9 +174,9 @@ h1,h2,h3,h4{font-family:'Sora',sans-serif}
 <!-- MODAL: Request More Documents -->
 <div id="modal-request-docs" class="modal-bg" onclick="if(event.target===this)closeModal('modal-request-docs')">
   <div class="modal">
-    <div class="modal-head"><h3>?? Request Additional Documents</h3><button class="modal-close" onclick="closeModal('modal-request-docs')">?</button></div>
+    <div class="modal-head"><h3>&#x1F3EA; Request Additional Documents</h3><button class="modal-close" onclick="closeModal('modal-request-docs')">&#x2715;</button></div>
     <div class="modal-body">
-      <div class="notice n-blue" style="margin-bottom:14px"><span>??</span><div>Seller has 7 days to upload requested documents before the application expires.</div></div>
+      <div class="notice n-blue" style="margin-bottom:14px"><span>&#x26A0;&#xFE0F;</span><div>Seller has 7 days to upload requested documents before the application expires.</div></div>
       <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:16px">
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px"><input type="checkbox" checked style="accent-color:var(--pl)"> Business License / Company Registration</label>
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px"><input type="checkbox" style="accent-color:var(--pl)"> CE Certificate</label>
@@ -185,7 +185,7 @@ h1,h2,h3,h4{font-family:'Sora',sans-serif}
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px"><input type="checkbox" style="accent-color:var(--pl)"> Export License</label>
       </div>
       <div class="fg"><label>Additional Instructions</label>
-        <textarea id="doc-request-notes" placeholder="Specific format, validity, or other requirements…"></textarea>
+        <textarea id="doc-request-notes" placeholder="Specific format, validity, or other requirementsï¿½"></textarea>
       </div>
     </div>
     <div class="modal-foot">
@@ -214,17 +214,17 @@ var DEMO_APPROVED = [
 
 var countryFlag = {'China':'????','Germany':'????','Vietnam':'????','Turkey':'????','Bangladesh':'????','South Korea':'????','India':'????','UAE':'????','Nigeria':'????','United States':'????','Pakistan':'????'};
 function flag(c){ return (countryFlag[c] || '??') + ' ' + c; }
-function planPill(p){ var m={free:'p-muted',silver:'p-muted',gold:'p-gold',platinum:'p-indigo'}; var l={free:'Free',silver:'?? Silver',gold:'? Gold',platinum:'?? Platinum'}; return '<span class="pill '+( m[p]||'p-muted')+'" style="font-size:10px">'+(l[p]||p)+'</span>'; }
+function planPill(p){ var m={free:'p-muted',silver:'p-muted',gold:'p-gold',platinum:'p-indigo'}; var l={free:'Free',silver:'&#x1F3EA; Silver',gold:'&#x1F3EA; Gold',platinum:'&#x1F3EA; Platinum'}; return '<span class="pill '+( m[p]||'p-muted')+'" style="font-size:10px">'+(l[p]||p)+'</span>'; }
 function timeAgo(d){ var s=(Date.now()-new Date(d))/1000; return s<3600?Math.floor(s/60)+'m ago':s<86400?Math.floor(s/3600)+'h ago':Math.floor(s/86400)+'d ago'; }
 
 function makeSellerCard(s) {
-  var docColor = s.docs_count === s.docs_total ? 'p-ok' : s.docs_count === 0 ? 'p-danger' : 'p-warn';
-  var docText = s.docs_count + '/' + s.docs_total + ' docs ' + (s.docs_count === s.docs_total ? '?' : '?');
+  var docColor = s.docs_count === s.docs_total &#x1F3EA; 'p-ok' : s.docs_count === 0 &#x1F3EA; 'p-danger' : 'p-warn';
+  var docText = s.docs_count + '/' + s.docs_total + ' docs ' + (s.docs_count === s.docs_total &#x1F3EA; '?' : '?');
   return '<div class="seller-card'+(s.flagged?' flagged':'')+'" id="sc-'+s.id+'">'
     +'<div class="sc-head">'
       +'<div style="display:flex;gap:12px;align-items:flex-start">'
         +'<div class="sc-logo">??</div>'
-        +'<div class="sc-info"><h3>'+s.company_name+'</h3><div class="meta">'+flag(s.country)+' · '+s.industry+' · Est. '+s.established_year+' · '+s.employee_count+' employees</div>'
+        +'<div class="sc-info"><h3>'+s.company_name+'</h3><div class="meta">'+flag(s.country)+' ï¿½ '+s.industry+' ï¿½ Est. '+s.established_year+' ï¿½ '+s.employee_count+' employees</div>'
           +'<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">'+planPill(s.plan)
           +'<span class="pill '+docColor+'" style="font-size:10px">'+docText+'</span>'
           +'<span class="pill p-muted" style="font-size:10px">Applied '+timeAgo(s.created_at)+'</span>'
@@ -233,15 +233,15 @@ function makeSellerCard(s) {
       +'</div>'
       +'<div class="sc-actions">'
         +(s.docs_count === s.docs_total
-          ? '<button class="btn btn-ok btn-sm" onclick="doApproveSeller(\''+s.id+'\',\''+s.company_name.replace(/'/g,"\\'")+'\')" >? Approve</button>'
-          : '<button class="btn btn-warn btn-sm" onclick="currentSellerId=\''+s.id+'\';openModal(\'modal-request-docs\')">?? Request Docs</button>')
-        +'<button class="btn btn-ghost btn-sm" onclick="openSellerDetail(\''+s.id+'\')">?? Full Review</button>'
-        +'<button class="btn btn-danger btn-sm" onclick="currentSellerId=\''+s.id+'\';openModal(\'modal-reject-seller\')">? Reject</button>'
+          &#x1F3EA; '<button class="btn btn-ok btn-sm" onclick="doApproveSeller(\''+s.id+'\',\''+s.company_name.replace(/'/g,"\\'")+'\')" >&#x2705; Approve</button>'
+          : '<button class="btn btn-warn btn-sm" onclick="currentSellerId=\''+s.id+'\';openModal(\'modal-request-docs\')">&#x1F3EA; Request Docs</button>')
+        +'<button class="btn btn-ghost btn-sm" onclick="openSellerDetail(\''+s.id+'\')">&#x1F3EA; Full Review</button>'
+        +'<button class="btn btn-danger btn-sm" onclick="currentSellerId=\''+s.id+'\';openModal(\'modal-reject-seller\')">&#x274C; Reject</button>'
       +'</div>'
     +'</div>'
     +'<div class="sc-details">'
-      +'<div class="detail-item"><span>Email</span><strong>'+(s.profiles ? s.profiles.email : '—')+'</strong></div>'
-      +'<div class="detail-item"><span>Contact</span><strong>'+(s.profiles ? s.profiles.first_name+' '+s.profiles.last_name : '—')+'</strong></div>'
+      +'<div class="detail-item"><span>Email</span><strong>'+(s.profiles &#x1F3EA; s.profiles.email : 'ï¿½')+'</strong></div>'
+      +'<div class="detail-item"><span>Contact</span><strong>'+(s.profiles &#x1F3EA; s.profiles.first_name+' '+s.profiles.last_name : 'ï¿½')+'</strong></div>'
       +'<div class="detail-item"><span>Website</span><strong>'+(s.website || 'Not provided')+'</strong></div>'
       +'<div class="detail-item"><span>Employees</span><strong>'+s.employee_count+'</strong></div>'
     +'</div>'
@@ -305,19 +305,19 @@ function openSellerDetail(id) {
         +'<div><span style="color:var(--muted)">Company:</span> <strong>'+s.company_name+'</strong></div>'
         +'<div><span style="color:var(--muted)">Country:</span> '+flag(s.country)+'</div>'
         +'<div><span style="color:var(--muted)">Industry:</span> '+s.industry+'</div>'
-        +'<div><span style="color:var(--muted)">Established:</span> '+(s.established_year||'—')+'</div>'
-        +'<div><span style="color:var(--muted)">Employees:</span> '+(s.employee_count||'—')+'</div>'
+        +'<div><span style="color:var(--muted)">Established:</span> '+(s.established_year||'ï¿½')+'</div>'
+        +'<div><span style="color:var(--muted)">Employees:</span> '+(s.employee_count||'ï¿½')+'</div>'
         +'<div><span style="color:var(--muted)">Plan:</span> '+planPill(s.plan)+'</div>'
       +'</div>'
       +'<div style="background:#f9f8ff;border-radius:8px;padding:14px">'
         +'<strong style="display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Documents ('+(s.docs_count||0)+'/'+(s.docs_total||3)+')</strong>'
         +'<div class="sc-docs">'
-          +(s.docs_count >= 1 ? '<span class="doc-tag doc-ok">?? Business License ?</span>' : '<span class="doc-tag doc-miss">?? Business License ?</span>')
-          +(s.docs_count >= 2 ? '<span class="doc-tag doc-ok">?? CE Certificate ?</span>' : '<span class="doc-tag doc-miss">?? CE Certificate ?</span>')
-          +(s.docs_count >= 3 ? '<span class="doc-tag doc-ok">?? Export License ?</span>' : '<span class="doc-tag doc-miss">?? Export License ?</span>')
+          +(s.docs_count >= 1 &#x1F3EA; '<span class="doc-tag doc-ok">&#x1F3EA; Business License ?</span>' : '<span class="doc-tag doc-miss">&#x1F3EA; Business License ?</span>')
+          +(s.docs_count >= 2 &#x1F3EA; '<span class="doc-tag doc-ok">&#x1F3EA; CE Certificate ?</span>' : '<span class="doc-tag doc-miss">&#x1F3EA; CE Certificate ?</span>')
+          +(s.docs_count >= 3 &#x1F3EA; '<span class="doc-tag doc-ok">&#x1F3EA; Export License ?</span>' : '<span class="doc-tag doc-miss">&#x1F3EA; Export License ?</span>')
         +'</div>'
       +'</div></div>'
-      +'<div class="fg"><label>Admin Notes (sent to seller)</label><textarea id="seller-detail-notes" placeholder="Optional message…"></textarea></div>';
+      +'<div class="fg"><label>Admin Notes (sent to seller)</label><textarea id="seller-detail-notes" placeholder="Optional messageï¿½"></textarea></div>';
     document.getElementById('modal-approve-btn').onclick = function(){ doApproveSeller(id, s.company_name); closeModal('modal-seller-detail'); };
   }
   openModal('modal-seller-detail');
@@ -366,7 +366,7 @@ function showToast(msg, type) {
   var t=document.createElement('div'); t.className='sa-toast';
   var c={ok:['#dcfce7','#86efac','#15803d'],warn:['#fef3c7','#fcd34d','#92400e'],danger:['#fee2e2','#fca5a5','#991b1b']}[type]||['#dcfce7','#86efac','#15803d'];
   t.style.cssText='position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.12);max-width:360px;font-family:DM Sans,sans-serif;border:1px solid '+c[1]+';background:'+c[0]+';color:'+c[2];
-  t.textContent=(type==='ok'?'? ':type==='warn'?'? ':'? ')+msg;
+  t.textContent=(type==='ok'?'&#x1F3EA; ':type==='warn'?'&#x1F3EA; ':'&#x1F3EA; ')+msg;
   document.body.appendChild(t);
   setTimeout(function(){ t.style.transition='opacity .3s'; t.style.opacity='0'; setTimeout(function(){ t.remove(); },300); },3000);
 }
@@ -375,4 +375,5 @@ function showToast(msg, type) {
 </script>
 </body>
 </html>
+
 

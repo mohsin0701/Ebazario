@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Document Verification — Ebazario Admin</title>
+<title>Document Verification ï¿½ Ebazario Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -88,8 +88,8 @@ h1,h2,h3,h4{font-family:'Sora',sans-serif}
 <body>
 <div class="topbar">
   <div style="display:flex;align-items:center;gap:14px">
-    <a href="admin-dashboard.html" class="tb-back">? Admin Panel</a>
-    <div class="tb-title">?? Document Verification</div>
+    <a href="admin-dashboard.html" class="tb-back">&#x2190; Admin Panel</a>
+    <div class="tb-title">&#x1F4CB; Document Verification</div>
   </div>
   <div style="display:flex;gap:10px">
     <select id="filter-type" class="btn btn-ghost btn-sm" onchange="loadDocs()" style="cursor:pointer">
@@ -100,7 +100,7 @@ h1,h2,h3,h4{font-family:'Sora',sans-serif}
       <option value="iso_9001">ISO 9001</option>
       <option value="other">Other</option>
     </select>
-    <button class="btn btn-ghost btn-sm" onclick="loadDocs()">?? Refresh</button>
+    <button class="btn btn-ghost btn-sm" onclick="loadDocs()">&#x1F504; Refresh</button>
   </div>
 </div>
 
@@ -110,32 +110,32 @@ h1,h2,h3,h4{font-family:'Sora',sans-serif}
   </div>
 
   <div class="stats">
-    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div><div class="stat-lbl">Pending Review</div><div class="stat-val" id="count-pending">—</div><div style="font-size:12px;color:var(--warn)">Needs review</div></div>
-    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#10b981,#4ade80)"></div><div class="stat-lbl">Approved (Month)</div><div class="stat-val" id="count-approved">—</div><div style="font-size:12px;color:var(--ok)">Verified</div></div>
-    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#ef4444,#f87171)"></div><div class="stat-lbl">Rejected (Month)</div><div class="stat-val" id="count-rejected">—</div><div style="font-size:12px;color:var(--muted)">Notified</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div><div class="stat-lbl">Pending Review</div><div class="stat-val" id="count-pending">ï¿½</div><div style="font-size:12px;color:var(--warn)">Needs review</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#10b981,#4ade80)"></div><div class="stat-lbl">Approved (Month)</div><div class="stat-val" id="count-approved">ï¿½</div><div style="font-size:12px;color:var(--ok)">Verified</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#ef4444,#f87171)"></div><div class="stat-lbl">Rejected (Month)</div><div class="stat-val" id="count-rejected">ï¿½</div><div style="font-size:12px;color:var(--muted)">Notified</div></div>
     <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#4338ca,#6366f1)"></div><div class="stat-lbl">Avg Review Time</div><div class="stat-val">4.2h</div><div style="font-size:12px;color:var(--muted)">This month</div></div>
   </div>
 
   <div data-tabs>
     <div class="tab-bar">
-      <button class="tab-btn on" onclick="switchTab('pending',this)">? Pending (<span id="tab-count">0</span>)</button>
-      <button class="tab-btn" onclick="switchTab('approved',this)">? Approved</button>
-      <button class="tab-btn" onclick="switchTab('rejected',this)">? Rejected</button>
-      <button class="tab-btn" onclick="switchTab('all',this)">?? All Documents</button>
+      <button class="tab-btn on" onclick="switchTab('pending',this)">&#x1F550; Pending (<span id="tab-count">0</span>)</button>
+      <button class="tab-btn" onclick="switchTab('approved',this)">&#x2705; Approved</button>
+      <button class="tab-btn" onclick="switchTab('rejected',this)">&#x274C; Rejected</button>
+      <button class="tab-btn" onclick="switchTab('all',this)">&#x1F4C1; All Documents</button>
     </div>
 
     <div id="tab-pending" class="tabpane on">
-      <div class="notice n-warn"><span>??</span><div>Medical and electronics certifications are <strong>high priority</strong>. Approved documents unlock product listing in restricted categories. Expired documents must be rejected.</div></div>
+      <div class="notice n-warn"><span>&#x26A0;&#xFE0F;</span><div>Medical and electronics certifications are <strong>high priority</strong>. Approved documents unlock product listing in restricted categories. Expired documents must be rejected.</div></div>
       <div id="pending-list"><div class="empty-state"><div class="spinner"></div></div></div>
     </div>
     <div id="tab-approved" class="tabpane">
-      <div id="approved-list"><div class="empty-state"><div class="es-icon">?</div><h3>Loading…</h3></div></div>
+      <div id="approved-list"><div class="empty-state"><div class="es-icon">&#x1F4C4;</div><h3>Loadingï¿½</h3></div></div>
     </div>
     <div id="tab-rejected" class="tabpane">
-      <div id="rejected-list"><div class="empty-state"><div class="es-icon">?</div><h3>Loading…</h3></div></div>
+      <div id="rejected-list"><div class="empty-state"><div class="es-icon">&#x1F4C4;</div><h3>Loadingï¿½</h3></div></div>
     </div>
     <div id="tab-all" class="tabpane">
-      <div id="all-list"><div class="empty-state"><div class="es-icon">?</div><h3>Loading…</h3></div></div>
+      <div id="all-list"><div class="empty-state"><div class="es-icon">&#x1F4C4;</div><h3>Loadingï¿½</h3></div></div>
     </div>
   </div>
 </div>
@@ -143,12 +143,12 @@ h1,h2,h3,h4{font-family:'Sora',sans-serif}
 <!-- MODAL: View Document -->
 <div id="modal-doc-view" class="modal-bg" onclick="if(event.target===this)closeModal('modal-doc-view')">
   <div class="modal">
-    <div class="modal-head"><h3>?? Document Review</h3><button class="modal-close" onclick="closeModal('modal-doc-view')">?</button></div>
-    <div class="modal-body" id="modal-doc-body">Loading…</div>
+    <div class="modal-head"><h3>&#x1F4CB; Document Review</h3><button class="modal-close" onclick="closeModal('modal-doc-view')">&#x2715;</button></div>
+    <div class="modal-body" id="modal-doc-body">Loadingï¿½</div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeModal('modal-doc-view')">Cancel</button>
-      <button class="btn btn-danger btn-sm" onclick="closeModal('modal-doc-view');openModal('modal-doc-reject')">? Reject</button>
-      <button class="btn btn-ok" onclick="doApproveCurrentDoc();closeModal('modal-doc-view')">? Approve Document</button>
+      <button class="btn btn-danger btn-sm" onclick="closeModal('modal-doc-view');openModal('modal-doc-reject')">&#x274C; Reject</button>
+      <button class="btn btn-ok" onclick="doApproveCurrentDoc();closeModal('modal-doc-view')">&#x2705; Approve Document</button>
     </div>
   </div>
 </div>
@@ -156,7 +156,7 @@ h1,h2,h3,h4{font-family:'Sora',sans-serif}
 <!-- MODAL: Reject Document -->
 <div id="modal-doc-reject" class="modal-bg" onclick="if(event.target===this)closeModal('modal-doc-reject')">
   <div class="modal">
-    <div class="modal-head"><h3>? Reject Document</h3><button class="modal-close" onclick="closeModal('modal-doc-reject')">?</button></div>
+    <div class="modal-head"><h3>&#x274C; Reject Document</h3><button class="modal-close" onclick="closeModal('modal-doc-reject')">&#x2715;</button></div>
     <div class="modal-body">
       <div class="fg"><label>Rejection Reason *</label>
         <select id="doc-reject-reason">
@@ -169,7 +169,7 @@ h1,h2,h3,h4{font-family:'Sora',sans-serif}
         </select>
       </div>
       <div class="fg"><label>Notes to Seller</label>
-        <textarea id="doc-reject-notes" placeholder="Explain specifically what is wrong and what they need to reupload…"></textarea>
+        <textarea id="doc-reject-notes" placeholder="Explain specifically what is wrong and what they need to reuploadï¿½"></textarea>
       </div>
     </div>
     <div class="modal-foot">
@@ -193,7 +193,7 @@ var DEMO_DOCS = [
   { id: 'd6', name: 'Safety_Cert_EXPIRED_2022.pdf', type: 'other', type_label: 'Safety Certificate', status: 'rejected', rejection_reason: 'expired', rejection_notes: 'Certificate expired December 2022. Please upload current certification.', file_size_bytes: 840000, created_at: new Date(Date.now()-432000000).toISOString(), seller: 'BadActor Trading', reviewed_at: new Date(Date.now()-345600000).toISOString() }
 ];
 
-function formatBytes(b){ if(!b) return '—'; if(b<1024)return b+'B'; if(b<1048576)return (b/1024).toFixed(1)+'KB'; return (b/1048576).toFixed(1)+'MB'; }
+function formatBytes(b){ if(!b) return 'ï¿½'; if(b<1024)return b+'B'; if(b<1048576)return (b/1024).toFixed(1)+'KB'; return (b/1048576).toFixed(1)+'MB'; }
 function timeAgo(d){ var s=(Date.now()-new Date(d))/1000; return s<3600?Math.floor(s/60)+'m ago':s<86400?Math.floor(s/3600)+'h ago':Math.floor(s/86400)+'d ago'; }
 
 function makeDocCard(d) {
@@ -201,16 +201,16 @@ function makeDocCard(d) {
   var statusPill = d.status === 'approved' ? '<span class="pill p-ok">Approved ?</span>' : d.status === 'rejected' ? '<span class="pill p-danger">Rejected ?</span>' : d.priority ? '<span class="pill p-danger">High Priority !</span>' : '<span class="pill p-warn">Pending</span>';
   var actions = '';
   if (d.status === 'pending') {
-    actions = '<button class="btn btn-ghost btn-sm" onclick="openDocView(\''+d.id+'\')">?? View</button>'
-      + '<button class="btn btn-ok btn-sm" onclick="doApproveDoc(\''+d.id+'\')">? Approve</button>'
-      + '<button class="btn btn-danger btn-sm" onclick="currentDocId=\''+d.id+'\';openModal(\'modal-doc-reject\')">? Reject</button>';
+    actions = '<button class="btn btn-ghost btn-sm" onclick="openDocView(\''+d.id+'\')">&#x1F441; View</button>'
+      + '<button class="btn btn-ok btn-sm" onclick="doApproveDoc(\''+d.id+'\')">&#x2705; Approve</button>'
+      + '<button class="btn btn-danger btn-sm" onclick="currentDocId=\''+d.id+'\';openModal(\'modal-doc-reject\')">&#x274C; Reject</button>';
   } else {
-    actions = '<button class="btn btn-ghost btn-sm" onclick="openDocView(\''+d.id+'\')">?? View</button>';
+    actions = '<button class="btn btn-ghost btn-sm" onclick="openDocView(\''+d.id+'\')">&#x1F441; View</button>';
   }
   return '<div class="doc-card'+(d.status==='approved'?' approved':d.priority?' priority':'')+'" id="dc-'+d.id+'">'
     +'<div class="doc-ico '+icoClass+'">??</div>'
     +'<div class="doc-info"><h4>'+d.name+'</h4>'
-      +'<div class="meta">'+d.seller+' · '+d.type_label+' · '+formatBytes(d.file_size_bytes)+' · '+timeAgo(d.created_at)+(d.expiry_date?' · Expires: '+d.expiry_date:'')+'</div>'
+      +'<div class="meta">'+d.seller+' ï¿½ '+d.type_label+' ï¿½ '+formatBytes(d.file_size_bytes)+' ï¿½ '+timeAgo(d.created_at)+(d.expiry_date?' ï¿½ Expires: '+d.expiry_date:'')+'</div>'
     +'</div>'
     +statusPill
     +'<div class="doc-actions">'+actions+'</div>'
@@ -246,7 +246,7 @@ async function loadDocs() {
     var typeFilter = document.getElementById('filter-type').value;
     if (typeFilter) q = q.eq('type', typeFilter);
     var r = await q;
-    var docs = (r.data || []).map(function(d){ return Object.assign(d, { seller: d.seller_profiles ? d.seller_profiles.company_name : '—', type_label: d.type.replace(/_/g,' ').replace(/\b\w/g,function(c){ return c.toUpperCase(); }) }); });
+    var docs = (r.data || []).map(function(d){ return Object.assign(d, { seller: d.seller_profiles ? d.seller_profiles.company_name : 'ï¿½', type_label: d.type.replace(/_/g,' ').replace(/\b\w/g,function(c){ return c.toUpperCase(); }) }); });
     renderDocs(docs, 'pending-list', 'pending');
     renderDocs(docs, 'approved-list', 'approved');
     renderDocs(docs, 'rejected-list', 'rejected');
@@ -272,14 +272,14 @@ function openDocView(id) {
       '<div style="background:#e6f6fc;border-radius:12px;padding:36px 20px;text-align:center;margin-bottom:16px;border:2px dashed #c7d2fe">'
         +'<div style="font-size:48px;margin-bottom:8px">??</div>'
         +'<div style="font-size:14px;font-weight:700;margin-bottom:4px">'+d.name+'</div>'
-        +'<div style="font-size:12px;color:var(--muted)">'+formatBytes(d.file_size_bytes)+' · Uploaded by '+d.seller+' · '+timeAgo(d.created_at)+'</div>'
-        +'<button class="btn btn-ghost btn-sm" style="margin-top:12px" onclick="showToast(\'Opening document…\',\'ok\')">?? Open Full Document</button>'
+        +'<div style="font-size:12px;color:var(--muted)">'+formatBytes(d.file_size_bytes)+' ï¿½ Uploaded by '+d.seller+' ï¿½ '+timeAgo(d.created_at)+'</div>'
+        +'<button class="btn btn-ghost btn-sm" style="margin-top:12px" onclick="showToast(\'Opening documentï¿½\',\'ok\')">?? Open Full Document</button>'
       +'</div>'
       +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">'
         +'<div class="fg"><label>Document Type</label><select><option>'+(d.type_label)+'</option><option>Business License</option><option>CE Certificate</option><option>FDA Approval</option><option>ISO 9001</option></select></div>'
         +'<div class="fg"><label>Expiry Date</label><input type="date" value="'+(d.expiry_date||'')+'"></div>'
       +'</div>'
-      +'<div class="fg"><label>Reviewer Notes (optional)</label><textarea id="doc-view-notes" placeholder="Notes about this document…"></textarea></div>';
+      +'<div class="fg"><label>Reviewer Notes (optional)</label><textarea id="doc-view-notes" placeholder="Notes about this documentï¿½"></textarea></div>';
   }
   openModal('modal-doc-view');
 }
@@ -291,7 +291,7 @@ async function doApproveDoc(id) {
     var ico = card.querySelector('.doc-ico');
     if (ico) ico.className = 'doc-ico dic-approved';
     var pills = card.querySelectorAll('.pill');
-    pills.forEach(function(p){ p.className='pill p-ok'; p.textContent='Approved ?'; });
+    pills.forEach(function(p){ p.className='pill p-ok'; p.textContent='Approved &#x2713;'; });
     card.querySelectorAll('.doc-actions button').forEach(function(b){
       if (b.textContent.trim().includes('Approve') || b.textContent.trim().includes('Reject')) b.remove();
     });
@@ -322,7 +322,7 @@ async function doRejectCurrentDoc() {
     var ico = card.querySelector('.doc-ico');
     if (ico) ico.className = 'doc-ico dic-rejected';
     var pills = card.querySelectorAll('.pill');
-    pills.forEach(function(p){ p.className='pill p-danger'; p.textContent='Rejected ?'; });
+    pills.forEach(function(p){ p.className='pill p-danger'; p.textContent='Rejected &#x2715;'; });
     card.querySelectorAll('.doc-actions button').forEach(function(b){
       if (b.textContent.trim().includes('Approve') || b.textContent.trim().includes('Reject')) b.remove();
     });
@@ -356,4 +356,5 @@ function showToast(msg, type) {
 </script>
 </body>
 </html>
+
 

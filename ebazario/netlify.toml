@@ -1,0 +1,60 @@
+# Ebazario — Netlify Configuration
+# Forces UTF-8 charset on all HTML pages to prevent emoji corruption
+
+[build]
+  publish = "ebazario"
+
+# ── REDIRECTS ────────────────────────────────────────────────
+[[redirects]]
+  from = "/pages/revenue.html"
+  to = "/pages/admin-dashboard.html"
+  status = 302
+
+[[redirects]]
+  from = "/admin"
+  to = "/pages/admin-dashboard.html"
+  status = 302
+
+[[redirects]]
+  from = "/seller"
+  to = "/pages/seller-dashboard.html"
+  status = 302
+
+# ── HEADERS: Force UTF-8 for all HTML ────────────────────────
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Content-Type = "text/html; charset=utf-8"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+
+[[headers]]
+  for = "/pages/*.html"
+  [headers.values]
+    Content-Type = "text/html; charset=utf-8"
+
+[[headers]]
+  for = "/pages/categories/*.html"
+  [headers.values]
+    Content-Type = "text/html; charset=utf-8"
+
+[[headers]]
+  for = "/pages/products/*.html"
+  [headers.values]
+    Content-Type = "text/html; charset=utf-8"
+
+# ── HEADERS: Cache static assets ─────────────────────────────
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

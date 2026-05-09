@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -277,10 +277,10 @@ button{font-family:inherit;cursor:pointer}
     <div style="font-size:13px; font-weight:500"><strong>Daily Digest:</strong> 14 products pending · 6 new sellers · 9 documents to verify · 2 disputes</div>
   </div>
   <div class="stats">
-    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--ok),#34d399)"></div><div class="stat-ico">💰</div><div class="stat-lbl">Platform Revenue (MTD)</div><div class="stat-val">$2.48M</div><div class="stat-ch up">↑ 18.4% vs last month</div></div>
-    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--pl),var(--pa))"></div><div class="stat-ico">🛒</div><div class="stat-lbl">Active Orders</div><div class="stat-val">1,284</div><div class="stat-ch up">↑ 124 orders today</div></div>
-    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--gold),var(--gl))"></div><div class="stat-ico">🏪</div><div class="stat-lbl">Verified Sellers</div><div class="stat-val">8,640</div><div class="stat-ch up">↑ 42 new this week</div></div>
-    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#06b6d4,#22d3ee)"></div><div class="stat-ico">👥</div><div class="stat-lbl">Registered Buyers</div><div class="stat-val">142K</div><div class="stat-ch up">↑ 2,100 this month</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--ok),#34d399)"></div><div class="stat-ico">💰</div><div class="stat-lbl">Platform Revenue (MTD)</div><div class="stat-val"><span id="stat-revenue"></div>.48M</span>$3<div class="stat-ch up">↑ 18.4% vs last month</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--pl),var(--pa))"></div><div class="stat-ico">🛒</div><div class="stat-lbl">Active Orders</div><div class="stat-val"><span id="stat-orders">1,284</span>$3<div class="stat-ch up">↑ 124 orders today</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,var(--gold),var(--gl))"></div><div class="stat-ico">🏪</div><div class="stat-lbl">Verified Sellers</div><div class="stat-val"><span id="stat-sellers">8,640</span>$3<div class="stat-ch up">↑ 42 new this week</div></div>
+    <div class="stat"><div class="stat-bar" style="background:linear-gradient(90deg,#06b6d4,#22d3ee)"></div><div class="stat-ico">👥</div><div class="stat-lbl">Registered Buyers</div><div class="stat-val"><span id="stat-buyers">142K</span>$3<div class="stat-ch up">↑ 2,100 this month</div></div>
   </div>
   <div class="g14" style="margin-bottom:16px">
     <div class="card" style="margin-bottom:0">
@@ -1652,3 +1652,5 @@ function adminSignOut() {
 </script>
 </body>
 </html>
+
+
