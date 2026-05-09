@@ -7,7 +7,7 @@
 // ── CONFIGURE THESE TWO VALUES ──────────────────────────────
 // Get them from: Supabase Dashboard → Settings → API
 const SUPABASE_URL  = 'https://swygjpilcddqosjbzzfm.supabase.co';
-const SUPABASE_ANON = 'sb_publishable_HnAYWFUXsQ5xtOSsQNrJrQ_yHxNay-5';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3eWdqcGlsY2RkcW9zamJ6emZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMDY3MjUsImV4cCI6MjA5Mjg4MjcyNX0.AEvH2AlV4YwAaGKh69j5MgU1TGTMWX0t4XUEmMixpTI';
 // ────────────────────────────────────────────────────────────
 
 // Safe init — won't crash page if keys are still placeholders
