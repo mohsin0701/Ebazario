@@ -472,46 +472,8 @@ button{font-family:inherit;cursor:pointer}
     <div id="sap-pending" class="tabpane on">
       <div class="tbl-wrap"><table class="tbl">
         <thead><tr><th>Company</th><th>Country</th><th>Industry</th><th>Plan</th><th>Docs</th><th>Submitted</th><th>Actions</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">🏭</div><div><strong style="display:block">GlobalTech Vietnam Co.</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5532393a3734392130363d15233b7b363a38">[email&#160;protected]</a></span></div></div></td>
-            <td>🇻🇳 Vietnam</td><td><span class="pill p-blue">Electronics</span></td><td><span class="pill p-gold">⭐ Gold</span></td>
-            <td><span class="pill p-ok">3/3 ✓</span></td><td style="font-size:12px;color:var(--muted)">2h ago</td>
-            <td><div style="display:flex;gap:5px">
-              <button class="btn btn-ok btn-sm" onclick="approveSeller(this,'GlobalTech Vietnam')">✓ Approve</button>
-              <button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-review')">View Docs</button>
-              <button class="btn btn-danger btn-sm" onclick="openModal('modal-reject-seller')">✕ Reject</button>
-            </div></td>
-          </tr>
-          <tr>
-            <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">👗</div><div><strong style="display:block">Istanbul Fashion Export</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="761f181019361f0502171814031a1017051e1f1918580204">[email&#160;protected]</a></span></div></div></td>
-            <td>🇹🇷 Turkey</td><td><span class="pill p-gold">Apparel</span></td><td><span class="pill p-muted">🥈 Silver</span></td>
-            <td><span class="pill p-warn">2/3 ⚠</span></td><td style="font-size:12px;color:var(--muted)">5h ago</td>
-            <td><div style="display:flex;gap:5px">
-              <button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-review')">View Docs</button>
-              <button class="btn btn-warn btn-sm" onclick="openModal('modal-request-docs')">Request Docs</button>
-              <button class="btn btn-danger btn-sm" onclick="openModal('modal-reject-seller')">✕ Reject</button>
-            </div></td>
-          </tr>
-          <tr>
-            <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">🔧</div><div><strong style="display:block">AutoParts Korea Ltd.</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="87f4e6ebe2f4c7e6f2f3e8f7e6f5f3f4a9ecf5">[email&#160;protected]</a></span></div></div></td>
-            <td>🇰🇷 South Korea</td><td><span class="pill p-blue">Auto Parts</span></td><td><span class="pill p-indigo">💎 Platinum</span></td>
-            <td><span class="pill p-ok">4/4 ✓</span></td><td style="font-size:12px;color:var(--muted)">1d ago</td>
-            <td><div style="display:flex;gap:5px">
-              <button class="btn btn-ok btn-sm" onclick="approveSeller(this,'AutoParts Korea')">✓ Approve</button>
-              <button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-review')">View Docs</button>
-              <button class="btn btn-danger btn-sm" onclick="openModal('modal-reject-seller')">✕ Reject</button>
-            </div></td>
-          </tr>
-          <tr class="tbl-red">
-            <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">⚠️</div><div><strong style="display:block">AgroExport Nigeria</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="21484f474e614046534e4459514e53550f4f46">[email&#160;protected]</a></span></div></div></td>
-            <td>🇳🇬 Nigeria</td><td><span class="pill p-ok">Food &amp; Agri</span></td><td><span class="pill p-muted">Free</span></td>
-            <td><span class="pill p-danger">1/3 ✕</span></td><td style="font-size:12px;color:var(--muted)">2d ago</td>
-            <td><div style="display:flex;gap:5px">
-              <button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-review')">View Docs</button>
-              <button class="btn btn-warn btn-sm" onclick="openModal('modal-request-docs')">Request Docs</button>
-            </div></td>
-          </tr>
+        <tbody id="sap-pending-body">
+          <tr><td colspan="7" style="text-align:center;padding:20px;color:var(--muted)">Loading pending sellers...</td></tr>
         </tbody>
       </table></div>
     </div>
@@ -1318,8 +1280,13 @@ function rejectProduct(reason, notes) {
 }
 
 // ── SELLER APPROVAL ─────────────────────────────────────────
-function approveSeller(btn, name) {
+async function approveSeller(btn, name, sellerId) {
   var row = btn ? btn.closest('tr') : null;
+  if (sellerId && typeof sb !== 'undefined') {
+    try {
+      await sb.from('seller_profiles').update({ status: 'active' }).eq('user_id', sellerId);
+    } catch(e) { console.error('Error approving seller:', e); }
+  }
   if (row) { row.style.transition='opacity .3s'; row.style.opacity='0'; setTimeout(function(){ if(row.parentNode)row.remove(); },300); }
   var badge = document.querySelector('[data-sec=sec-seller-approval] .sb-bdg');
   if (badge) badge.textContent = Math.max(0, parseInt(badge.textContent||0) - 1);
@@ -1448,6 +1415,35 @@ function adminSignOut() {
           if (r.count != null) {
             var b = document.querySelector(selectors[i].badge);
             if (b) b.textContent = r.count;
+          }
+        }
+
+        // 2.5 Load Pending Sellers Dynamically
+        const { data: pendingSellers } = await sb.from('seller_profiles')
+          .select('*, profiles(email)')
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false });
+        
+        const pendingTbody = document.getElementById('sap-pending-body');
+        if (pendingTbody) {
+          if (pendingSellers && pendingSellers.length > 0) {
+            pendingTbody.innerHTML = pendingSellers.map(s => {
+              const email = s.profiles?.email || 'No email';
+              const name = s.company_name || 'Unknown Company';
+              const date = s.created_at ? new Date(s.created_at).toLocaleDateString() : 'Recent';
+              const av = name.charAt(0).toUpperCase();
+              return `<tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">${av}</div><div><strong style="display:block">${name}</strong><span style="font-size:11px;color:var(--muted)">${email}</span></div></div></td>
+                <td>${s.country || 'Unknown'}</td><td><span class="pill p-blue">${s.industry || 'General'}</span></td><td><span class="pill p-muted">${s.plan || 'Free'}</span></td>
+                <td><span class="pill p-warn">Pending</span></td><td style="font-size:12px;color:var(--muted)">${date}</td>
+                <td><div style="display:flex;gap:5px">
+                  <button class="btn btn-ok btn-sm" onclick="approveSeller(this, '${name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}', '${s.user_id}')">✓ Approve</button>
+                  <button class="btn btn-danger btn-sm" onclick="if(confirm('Reject this seller?')) { this.closest('tr').remove(); showToast('Seller rejected','warn'); }">✕ Reject</button>
+                </div></td>
+              </tr>`;
+            }).join('');
+          } else {
+            pendingTbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--muted)">No pending sellers.</td></tr>';
           }
         }
 
