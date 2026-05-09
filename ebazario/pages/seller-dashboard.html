@@ -331,8 +331,12 @@ a{text-decoration:none;color:inherit}
   <div class="topbar">
     <h2>Dashboard</h2>
     <div class="tb-right">
-      <div class="notif-btn" onclick="showSec('sec-inquiries',null)">
-        🔔<span class="notif-dot"></span>
+      <div class="notif-btn" onclick="toggleNotifs()">
+        🔔<span class="notif-dot" id="notif-dot" style="display:none"></span>
+        <div id="notif-dropdown" class="card" style="display:none;position:absolute;top:44px;right:0;width:320px;z-index:100;max-height:400px;overflow-y:auto;padding:12px;box-shadow:var(--shd-lg);border:1px solid var(--border-strong)">
+          <div style="font-weight:700;font-size:14px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)">Notifications</div>
+          <div id="notif-list" style="font-size:12px;color:var(--muted)">No new notifications</div>
+        </div>
       </div>
       <div class="tb-profile">
         <div class="av">TP</div>
@@ -1269,6 +1273,19 @@ a{text-decoration:none;color:inherit}
     </div>
   </div>
 </div>
+<div id="modal-order-mgr" class="modal-bg" onclick="if(event.target===this)closeModal('modal-order-mgr')">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Manage Order</h3><button class="modal-close" onclick="closeModal('modal-order-mgr')">✕</button></div>
+    <div id="order-mgr-body" class="modal-body">
+      <!-- Dynamic -->
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-order-mgr')">Close</button>
+      <div id="order-mgr-acts"></div>
+    </div>
+  </div>
+</div>
+
 <script>
 
 
@@ -1287,6 +1304,16 @@ function showSec(id) {
   }
   if (id === 'sec-add-product') { currentStep = 1; initWizard(); }
   window.scrollTo(0,0);
+}
+
+function signOut() {
+  if (typeof sb !== 'undefined') {
+    sb.auth.signOut().then(function(){
+      window.location.href = 'login-seller.html';
+    });
+  } else {
+    window.location.href = 'login-seller.html';
+  }
 }
 
 // ── TABS ────────────────────────────────────────────────────
@@ -1551,7 +1578,8 @@ function uploadDoc(card, name) {
     await Promise.all([
       loadMyProducts(sp.id),
       loadMyOrders(sp.id),
-      loadSellerStats(sp.id)
+      loadSellerStats(sp.id),
+      loadNotifications(session.user.id)
     ]);
 
     window._session = session;
@@ -1614,7 +1642,7 @@ function renderProductList(list) {
 }
 
 async function loadMyOrders(sellerId) {
-  const { data, error } = await sb.from('orders').select('*, profiles(first_name, last_name, email)').eq('seller_id', sellerId).order('created_at', { ascending: false });
+  const { data, error } = await sb.from('orders').select('*, profiles!orders_buyer_id_fkey(first_name, last_name, email)').eq('seller_id', sellerId).order('created_at', { ascending: false });
   if (error) return;
   renderOrdersTable(data);
 }
@@ -1639,7 +1667,7 @@ function renderOrdersTable(orders) {
       '<td>$' + o.total_usd + '</td>' +
       '<td>' + o.shipping_method + '</td>' +
       '<td><span class="pill ' + statusClass + '">' + o.status + '</span></td>' +
-      '<td><button class="btn btn-out btn-sm">Manage</button></td>' +
+      '<td><button class="btn btn-out btn-sm" onclick="showOrderModal(\'' + o.id + '\')">Manage</button></td>' +
     '</tr>';
   }).join('');
 }
@@ -1658,6 +1686,121 @@ async function loadSellerStats(sellerId) {
   });
 }
 
+async function loadNotifications(userId) {
+  if (typeof sb === 'undefined') return;
+  const { data, error } = await sb.from('notifications').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(10);
+  if (error || !data) return;
+
+  const dot = document.getElementById('notif-dot');
+  const unread = data.filter(n => !n.is_read).length;
+  if (unread > 0) {
+    dot.style.display = 'block';
+  } else {
+    dot.style.display = 'none';
+  }
+
+  const list = document.getElementById('notif-list');
+  if (data.length > 0) {
+    list.innerHTML = data.map(n => `
+      <div style="padding:10px;border-bottom:1px solid var(--border);position:relative;background:${n.is_read?'transparent':'#f0f9ff'}">
+        <div style="display:flex;gap:8px">
+          <span>${n.icon || '📢'}</span>
+          <div>
+            <div style="font-weight:600;color:var(--text);font-size:12px">${n.title}</div>
+            <div style="color:var(--muted);margin-top:2px;font-size:11px">${n.body}</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:4px">${timeAgo(n.created_at)}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+function toggleNotifs() {
+  const dropdown = document.getElementById('notif-dropdown');
+  const isShown = dropdown.style.display === 'block';
+  dropdown.style.display = isShown ? 'none' : 'block';
+  
+  if (!isShown) {
+    // Mark as read when opened
+    const userId = window._session?.user?.id;
+    if (userId) sb.from('notifications').update({ is_read: true }).eq('user_id', userId).then(() => {
+        document.getElementById('notif-dot').style.display = 'none';
+    });
+  }
+}
+
+async function showOrderModal(orderId) {
+  const { data: o, error } = await sb.from('orders').select('*, profiles!orders_buyer_id_fkey(*)').eq('id', orderId).single();
+  if (error || !o) return;
+
+  const body = document.getElementById('order-mgr-body');
+  const acts = document.getElementById('order-mgr-acts');
+  
+  body.innerHTML = `
+    <div style="display:flex;justify-content:space-between;margin-bottom:20px">
+        <div>
+            <div style="font-size:12px;color:var(--muted)">ORDER NUMBER</div>
+            <div style="font-size:18px;font-weight:700">#${o.order_number}</div>
+        </div>
+        <div style="text-align:right">
+            <div style="font-size:12px;color:var(--muted)">STATUS</div>
+            <span class="pill ${o.status==='confirmed'?'p-ok':(o.status==='pending'?'p-warn':'p-blue')}">${o.status.toUpperCase()}</span>
+        </div>
+    </div>
+    <div class="card" style="padding:15px;background:#f8fafc">
+        <div style="font-weight:700;margin-bottom:10px">Buyer Information</div>
+        <div style="font-size:13px">${o.profiles?.first_name} ${o.profiles?.last_name}</div>
+        <div style="font-size:12px;color:var(--muted)">${o.profiles?.email}</div>
+    </div>
+    <div style="margin-top:20px">
+        <div style="font-weight:700;margin-bottom:10px">Items</div>
+        ${(o.items||[]).map(i => `<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>${i.quantity}x Product ID: ${i.product_id}</span><strong>$${i.price}</strong></div>`).join('')}
+        <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:10px;display:flex;justify-content:space-between;font-weight:700">
+            <span>Total</span><span>$${o.total_usd}</span>
+        </div>
+    </div>
+  `;
+
+  acts.innerHTML = '';
+  if (o.status === 'pending') {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-ok';
+    btn.textContent = 'Confirm Order';
+    btn.onclick = () => updateOrderStatus(o.id, 'confirmed', o.buyer_id);
+    acts.appendChild(btn);
+  } else if (o.status === 'confirmed' || o.status === 'pending') {
+    acts.innerHTML = `
+        <input id="tracking-num" type="text" placeholder="Tracking Number" style="border:1px solid var(--border);padding:6px 10px;border-radius:8px;margin-right:10px;width:180px">
+        <button class="btn btn-p" onclick="updateOrderStatus('${o.id}', 'shipped', '${o.buyer_id}')">Mark as Shipped</button>
+    `;
+  }
+
+  openModal('modal-order-mgr');
+}
+
+async function updateOrderStatus(orderId, status, buyerId) {
+  const tracking = document.getElementById('tracking-num')?.value;
+  const updates = { status, updated_at: new Date().toISOString() };
+  if (tracking) updates.tracking_number = tracking;
+  if (status === 'shipped') updates.shipped_at = new Date().toISOString();
+
+  const { error } = await sb.from('orders').update(updates).eq('id', orderId);
+  if (error) { showToast('Update failed: ' + error.message, 'error'); return; }
+
+  // Notify Buyer
+  await sb.from('notifications').insert({
+    user_id: buyerId,
+    type: 'order_update',
+    title: status === 'confirmed' ? 'Order Confirmed! ✅' : 'Order Shipped! 🚢',
+    body: status === 'confirmed' ? 'The seller has confirmed your order.' : 'Your order has been shipped. Tracking: ' + (tracking || 'N/A'),
+    icon: status === 'confirmed' ? '🛒' : '📦'
+  });
+
+  showToast('Order ' + status, 'ok');
+  closeModal('modal-order-mgr');
+  loadMyOrders(window._sellerProfile.id);
+}
 
 </script>
 </body>

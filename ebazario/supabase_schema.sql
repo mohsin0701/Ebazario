@@ -613,6 +613,7 @@ CREATE POLICY "Users manage own wishlist" ON wishlists FOR ALL USING (user_id = 
 -- NOTIFICATIONS
 CREATE POLICY "Users read own notifications" ON notifications FOR SELECT USING (user_id = auth.uid());
 CREATE POLICY "Users update own notifications" ON notifications FOR UPDATE USING (user_id = auth.uid());
+CREATE POLICY "Anyone can insert notifications" ON notifications FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 
 -- RFQs
 CREATE POLICY "Buyers manage own rfqs" ON rfqs FOR ALL USING (buyer_id = auth.uid());

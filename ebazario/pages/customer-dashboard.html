@@ -1649,13 +1649,29 @@ function renderOrders(orders) {
     viewBtn.textContent = 'View Details';
     viewBtn.onclick = function(){ openModal('modal-order-detail'); };
     btnWrap.appendChild(viewBtn);
-    if (o.status === 'in_transit' || o.status === 'shipped') {
+    if (o.status === 'in_transit' || o.status === 'shipped' || o.status === 'shipped') {
       var trackBtn = document.createElement('button');
       trackBtn.className = 'btn btn-p btn-sm';
       trackBtn.textContent = '\uD83D\uDCCD Track Shipment';
-      trackBtn.onclick = function(){ nav(document.querySelector('[data-sec=sec-track]')); };
+      trackBtn.onclick = function(){ 
+          alert('Tracking Number: ' + (o.tracking_number || 'Available soon') + '\nShipped via: ' + o.shipping_method);
+      };
       btnWrap.appendChild(trackBtn);
     }
+    
+    // Dispute button for delivered or shipping orders
+    if (['shipped', 'delivered', 'confirmed'].includes(o.status)) {
+        var dispBtn = document.createElement('button');
+        dispBtn.className = 'btn btn-ghost btn-sm';
+        dispBtn.style.color = 'var(--danger)';
+        dispBtn.textContent = '⚠️ Dispute';
+        dispBtn.onclick = function() {
+            const reason = prompt('Please enter the reason for your dispute (e.g., Damaged item, Never received):');
+            if (reason) openDispute(o.id, reason, o.seller_id);
+        };
+        btnWrap.appendChild(dispBtn);
+    }
+
     card.appendChild(btnWrap);
     ordAll.appendChild(card);
   });
@@ -1802,6 +1818,31 @@ function renderNotifications(notifs) {
     console.error('[Ebazario] Init error:', e);
   }
 })();
+
+async function openDispute(orderId, reason, sellerId) {
+  if (typeof sb === 'undefined') return;
+  
+  try {
+    const { error } = await sb.from('disputes').insert({
+      order_id: orderId,
+      buyer_id: window._session.user.id,
+      seller_id: sellerId,
+      reason: reason,
+      status: 'open'
+    });
+    
+    if (error) throw error;
+    
+    // Notify Admin & Seller
+    await sb.from('notifications').insert([
+        { user_id: sellerId, title: 'Dispute Opened ⚖️', body: 'A buyer has opened a dispute for Order #' + orderId, type: 'system', icon: '⚖️' }
+    ]);
+    
+    showToast('Dispute opened successfully. Admin will review it.', 'ok');
+  } catch(e) {
+    showToast('Failed to open dispute: ' + e.message, 'danger');
+  }
+}
 
 
 </script>

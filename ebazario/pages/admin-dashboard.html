@@ -234,7 +234,7 @@ button{font-family:inherit;cursor:pointer}
   </nav>
   <div class="sb-footer">
     <a href="../index.html">🌐 <span>View Marketplace</span></a>
-    <a href="#" onclick="event.preventDefault(); signOut();" style="margin-top:2px">🚪 <span>Sign Out</span></a>
+    <a href="#" onclick="event.preventDefault(); adminSignOut();" style="margin-top:2px">🚪 <span>Sign Out</span></a>
   </div>
 </aside>
 
@@ -366,6 +366,9 @@ button{font-family:inherit;cursor:pointer}
     </div>
     <div id="pap-pending" class="tabpane on">
       <div class="notice n-blue"><span class="ni">ℹ️</span><div>Review each product carefully: image quality, description, pricing, valid certifications, and seller status. Approved products go live immediately.</div></div>
+      <div id="pending-products-list">
+        <!-- Dynamic content -->
+      </div>
       <div class="prc">
         <div class="prc-thumb">💻</div>
         <div class="prc-info">
@@ -588,7 +591,7 @@ button{font-family:inherit;cursor:pointer}
   <div class="card" style="padding:0;overflow:hidden">
     <div class="tbl-wrap"><table class="tbl">
       <thead><tr><th>Seller</th><th>Country</th><th>Plan</th><th>Products</th><th>Revenue (MTD)</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead>
-      <tbody>
+      <tbody id="all-sellers-body">
         <tr>
           <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">🔌</div><div><strong style="display:block">Shenzhen TechPro Electronics</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="463223252e36342906352e23283c2e23286825292b">[email&#160;protected]</a> · Since 2006</span></div></div></td>
           <td>🇨🇳 China</td><td><span class="pill p-gold">⭐ Gold</span></td><td>2,480</td><td>$48,200</td><td>⭐ 4.9</td><td><span class="pill p-ok">Active</span></td>
@@ -993,7 +996,7 @@ button{font-family:inherit;cursor:pointer}
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeModal('modal-reject-prod')">Cancel</button>
-      <button class="btn btn-danger" onclick="showToast('Product rejected. Seller notified.','warn');closeModal('modal-reject-prod')">Confirm Rejection</button>
+      <button class="btn btn-danger" onclick="rejectProduct(document.getElementById('reject-prod-reason').value, document.getElementById('reject-prod-notes').value)">Confirm Rejection</button>
     </div>
   </div>
 </div>
@@ -1261,7 +1264,24 @@ function showToast(msg, type) {
 }
 
 // ── PRODUCT APPROVAL ────────────────────────────────────────
-function approveProduct(btn, name) {
+async function approveProduct(btn, name, productId, sellerId) {
+  if (productId && typeof sb !== 'undefined') {
+    try {
+      await sb.from('products').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', productId);
+      
+      // Notify Seller
+      if (sellerId) {
+        await sb.from('notifications').insert({
+          user_id: sellerId,
+          type: 'system',
+          title: 'Product Approved! ✅',
+          body: 'Your product "' + name + '" has been approved and is now live on the marketplace.',
+          icon: '📦'
+        });
+      }
+    } catch(e) { console.error('Error approving product:', e); }
+  }
+
   var card = btn ? btn.closest('.prc') : null;
   if (card) {
     card.style.transition = 'all .35s';
@@ -1274,9 +1294,47 @@ function approveProduct(btn, name) {
   showToast((name||'Product') + ' approved!', 'ok');
 }
 
-function rejectProduct(reason, notes) {
+async function rejectProduct(reason, notes) {
+  const productId = window._rejectProdId;
+  const sellerId  = window._rejectSellerId;
+  const name      = window._rejectProdName;
+
+  if (productId && typeof sb !== 'undefined') {
+    try {
+      await sb.from('products').update({ 
+        status: 'rejected', 
+        rejection_reason: reason, 
+        rejection_notes: notes 
+      }).eq('id', productId);
+
+      // Audit Log
+      await sb.from('audit_log').insert({
+        action: 'Rejected Product: ' + name,
+        entity_type: 'product',
+        entity_id: productId
+      });
+
+      // Notify Seller
+      if (sellerId) {
+        await sb.from('notifications').insert({
+          user_id: sellerId,
+          type: 'system',
+          title: 'Product Rejected ✕',
+          body: 'Your product "' + name + '" was not approved. Reason: ' + reason,
+          icon: '⚠️'
+        });
+      }
+    } catch(e) { console.error('Error rejecting product:', e); }
+  }
+
   closeModal('modal-reject-prod');
   showToast('Product rejected. Seller notified.', 'warn');
+  
+  // Remove from list
+  const allCards = document.querySelectorAll('.prc');
+  allCards.forEach(c => {
+     if (c.innerHTML.includes(name)) c.remove();
+  });
 }
 
 // ── SELLER APPROVAL ─────────────────────────────────────────
@@ -1284,7 +1342,16 @@ async function approveSeller(btn, name, sellerId) {
   var row = btn ? btn.closest('tr') : null;
   if (sellerId && typeof sb !== 'undefined') {
     try {
-      await sb.from('seller_profiles').update({ status: 'active' }).eq('user_id', sellerId);
+      await sb.from('seller_profiles').update({ status: 'active', approved_at: new Date().toISOString() }).eq('user_id', sellerId);
+      
+      // Notify Seller
+      await sb.from('notifications').insert({
+        user_id: sellerId,
+        type: 'system',
+        title: 'Application Approved! 🎊',
+        body: 'Welcome to Ebazario! Your seller application has been approved. You can now list products and receive orders.',
+        icon: '🏪'
+      });
     } catch(e) { console.error('Error approving seller:', e); }
   }
   if (row) { row.style.transition='opacity .3s'; row.style.opacity='0'; setTimeout(function(){ if(row.parentNode)row.remove(); },300); }
@@ -1339,7 +1406,8 @@ function adminSignOut() {
   try {
     const auth = await requireRole('admin', 'login-admin.html');
     if (!auth) return;
-    const { session, profile } = auth;
+    const { session } = auth;
+    let profile = auth.profile;
     var userId = session.user.id;
     var userEmail = session.user.email;
 
@@ -1362,7 +1430,7 @@ function adminSignOut() {
       profileRes = p2.data;
     }
 
-    var profile = profileRes;
+    profile = profileRes;
     console.log('[Admin] Profile role:', profile.role);
 
     // Role check
@@ -1420,7 +1488,7 @@ function adminSignOut() {
 
         // 2.5 Load Pending Sellers Dynamically
         const { data: pendingSellers } = await sb.from('seller_profiles')
-          .select('*, profiles(email)')
+          .select('*, profiles!seller_profiles_user_id_fkey(email)')
           .eq('status', 'pending')
           .order('created_at', { ascending: false });
         
@@ -1447,8 +1515,8 @@ function adminSignOut() {
           }
         }
 
-        // 3. Load Recent Orders
-        const { data: recentOrders } = await sb.from('orders').select('order_number, total_usd, status, profiles(first_name, last_name, country)').order('created_at', { ascending: false }).limit(5);
+        // 3. Load Recent Orders (on dashboard)
+        const { data: recentOrders } = await sb.from('orders').select('order_number, total_usd, status, profiles!orders_buyer_id_fkey(first_name, last_name, country)').order('created_at', { ascending: false }).limit(5);
         if (recentOrders && recentOrders.length > 0) {
             const orderTbody = document.querySelector('#sec-dashboard .tbl tbody');
             if (orderTbody) {
@@ -1463,23 +1531,114 @@ function adminSignOut() {
             }
         }
 
-        // 4. Load Live Activity (Audit Log)
-        const { data: logs } = await sb.from('audit_log').select('*').order('created_at', { ascending: false }).limit(6);
-        if (logs && logs.length > 0) {
-            const actContainer = document.querySelector('.card:has(.pill)');
-            if (actContainer && actContainer.querySelector('.pill').textContent.includes('LIVE')) {
-                const head = actContainer.querySelector('.card-head').outerHTML;
-                const logHtml = logs.map(l => `
-                    <div class="act-item">
-                        <div class="act-dot ${l.action.includes('Approved') ? 'ad-ok' : 'ad-blue'}">${l.action.includes('Login') ? '👤' : '✓'}</div>
-                        <div>
-                            <div style="font-size:13px"><strong>${l.action}</strong> — ${l.entity_type || 'System'}</div>
-                            <div style="font-size:11px;color:var(--muted)">${new Date(l.created_at).toLocaleTimeString()}</div>
-                        </div>
+        // 3.5 Load All Sellers (Live List)
+        const { data: allSellers } = await sb.from('seller_profiles').select('*, profiles!seller_profiles_user_id_fkey(email)').order('created_at', { ascending: false }).limit(20);
+        const allSellersBody = document.getElementById('all-sellers-body');
+        if (allSellersBody && allSellers && allSellers.length > 0) {
+            allSellersBody.innerHTML = allSellers.map(s => {
+                const email = s.profiles?.email || 'No email';
+                const statusClass = s.status === 'active' ? 'p-ok' : (s.status === 'pending' ? 'p-warn' : 'p-danger');
+                return `<tr>
+                    <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">${(s.company_name||'S').charAt(0)}</div><div><strong style="display:block">${s.company_name||'Unknown'}</strong><span style="font-size:11px;color:var(--muted)">${email}</span></div></div></td>
+                    <td>${s.country || 'N/A'}</td><td><span class="pill p-gold">${s.plan || 'Free'}</span></td><td>${s.product_count || 0}</td><td>$0</td><td>⭐ 5.0</td>
+                    <td><span class="pill ${statusClass}">${s.status}</span></td>
+                    <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-profile')">View</button></div></td>
+                </tr>`;
+            }).join('');
+        }
+
+        // 3.6 Load Pending Products
+        const { data: pendingProds } = await sb.from('products').select('*, seller_profiles!products_seller_id_fkey(company_name)').eq('status', 'pending_review').order('created_at', { ascending: false });
+        const prodList = document.getElementById('pending-products-list');
+        if (prodList && pendingProds && pendingProds.length > 0) {
+            prodList.innerHTML = pendingProds.map(p => `
+                <div class="prc">
+                    <div class="prc-thumb">📦</div>
+                    <div class="prc-info">
+                        <h4>${p.name || p.title}</h4>
+                        <p>By <strong>${p.seller_profiles?.company_name || 'Unknown Seller'}</strong> · Submitted ${timeAgo(p.created_at)}</p>
+                        <div class="prc-meta"><span class="pill p-blue">${p.category || 'General'}</span><span class="pill p-muted">$${p.base_price_usd}/unit</span><span class="pill p-muted">MOQ: ${p.moq || 1}</span></div>
                     </div>
-                `).join('');
-                actContainer.innerHTML = head + logHtml;
-            }
+                    <div class="prc-acts">
+                        <button class="btn btn-ok btn-sm" onclick="approveProduct(this, '${(p.name||p.title||'Product').replace(/'/g,"\\'").replace(/"/g,'&quot;')}', '${p.id}', '${p.seller_id}')">✓ Approve</button>
+                        <button class="btn btn-danger btn-sm" onclick="window._rejectProdId='${p.id}'; window._rejectProdName='${(p.name||p.title||'Product').replace(/'/g,"\\'").replace(/"/g,'&quot;') }'; window._rejectSellerId='${p.seller_id}'; openModal('modal-reject-prod')">✕ Reject</button>
+                    </div>
+                </div>
+            `).join('');
+            // Hide the static placeholders
+            document.querySelectorAll('#pap-pending .prc:not(#pending-products-list .prc)').forEach(el => el.style.display = 'none');
+        }
+
+        if (liveContainer) {
+          const actList = liveContainer.querySelector('.card-body') || liveContainer;
+          actList.innerHTML = logs.map(l => `
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+              <div style="width:32px;height:32px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:14px">📝</div>
+              <div>
+                <div style="font-size:12px;font-weight:600">${l.action}</div>
+                <div style="font-size:11px;color:var(--muted)">${timeAgo(l.created_at)}</div>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        // 5. Load All Orders
+        const { data: allOrders } = await sb.from('orders').select('*, profiles!orders_buyer_id_fkey(first_name, last_name), seller_profiles!orders_seller_id_fkey(company_name)').order('created_at', { ascending: false });
+        const ordersTbody = document.querySelector('#sec-orders .tbl tbody');
+        if (ordersTbody && allOrders) {
+            ordersTbody.innerHTML = allOrders.map(o => `
+                <tr>
+                    <td><strong>#${o.order_number}</strong></td>
+                    <td>${o.profiles?.first_name} ${o.profiles?.last_name}</td>
+                    <td>${o.seller_profiles?.company_name}</td>
+                    <td>$${o.total_usd}</td>
+                    <td><span class="pill ${o.status==='shipped'?'p-blue':(o.status==='delivered'?'p-ok':'p-warn')}">${o.status}</span></td>
+                    <td>${new Date(o.created_at).toLocaleDateString()}</td>
+                    <td><button class="btn btn-ghost btn-sm">Details</button></td>
+                </tr>
+            `).join('');
+        }
+
+        // 6. Update Revenue Stats
+        if (allOrders) {
+            const totalRev = allOrders.reduce((acc, o) => acc + parseFloat(o.total_usd), 0);
+            const totalCommission = totalRev * 0.05; // 5% platform fee example
+            
+            document.querySelectorAll('.stat-val').forEach((el, i) => {
+                if (i === 0) el.textContent = '$' + totalRev.toLocaleString();
+                if (i === 1) el.textContent = allOrders.length;
+            });
+            
+            const revVal = document.querySelector('#sec-revenue .stat-val');
+            if (revVal) revVal.textContent = '$' + totalCommission.toLocaleString();
+        }
+
+        // 7. Load Payouts (Delivered orders not yet paid)
+        const { data: payouts } = await sb.from('orders').select('*, seller_profiles!orders_seller_id_fkey(company_name)').eq('status', 'delivered');
+        const payoutTbody = document.querySelector('#sec-payouts .tbl tbody');
+        if (payoutTbody && payouts) {
+            payoutTbody.innerHTML = payouts.map(p => `
+                <tr>
+                    <td>${p.seller_profiles?.company_name}</td>
+                    <td>$${(p.total_usd * 0.95).toFixed(2)}</td>
+                    <td><span class="pill p-warn">Pending</span></td>
+                    <td>Bank Transfer</td>
+                    <td><button class="btn btn-ok btn-sm" onclick="showToast('Payout released!','ok')">Release Funds</button></td>
+                </tr>
+            `).join('');
+        }
+            const head = liveContainer.querySelector('.card-head').outerHTML;
+            const logHtml = logs.map(l => `
+                <div class="act-item">
+                    <div class="act-dot ${l.action.includes('Approved') ? 'ad-ok' : 'ad-blue'}">${l.action.includes('Login') ? '👤' : '✓'}</div>
+                    <div>
+                        <div style="font-size:13px"><strong>${l.action}</strong> — ${l.entity_type || 'System'}</div>
+                        <div style="font-size:11px;color:var(--muted)">${new Date(l.created_at).toLocaleTimeString()}</div>
+                    </div>
+                </div>
+            `).join('');
+            liveContainer.innerHTML = head + logHtml;
+        }
         }
 
       } catch(e){ console.warn('Dashboard data load error:', e); }

@@ -6,8 +6,8 @@
 
 // ── CONFIGURE THESE TWO VALUES ──────────────────────────────
 // Get them from: Supabase Dashboard → Settings → API
-const SUPABASE_URL  = 'https://pzhrijavhyojgwagcfyf.supabase.co';
-const SUPABASE_ANON = 'sb_publishable_AByi7Xlb02WCISNiVG5LIQ_13ydobW5';
+const SUPABASE_URL  = 'https://swygjpilcddqosjbzzfm.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_HnAYWFUXsQ5xtOSsQNrJrQ_yHxNay-5';
 // ────────────────────────────────────────────────────────────
 
 // Safe init — won't crash page if keys are still placeholders
