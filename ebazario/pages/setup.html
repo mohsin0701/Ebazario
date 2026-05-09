@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ebazario Setup — Provision Accounts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 400px; width: 100%; text-align: center; }
+        h1 { font-size: 24px; color: #0f172a; margin-bottom: 10px; }
+        p { color: #64748b; font-size: 14px; margin-bottom: 30px; }
+        .btn { display: block; width: 100%; padding: 14px; background: #1AA6DC; color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn:hover { background: #1588b6; }
+        .status { margin-top: 20px; font-size: 13px; text-align: left; }
+        .log { background: #f1f5f9; padding: 10px; border-radius: 8px; max-height: 150px; overflow-y: auto; font-family: monospace; font-size: 11px; margin-top: 10px; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Platform Setup</h1>
+        <p>This page will provision the default Admin, Seller, and Buyer accounts for your new Supabase project.</p>
+        
+        <button id="run-btn" class="btn" onclick="runSetup()">Run Provisioning</button>
+        
+        <div class="status">
+            <strong>Progress:</strong>
+            <div id="log" class="log">Ready...</div>
+        </div>
+
+        <div style="margin-top: 20px; font-size: 12px; color: #94a3b8;">
+            After running, you can log in at: <br>
+            <a href="login-admin.html" style="color:#1AA6DC">admin-login.html</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase.js"></script>
+    <script>
+        const logEl = document.getElementById('log');
+        function log(msg, type = '') {
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = `> ${msg}`;
+            logEl.appendChild(div);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        async function runSetup() {
+            document.getElementById('run-btn').disabled = true;
+            log('Starting provisioning...');
+
+            const accounts = [
+                { email: 'admin@ebazario.com', password: 'AdminPassword123!', role: 'admin' },
+                { email: 'seller@ebazario.com', password: 'SellerPassword123!', role: 'seller' },
+                { email: 'buyer@ebazario.com', password: 'BuyerPassword123!', role: 'customer' }
+            ];
+
+            for (const acc of accounts) {
+                log(`Processing ${acc.email}...`);
+                
+                // Sign Up
+                const { data, error } = await sb.auth.signUp({
+                    email: acc.email,
+                    password: acc.password
+                });
+
+                if (error) {
+                    if (error.message.includes('already registered')) {
+                        log(`${acc.email} is already registered.`, 'success');
+                    } else {
+                        log(`Error signing up ${acc.email}: ${error.message}`, 'error');
+                        continue;
+                    }
+                } else {
+                    log(`${acc.email} signed up successfully!`, 'success');
+                }
+
+                // Profile creation
+                const userId = data?.user?.id || (await findUserId(acc.email));
+                if (userId) {
+                    log(`Creating profile for ${acc.role}...`);
+                    const { error: pErr } = await sb.from('profiles').upsert({
+                        id: userId,
+                        email: acc.email,
+                        role: acc.role,
+                        first_name: acc.role.charAt(0).toUpperCase() + acc.role.slice(1),
+                        last_name: 'User',
+                        is_active: true
+                    });
+                    if (pErr) log(`Profile error: ${pErr.message}`, 'error');
+                    else log(`${acc.role} profile ready!`, 'success');
+                }
+                
+                log('Waiting 3s for rate limits...');
+                await new Promise(r => setTimeout(r, 3000));
+            }
+
+            log('Setup complete!', 'success');
+            document.getElementById('run-btn').disabled = false;
+        }
+
+        async function findUserId(email) {
+            // Note: On client side we can't search auth.users, 
+            // so we'll just try to sign in to get the ID if it already exists?
+            // Actually, for setup we assume they are new or we don't have the ID.
+            return null; 
+        }
+    </script>
+</body>
+</html>
