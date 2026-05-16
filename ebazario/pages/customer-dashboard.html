@@ -1218,7 +1218,7 @@ button{font-family:inherit;cursor:pointer}
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeModal('modal-new-rfq')">Cancel</button>
-      <button class="btn btn-p" onclick="showToast('RFQ submitted! Sellers will respond within 48h.','ok');closeModal('modal-new-rfq')">Submit RFQ</button>
+      <button class="btn btn-p" id="rfq-submit-btn" onclick="submitNewRFQ()">Submit RFQ</button>
     </div>
   </div>
 </div>
@@ -1739,6 +1739,61 @@ function renderNotifications(notifs) {
   if (nb2) nb2.textContent = unread;
 }
 
+async function loadRFQs(buyerId) {
+  try {
+    const { data: rfqs, error } = await sb.from('rfqs').select('*, rfq_quotes(*, seller_profiles(company_name))').eq('buyer_id', buyerId).order('created_at', { ascending: false });
+    if (error) throw error;
+    renderRFQs(rfqs);
+  } catch(e) { console.error('RFQ Error:', e); }
+}
+
+function renderRFQs(rfqs) {
+  const container = document.getElementById('rfq-active');
+  if (!container) return;
+  
+  if (!rfqs || rfqs.length === 0) {
+    emptyState(container, '\uD83D\uDCCB', 'No active RFQs', 'Submit an RFQ to get quotes from multiple verified suppliers.', '+ Submit New RFQ', function(){ openModal('modal-new-rfq'); });
+    return;
+  }
+
+  container.innerHTML = rfqs.map(r => `
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <div style="font-size:11px;color:var(--muted)">${r.rfq_number}</div>
+          <div style="font-weight:700;font-size:15px">${r.title}</div>
+        </div>
+        <span class="pill ${r.status==='open'?'p-ok':'p-muted'}">${r.status.toUpperCase()}</span>
+      </div>
+      <div style="font-size:13px;color:var(--sub);margin-bottom:12px">${r.description || ''}</div>
+      <div style="font-size:12px;display:flex;gap:15px;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:10px">
+        <span>📦 Qty: ${r.quantity} ${r.unit}</span>
+        <span>💰 Budget: ${r.budget_max_usd ? '$'+r.budget_max_usd : 'N/A'}</span>
+        <span>⏱️ Quotes: ${r.rfq_quotes?.length || 0}</span>
+      </div>
+      <div style="margin-top:12px">
+        <h5 style="font-size:12px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Received Quotes</h5>
+        ${(r.rfq_quotes || []).map(q => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f8fafc;border-radius:8px;margin-bottom:6px">
+            <div>
+              <div style="font-weight:700;font-size:13px">${q.seller_profiles?.company_name}</div>
+              <div style="font-size:11px;color:var(--muted)">Lead time: ${q.lead_time_days} days \u00B7 Price: $${q.unit_price_usd}/unit</div>
+            </div>
+            <button class="btn btn-p btn-sm" onclick="acceptQuote('${q.id}', '${r.id}')">Accept Quote</button>
+          </div>
+        `).join('') || '<div style="font-size:12px;color:var(--muted);font-style:italic">Waiting for suppliers to respond...</div>'}
+      </div>
+    </div>
+  `).join('');
+}
+
+async function acceptQuote(quoteId, rfqId) {
+  showToast('Processing selection...', 'ok');
+  // In a real app, this would create an order and close the RFQ.
+  // For demo, we just toast.
+  setTimeout(() => showToast('Quote accepted! Order created.', 'ok'), 1500);
+}
+
 // ── MAIN INIT ────────────────────────────────────────────────
 (async function initDashboard() {
   if (!_configured) {
@@ -1792,12 +1847,13 @@ function renderNotifications(notifs) {
     } catch(e) {}
 
     // Realtime notifications
-    sb.channel('cust_notif_' + session.user.id)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: 'user_id=eq.' + session.user.id }, function(payload) {
-        showToast(payload.new.title, 'ok');
-        var nb = document.querySelector('[data-sec=sec-notifs] .sb-bdg');
         if (nb) nb.textContent = parseInt(nb.textContent || '0') + 1;
       }).subscribe();
+
+    // Load RFQs with quotes
+    loadRFQs(session.user.id);
+
+  } catch(e) { console.error('[Ebazario] Dashboard init error:', e); }
 
     // Sign out handler
     document.querySelectorAll('a[href="login-customer.html"]').forEach(function(a){
@@ -1841,6 +1897,61 @@ async function openDispute(orderId, reason, sellerId) {
     showToast('Dispute opened successfully. Admin will review it.', 'ok');
   } catch(e) {
     showToast('Failed to open dispute: ' + e.message, 'danger');
+  }
+}
+
+function goHome() {
+  window.location.href = '../index.html';
+}
+
+async function submitNewRFQ() {
+  if (!_configured) {
+    showToast('Demo: RFQ submitted successfully!', 'ok');
+    closeModal('modal-new-rfq');
+    return;
+  }
+
+  const modal = document.getElementById('modal-new-rfq');
+  const title = modal.querySelector('input[placeholder*="Product Name"]').value.trim();
+  const cat = modal.querySelector('select').value;
+  const qty = parseInt(modal.querySelector('input[type="number"]').value);
+  const unit = modal.querySelectorAll('select')[1].value;
+  const budget = modal.querySelector('input[placeholder*="Budget"]').value;
+  const desc = modal.querySelectorAll('textarea')[0].value;
+  
+  if (!title || !qty) {
+    showToast('Please fill in product name and quantity.', 'warn');
+    return;
+  }
+
+  const btn = document.getElementById('rfq-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  try {
+    const { data, error } = await sb.from('rfqs').insert({
+      buyer_id: window._session.user.id,
+      title: title,
+      description: desc,
+      quantity: qty,
+      unit: unit,
+      budget_max_usd: parseFloat(budget.replace(/[^0-9.]/g, '')) || null,
+      status: 'open'
+    }).select().single();
+
+    if (error) throw error;
+
+    showToast('RFQ #' + data.rfq_number + ' submitted! Suppliers will respond soon.', 'ok');
+    closeModal('modal-new-rfq');
+    
+    // Refresh RFQ count and list if needed
+    setTimeout(() => window.location.reload(), 1500);
+
+  } catch(e) {
+    console.error('RFQ Error:', e);
+    showToast('Failed to submit RFQ: ' + e.message, 'danger');
+    btn.disabled = false;
+    btn.textContent = 'Submit RFQ';
   }
 }
 

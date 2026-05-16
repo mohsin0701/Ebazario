@@ -595,15 +595,47 @@ async function createOrder(buyerId, sellerId, items, shippingId, method) {
     .single();
   
   if (!error) {
-    await sb.from('notifications').insert({
-      user_id: sellerId,
-      type: 'order_update',
-      title: 'New Order: ' + orderNum,
-      body: 'A buyer has started a new order. Please check your dashboard.',
-      icon: '📦'
-    });
+    // Get seller's profile user_id for notification
+    const { data: sp } = await sb.from('seller_profiles').select('user_id').eq('id', sellerId).single();
+    if (sp) {
+      await sb.from('notifications').insert({
+        user_id: sp.user_id,
+        type: 'order_update',
+        title: 'New Order: ' + orderNum,
+        body: 'A buyer has started a new order. Please check your dashboard.',
+        icon: '📦'
+      });
+    }
   }
   
+  return { data, error };
+}
+
+async function sendInquiry(buyerId, sellerId, productId, productTitle, message) {
+  const { data, error } = await sb
+    .from('inquiries')
+    .insert({
+      buyer_id: buyerId,
+      seller_id: sellerId,
+      product_id: productId,
+      product_title: productTitle,
+      message: message
+    })
+    .select()
+    .single();
+
+  if (!error) {
+    const { data: sp } = await sb.from('seller_profiles').select('user_id').eq('id', sellerId).single();
+    if (sp) {
+      await sb.from('notifications').insert({
+        user_id: sp.user_id,
+        type: 'system',
+        title: 'New Inquiry: ' + productTitle,
+        body: 'A buyer is interested in your product. Reply now to close the lead.',
+        icon: '💬'
+      });
+    }
+  }
   return { data, error };
 }
 

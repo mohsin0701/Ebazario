@@ -96,6 +96,51 @@ async function handleBuyNow(productId, sellerId, basePrice) {
   }
 }
 
+// ── WISHLIST HANDLER ──
+async function handleWishlist(btn, productId) {
+  if (typeof _configured === 'undefined' || !_configured) {
+    showToast("Demo: Product saved to wishlist!", "ok");
+    return;
+  }
+  try {
+    const session = await getSession();
+    if (!session) { showToast("Please log in to save items.", "warn"); return; }
+    
+    const { data, error } = await sb.from('wishlists').insert({ user_id: session.user.id, product_id: productId });
+    if (error) {
+      if (error.code === '23505') showToast("Item already in wishlist.", "warn");
+      else throw error;
+    } else {
+      showToast("Added to wishlist!", "ok");
+      if (btn) { btn.innerHTML = '❤️'; btn.style.color = 'var(--danger)'; }
+    }
+  } catch(e) { showToast("Could not save to wishlist.", "error"); }
+}
+
+// ── INQUIRY HANDLER ──
+async function handleInquiry(productId, sellerId, productTitle) {
+  const msg = prompt("Send inquiry for " + productTitle + ":\n(Example: I'd like to request a sample of 10 units to New York)", "I am interested in this product. Please send more details and bulk pricing.");
+  if (!msg) return;
+  
+  if (typeof _configured === 'undefined' || !_configured) {
+    showToast("Demo: Inquiry sent to supplier!", "ok");
+    return;
+  }
+  
+  try {
+    const session = await getSession();
+    if (!session) { showToast("Please log in to send inquiries.", "warn"); return; }
+    
+    const { error } = await sendInquiry(session.user.id, sellerId, productId, productTitle, msg);
+    if (error) throw error;
+    
+    showToast("Inquiry sent! Supplier will contact you shortly.", "ok");
+  } catch(e) { 
+    console.error('Inquiry error:', e);
+    showToast("Could not send inquiry.", "error"); 
+  }
+}
+
 // ── TAB SWITCHING ──
 function switchTab(tabName, ctx) {
   var panes = document.querySelectorAll((ctx || "") + " .tab-pane");

@@ -102,7 +102,7 @@
 
       <div class="detail-actions">
         <button class="btn-buy-now" onclick="handleBuyNow('7a7db3f4-d07a-42b7-84d4-da601ff6c17e', 'b9b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2', 145)">Buy Now with Trade Assurance</button>
-        <button class="btn-rfq" onclick="showToast('Inquiry request sent to supplier. You will be notified in your dashboard.', 'ok')">Request Quote</button>
+        <button class="btn-rfq" id="btn-inquiry">Request Quote</button>
       </div>
 
       <div style="background:#e6f6fc;border:1px solid #b3e0f2;border-radius:var(--radius);padding:16px;margin-bottom:14px">
@@ -230,6 +230,10 @@
           const buyBtn = document.querySelector('.btn-buy-now');
           if (buyBtn) {
             buyBtn.onclick = () => handleBuyNow(p.id, p.seller_id, p.buyer_price_usd || p.base_price_usd);
+          }
+          const inqBtn = document.getElementById('btn-inquiry');
+          if (inqBtn) {
+            inqBtn.onclick = () => handleInquiry(p.id, p.seller_id, p.title);
           }
         }
       } catch (e) {

@@ -432,7 +432,28 @@ CREATE TABLE seller_payouts (
 );
 
 -- ============================================================
--- 17. SHIPPING RATES
+-- 17. INQUIRIES (Direct Messages)
+-- ============================================================
+CREATE TABLE inquiries (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  buyer_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  seller_id UUID NOT NULL REFERENCES seller_profiles(id) ON DELETE CASCADE,
+  product_id UUID REFERENCES products(id),
+  product_title TEXT,
+  message TEXT NOT NULL,
+  status TEXT DEFAULT 'unread', -- unread, read, replied
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE inquiries ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Buyers manage own inquiries" ON inquiries FOR ALL USING (buyer_id = auth.uid());
+CREATE POLICY "Sellers see own inquiries" ON inquiries FOR SELECT USING (
+  seller_id IN (SELECT id FROM seller_profiles WHERE user_id = auth.uid())
+);
+
+-- ============================================================
+-- 18. SHIPPING RATES
 -- ============================================================
 CREATE TABLE shipping_rates (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -464,7 +485,7 @@ INSERT INTO shipping_rates (destination_country, destination_label, flag_emoji, 
   ('NG', 'Nigeria',         '🇳🇬', 7.50, 2400, 165, 11.20, 5, 8, 30, 40);
 
 -- ============================================================
--- 18. PLATFORM SETTINGS
+-- 19. PLATFORM SETTINGS
 -- ============================================================
 CREATE TABLE platform_settings (
   key TEXT PRIMARY KEY,
@@ -491,7 +512,7 @@ INSERT INTO platform_settings (key, value, description) VALUES
   ('announcement_visible',  'true',  'Show announcement banner');
 
 -- ============================================================
--- 19. NOTIFICATIONS
+-- 20. NOTIFICATIONS
 -- ============================================================
 CREATE TABLE notifications (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -757,4 +778,45 @@ CREATE TRIGGER trg_seller_stats AFTER UPDATE ON orders FOR EACH ROW EXECUTE FUNC
 -- REALTIME (enable in Supabase Dashboard → Database → Replication)
 -- ============================================================
 -- Enable realtime for: orders, notifications, disputes
+
+-- ============================================================
+-- 21. AUDIT LOG
+-- ============================================================
+CREATE TABLE audit_log (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  admin_id UUID REFERENCES profiles(id),
+  action TEXT NOT NULL,
+  entity_type TEXT,
+  entity_id TEXT,
+  details JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE audit_log ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Admins see all logs" ON audit_log FOR SELECT USING (
+  (SELECT role FROM profiles WHERE id = auth.uid()) = 'admin'
+);
+
+-- ============================================================
+-- 22. SELLER PAYOUTS
+-- ============================================================
+CREATE TABLE seller_payouts (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  seller_id UUID NOT NULL REFERENCES seller_profiles(id),
+  amount_usd DECIMAL(12,2) NOT NULL,
+  status TEXT DEFAULT 'pending', -- pending, processed, cancelled
+  method TEXT DEFAULT 'bank_transfer',
+  payment_reference TEXT,
+  processed_by UUID REFERENCES profiles(id),
+  processed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE seller_payouts ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Sellers see own payouts" ON seller_payouts FOR SELECT USING (
+  seller_id IN (SELECT id FROM seller_profiles WHERE user_id = auth.uid())
+);
+CREATE POLICY "Admins manage all payouts" ON seller_payouts FOR ALL USING (
+  (SELECT role FROM profiles WHERE id = auth.uid()) = 'admin'
+);
 

@@ -296,6 +296,10 @@ a{text-decoration:none;color:inherit}
       <span class="si">💬</span><span class="sb-label">Buyer Inquiries</span>
       <span class="sb-badge">12</span>
     </div>
+    <div class="sb-item" data-sec="sec-rfqs" onclick="showSec('sec-rfqs',this)">
+      <span class="si">📋</span><span class="sb-label">Open RFQs</span>
+      <span class="sb-badge ok" id="rfq-badge">5</span>
+    </div>
     <div class="sb-item" data-sec="sec-orders" onclick="showSec('sec-orders',this)">
       <span class="si">🛒</span><span class="sb-label">Orders</span>
       <span class="sb-badge">4</span>
@@ -415,7 +419,40 @@ a{text-decoration:none;color:inherit}
       </div>
     </div>
 
-    <!-- WIZARD STEPS -->
+    <!-- QUOTE SUBMIT MODAL -->
+<div id="modal-quote-submit" class="modal-bg" onclick="if(event.target===this)closeModal('modal-quote-submit')">
+  <div class="modal-box" style="max-width:500px">
+    <div class="modal-head">
+      <h3>📄 Submit Quote</h3>
+      <button class="modal-close" onclick="closeModal('modal-quote-submit')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="q-rfq-id">
+      <div style="margin-bottom:18px;padding:12px;background:#f8fafc;border-radius:12px">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase">RFQ #</div>
+        <div id="q-rfq-num" style="font-weight:700;margin-bottom:8px">RQ-2025-0042</div>
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase">PRODUCT</div>
+        <div id="q-rfq-title" style="font-weight:600">Industrial Rugged Laptops</div>
+      </div>
+      <div class="fg">
+        <label>Your Unit Price (USD) <span class="req">*</span></label>
+        <input type="number" id="q-price" step="0.01" placeholder="0.00">
+      </div>
+      <div class="fg">
+        <label>Lead Time (Days) <span class="req">*</span></label>
+        <input type="number" id="q-lead" placeholder="e.g. 15">
+      </div>
+      <div class="fg">
+        <label>Notes to Buyer</label>
+        <textarea id="q-notes" placeholder="Include details about warranty, certifications, or custom branding..."></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-quote-submit')">Cancel</button>
+      <button class="btn btn-p" id="q-submit-btn" onclick="submitRFQQuote()">Submit Quote</button>
+    </div>
+  </div>
+</div>
     <div class="wizard">
       <div class="wstep active" style="flex:1.2">
         <div class="wstep-num">1</div>
@@ -443,21 +480,45 @@ a{text-decoration:none;color:inherit}
       </div>
     </div>
 
+    <!-- REPLY MODAL -->
+    <div id="reply-modal" class="modal-bg" onclick="if(event.target===this)closeModal('reply-modal')">
+      <div class="modal-box" style="max-width:500px">
+        <div class="modal-head">
+          <h3>💬 Reply to Inquiry</h3>
+          <button class="modal-close" onclick="closeModal('reply-modal')">✕</button>
+        </div>
+        <div class="modal-body">
+          <div style="margin-bottom:14px;font-size:13px;color:var(--muted)">Replying to: <strong>Ahmed K. (UAE)</strong></div>
+          <div class="fg">
+            <label>Your Message</label>
+            <textarea placeholder="Type your response here..." style="min-height:120px"></textarea>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer">
+            <input type="checkbox" checked> Attach company profile & catalog
+          </label>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-ghost" onclick="closeModal('reply-modal')">Cancel</button>
+          <button class="btn btn-p" onclick="showToast('Reply sent!','ok');closeModal('reply-modal')">Send Reply</button>
+        </div>
+      </div>
+    </div>
+
     <!-- STEP 1: BASIC INFO -->
     <div class="wizard-step-pane">
       <div class="card">
         <div class="card-header"><span class="card-title">📝 Step 1: Basic Product Information</span></div>
         <div class="fg">
           <label>Product Name <span class="req">*</span><span class="hint">Be specific — include model, material, size, function</span></label>
-          <input type="text" placeholder="e.g. Industrial Rugged Laptop 15.6&quot; Core i7 16GB RAM IP65 MIL-STD-810H Military Grade" maxlength="200">
+          <input type="text" id="p-title" placeholder="e.g. Industrial Rugged Laptop 15.6&quot; Core i7 16GB RAM IP65 MIL-STD-810H Military Grade" maxlength="200">
           <div class="helper">0 / 200 characters · Good product names include: brand, model, spec, application</div>
         </div>
         <div class="frow frow-2">
           <div class="fg">
             <label>Category <span class="req">*</span></label>
-            <select>
-              <option>-- Select Main Category --</option>
-              <option>Electronics &amp; Electrical</option>
+            <select id="p-cat">
+              <option value="">-- Select Main Category --</option>
+              <option value="electronics">Electronics &amp; Electrical</option>
               <option>Machinery &amp; Equipment</option>
               <option>Apparel &amp; Fashion</option>
               <option>Food &amp; Agriculture</option>
@@ -499,7 +560,7 @@ a{text-decoration:none;color:inherit}
         </div>
         <div class="fg">
           <label>Product Description <span class="req">*</span><span class="hint">Min 100 characters. Include features, applications, advantages</span></label>
-          <textarea placeholder="Describe your product in detail. Include: key features, specifications, applications, advantages over competitors, OEM/ODM capabilities, certifications, and why buyers should choose your product..." style="height:140px"></textarea>
+          <textarea id="p-desc" placeholder="Describe your product in detail. Include: key features, specifications, applications, advantages over competitors, OEM/ODM capabilities, certifications, and why buyers should choose your product..." style="height:140px"></textarea>
           <div class="helper">0 / 5000 characters</div>
         </div>
         <div class="fg">
@@ -622,8 +683,8 @@ a{text-decoration:none;color:inherit}
           </div>
           <div class="fg">
             <label>Unit of Measure <span class="req">*</span></label>
-            <select>
-              <option>Piece / Unit</option><option>Set</option><option>Pair</option><option>Kilogram (kg)</option><option>Metric Ton (MT)</option><option>Box</option><option>Carton</option><option>Roll</option><option>Meter</option>
+            <select id="p-unit">
+              <option value="piece">Piece / Unit</option><option value="set">Set</option><option value="pair">Pair</option><option value="kg">Kilogram (kg)</option><option value="ton">Metric Ton (MT)</option><option value="box">Box</option><option value="carton">Carton</option><option value="roll">Roll</option><option value="meter">Meter</option>
             </select>
           </div>
         </div>
@@ -641,7 +702,7 @@ a{text-decoration:none;color:inherit}
             </div>
             <div>
               <label style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:4px;display:block">UNIT PRICE (USD) <span style="color:var(--danger)">*</span></label>
-              <input type="number" step="0.01" placeholder="0.00" value="285.00">
+              <input type="number" id="p-price" step="0.01" placeholder="0.00" value="285.00">
             </div>
             <div style="margin-top:18px;font-size:11px;color:var(--muted);padding:6px 0;text-align:center;width:28px">–</div>
           </div>
@@ -683,7 +744,7 @@ a{text-decoration:none;color:inherit}
           <div class="frow frow-3">
             <div class="fg">
               <label>MOQ Quantity <span class="req">*</span></label>
-              <input type="number" placeholder="e.g. 50" value="50">
+              <input type="number" id="p-moq" placeholder="e.g. 50" value="50">
             </div>
             <div class="fg">
               <label>FOB Port</label>
@@ -928,6 +989,24 @@ a{text-decoration:none;color:inherit}
         </tbody></table></div>
       </div>
       <div id="pt-draft" class="tabpane"><p style="padding:20px;color:var(--muted)">6 saved drafts. Complete and submit them to go live.</p></div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────── RFQS ────────────────────────────────────── -->
+  <div id="sec-rfqs" class="sec">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div><h1 style="font-size:20px;font-weight:700">Open Requests for Quotation (RFQs)</h1><p style="color:var(--muted);font-size:13px;margin-top:2px">Submit quotes to win new business. These buyers are looking for suppliers now.</p></div>
+      <button class="btn btn-ghost btn-sm" onclick="loadOpenRFQs()">🔄 Refresh</button>
+    </div>
+    <div class="card">
+      <div id="rfq-list-container">
+        <table class="tbl">
+          <thead><tr><th>RFQ #</th><th>Buyer</th><th>Product / Requirements</th><th>Qty</th><th>Max Budget</th><th>Time Left</th><th>Action</th></tr></thead>
+          <tbody id="rfq-tbody">
+            <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted)">Loading RFQs...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -1345,41 +1424,60 @@ function showToast(msg, type) {
 // ── PRODUCT WIZARD ───────────────────────────────────────────
 var currentStep = 1;
 var totalSteps = 5;
+
+function nextStep() { goStep(1); }
+function prevStep() { goStep(-1); }
+
 function initWizard() {
-  document.querySelectorAll('#sec-add-product .step-panel').forEach(function(p,i){
+  document.querySelectorAll('#sec-add-product .wizard-step-pane').forEach(function(p,i){
     p.style.display = i === currentStep - 1 ? 'block' : 'none';
   });
-  document.querySelectorAll('#sec-add-product .step-indicator').forEach(function(d,i){
+  document.querySelectorAll('#sec-add-product .wstep').forEach(function(d,i){
     d.classList.toggle('active', i === currentStep - 1);
     d.classList.toggle('done', i < currentStep - 1);
   });
-  var prevBtn = document.getElementById('btn-prev');
-  var nextBtn = document.getElementById('btn-next');
+  var prevBtn = document.getElementById('wiz-prev');
+  var nextBtn = document.getElementById('wiz-next');
+  var submitBtn = document.getElementById('wiz-submit');
+
   if (prevBtn) prevBtn.style.display = currentStep === 1 ? 'none' : 'inline-flex';
-  if (nextBtn) nextBtn.textContent = currentStep === totalSteps ? 'Submit for Review' : 'Next \u2192';
+  
+  if (currentStep === totalSteps) {
+    if (nextBtn) nextBtn.style.display = 'none';
+    if (submitBtn) submitBtn.style.display = 'inline-flex';
+  } else {
+    if (nextBtn) {
+      nextBtn.style.display = 'inline-flex';
+      nextBtn.textContent = 'Next Step \u2192';
+    }
+    if (submitBtn) submitBtn.style.display = 'none';
+  }
 }
+
 function goStep(dir) {
   var section = document.getElementById('sec-add-product');
   if (!section) return;
-  var panels = section.querySelectorAll('.step-panel');
-  if (dir === 1 && currentStep < panels.length) currentStep++;
-  else if (dir === -1 && currentStep > 1) currentStep--;
-  else if (dir === 1 && currentStep === panels.length) {
-    submitProductToSB();
-    return;
+  var panels = section.querySelectorAll('.wizard-step-pane');
+  if (dir === 1 && currentStep < panels.length) {
+    currentStep++;
+  } else if (dir === -1 && currentStep > 1) {
+    currentStep--;
   }
   initWizard();
 }
 
-async function submitProductToSB() {
+async function submitProduct() {
   if (!_configured || !window._sellerProfile) {
     showToast('Demo mode: Submit successful!', 'ok');
     return;
   }
 
   const sp = window._sellerProfile;
-  const btn = document.getElementById('btn-next');
-  if (btn) btn.disabled = true;
+  const btn = document.getElementById('wiz-submit');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+  }
 
   try {
     showToast('Submitting product for review...', 'ok');
@@ -1578,6 +1676,8 @@ function uploadDoc(card, name) {
     await Promise.all([
       loadMyProducts(sp.id),
       loadMyOrders(sp.id),
+      loadOpenRFQs(),
+      loadMyInquiries(sp.id),
       loadSellerStats(sp.id),
       loadNotifications(session.user.id)
     ]);
@@ -1586,6 +1686,25 @@ function uploadDoc(card, name) {
     window._profile = profile;
     window._sellerProfile = sp;
     console.log('[Ebazario] Seller dashboard ready for:', profile.email);
+
+    // Realtime notifications
+    sb.channel('seller_notif_' + session.user.id)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: 'user_id=eq.' + session.user.id }, function(payload) {
+        showToast(payload.new.title, 'ok');
+        loadNotifications(session.user.id);
+        // Refresh relevant sections based on title or type
+        if (payload.new.type === 'order_update') loadMyOrders(sp.id);
+        if (payload.new.title && payload.new.title.includes('Application Approved')) {
+          setTimeout(() => window.location.reload(), 2000); // Reload to clear banner
+        }
+        if (payload.new.title && (payload.new.title.includes('Product Approved') || payload.new.title.includes('Product Rejected'))) {
+          loadMyProducts(sp.id); // Refresh products list
+        }
+        if (payload.new.type === 'system' && payload.new.title && !payload.new.title.includes('Approved') && !payload.new.title.includes('Rejected')) {
+           loadOpenRFQs(); // might be Inquiry or something else
+        }
+      }).subscribe();
+
   } catch(e) { console.error('[Ebazario] Seller init error:', e); }
 })();
 
@@ -1623,8 +1742,9 @@ function renderProductList(list) {
         '<div class="prod-card-meta">MOQ: ' + p.min_order_qty + ' · Views: ' + (p.view_count || 0) + '</div>' +
       '</div>' +
       '<div class="prod-card-actions">' +
-        '<button class="btn btn-out btn-sm" style="flex:1">Edit</button>' +
-        '<button class="btn btn-ghost btn-sm">📊</button>' +
+        '<button class="btn btn-out btn-sm" style="flex:1" onclick="editProduct(\'' + p.id + '\')">Edit</button>' +
+        '<button class="btn btn-ghost btn-sm" onclick="showProductStats(\'' + p.id + '\')">📊</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="deleteProduct(\'' + p.id + '\')">🗑️</button>' +
       '</div>' +
     '</div>';
   }).join('');
@@ -1800,6 +1920,176 @@ async function updateOrderStatus(orderId, status, buyerId) {
   showToast('Order ' + status, 'ok');
   closeModal('modal-order-mgr');
   loadMyOrders(window._sellerProfile.id);
+}
+
+async function loadMyInquiries(sellerId) {
+  const tbody = document.querySelector('#sec-inquiries table tbody');
+  if (!tbody) return;
+
+  try {
+    const { data: inqs, error } = await sb.from('inquiries').select('*, profiles!inquiries_buyer_id_fkey(first_name, last_name, country, email)').eq('seller_id', sellerId).order('created_at', { ascending: false });
+    if (error) throw error;
+
+    if (inqs.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted)">No inquiries received yet.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = inqs.map(i => {
+      const buyerName = i.profiles ? (i.profiles.first_name + ' ' + (i.profiles.last_name || '')) : 'Anonymous';
+      const country = i.profiles?.country || 'Global';
+      return `
+        <tr style="background:${i.status==='unread'?'#f0f9ff':'transparent'}">
+          <td><strong>${buyerName}</strong><div style="font-size:11px;color:var(--muted)">${i.profiles?.email || ''}</div></td>
+          <td>${country}</td>
+          <td>${i.product_title || 'General Inquiry'}</td>
+          <td class="inq-msg" title="${i.message.replace(/"/g, '&quot;')}">"${i.message}"</td>
+          <td>${new Date(i.created_at).toLocaleDateString()}</td>
+          <td><button class="btn btn-p btn-sm" onclick="openReplyModal('${i.id}', '${buyerName.replace(/'/g, "\\'")}')">Reply</button></td>
+        </tr>
+      `;
+    }).join('');
+
+    // Update badge
+    const unread = inqs.filter(i => i.status === 'unread').length;
+    const badge = document.querySelector('.sb-item[data-sec="sec-inquiries"] .sb-badge');
+    if (badge) badge.textContent = unread || inqs.length;
+
+  } catch (e) { console.error('Inquiry error:', e); }
+}
+
+function openReplyModal(id, name) {
+  // Logic to open reply modal with name
+  showToast('Replying to ' + name, 'ok');
+  openModal('reply-modal');
+}
+
+// ── RFQ MANAGEMENT ───────────────────────────────────────────
+async function loadOpenRFQs() {
+  const tbody = document.getElementById('rfq-tbody');
+  const badge = document.getElementById('rfq-badge');
+  if (!tbody) return;
+
+  try {
+    const { data: rfqs, error } = await sb.from('rfqs').select('*, profiles!rfqs_buyer_id_fkey(first_name, last_name, country)').eq('status', 'open').order('created_at', { ascending: false });
+    if (error) throw error;
+
+    if (badge) badge.textContent = rfqs.length;
+
+    if (rfqs.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted)">No open RFQs at the moment.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = rfqs.map(r => {
+      const buyerName = r.profiles ? (r.profiles.first_name + ' ' + (r.profiles.last_name || '')) : 'Verified Buyer';
+      const country = r.profiles?.country || 'Global';
+      return `
+        <tr>
+          <td><strong>${r.rfq_number}</strong></td>
+          <td>${country} ${buyerName}</td>
+          <td>
+            <div style="font-weight:600">${r.title}</div>
+            <div style="font-size:11px;color:var(--muted);max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.description || ''}</div>
+          </td>
+          <td>${r.quantity} ${r.unit || 'units'}</td>
+          <td>${r.budget_max_usd ? '$' + r.budget_max_usd : 'N/A'}</td>
+          <td>${timeAgo(r.expires_at || r.created_at)}</td>
+          <td><button class="btn btn-p btn-sm" onclick="openQuoteModal('${r.id}', '${r.rfq_number}', '${r.title.replace(/'/g, "\\'")}')">Submit Quote</button></td>
+        </tr>
+      `;
+    }).join('');
+
+  } catch (e) {
+    console.error('RFQ Load Error:', e);
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--danger)">Error loading RFQs.</td></tr>';
+  }
+}
+
+function openQuoteModal(id, num, title) {
+  document.getElementById('q-rfq-id').value = id;
+  document.getElementById('q-rfq-num').textContent = num;
+  document.getElementById('q-rfq-title').textContent = title;
+  openModal('modal-quote-submit');
+}
+
+async function submitRFQQuote() {
+  const rfqId = document.getElementById('q-rfq-id').value;
+  const price = parseFloat(document.getElementById('q-price').value);
+  const lead = parseInt(document.getElementById('q-lead').value);
+  const notes = document.getElementById('q-notes').value;
+  const btn = document.getElementById('q-submit-btn');
+
+  if (!price || !lead) { showToast('Please enter price and lead time.', 'warn'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  try {
+    const { error } = await sb.from('rfq_quotes').insert({
+      rfq_id: rfqId,
+      seller_id: window._sellerProfile.id,
+      unit_price_usd: price,
+      total_price_usd: price * 1, // simplified
+      lead_time_days: lead,
+      notes: notes
+    });
+
+    if (error) throw error;
+
+    showToast('Quote submitted successfully!', 'ok');
+    closeModal('modal-quote-submit');
+    loadOpenRFQs();
+  } catch (e) {
+    console.error('Quote Error:', e);
+    showToast('Failed to submit quote: ' + e.message, 'danger');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit Quote';
+  }
+}
+
+// ── PRODUCT ACTIONS ──────────────────────────────────────────
+async function deleteProduct(id) {
+  if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) return;
+  
+  try {
+    const { error } = await sb.from('products').delete().eq('id', id);
+    if (error) throw error;
+    showToast('Product deleted.', 'ok');
+    loadMyProducts(window._sellerProfile.id);
+  } catch(e) { showToast('Delete failed: ' + e.message, 'danger'); }
+}
+
+async function editProduct(id) {
+  // For simplicity, we just alert that edit mode is opening. 
+  // In a full app, we'd populate the wizard with this product's data.
+  const { data: p } = await sb.from('products').select('*').eq('id', id).single();
+  if (!p) return;
+  
+  showToast('Opening edit mode for: ' + p.title, 'ok');
+  // Logic to fill wizard fields...
+  document.getElementById('p-title').value = p.title;
+  document.getElementById('p-price').value = p.base_price_usd;
+  document.getElementById('p-moq').value = p.min_order_qty;
+  document.getElementById('p-unit').value = p.unit;
+  document.getElementById('p-desc').value = p.description;
+  
+  showSec('sec-add-product', null);
+  // Set current edit ID for submission to update instead of insert
+  window._editingProductId = id;
+  document.getElementById('wiz-submit').textContent = '💾 Update Product';
+}
+
+function timeAgo(date) {
+  if (!date) return 'Just now';
+  const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+  if (seconds < 60) return 'Just now';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return minutes + 'm ago';
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return hours + 'h ago';
+  return Math.floor(hours / 24) + 'd ago';
 }
 
 </script>

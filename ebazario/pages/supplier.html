@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -111,5 +111,52 @@
   <div class="footer-col"><h5>Services</h5><a href="#">Trade Assurance</a><a href="#">Shipping</a></div>
   <div class="footer-col"><h5>Company</h5><a href="#">About Ebazario</a><a href="#">Privacy Policy</a></div>
 </div><div class="footer-bottom"><span>© 2025 Ebazario Trading. All rights reserved.</span><div style="display:flex;gap:8px"><span class="pay-badge">VISA</span><span class="pay-badge">T/T</span><span class="pay-badge">L/C</span></div></div></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
 <script src="../js/main.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    if (typeof sb !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+      if (!id) return;
+      
+      try {
+        const { data: s } = await sb.from('seller_profiles').select('*').eq('id', id).single();
+        if (s) {
+          document.title = s.company_name + ' — Ebazario Trading';
+          document.querySelector('.supplier-hero-info h1').textContent = s.company_name;
+          document.querySelector('.supplier-hero-info p').innerHTML = `📍 ${s.country || 'Global'} &nbsp;|&nbsp; 🏭 ${s.industry || 'Manufacturer'} &nbsp;|&nbsp; Verified Seller`;
+          
+          // Load products for this supplier
+          const { data: prods } = await sb.from('products').select('*').eq('seller_id', id).eq('status', 'approved').limit(6);
+          if (prods && prods.length > 0) {
+            const grid = document.querySelector('.product-grid');
+            if (grid) {
+              grid.innerHTML = prods.map(p => `
+                <div class="product-card">
+                  <a href="products/product.html?id=${p.id}" style="text-decoration:none;color:inherit">
+                    <div class="product-img" style="height:130px">
+                      <img src="${(p.images && p.images[0]) || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop'}" style="width:100%;height:100%;object-fit:cover">
+                    </div>
+                    <div class="product-body">
+                      <div class="product-name">${p.title}</div>
+                      <div class="product-price">$${p.base_price_usd} <span>/ ${p.unit || 'unit'}</span></div>
+                    </div>
+                  </a>
+                </div>
+              `).join('');
+            }
+          }
+          
+          // Update stats
+          const stats = document.querySelectorAll('.s-stat strong');
+          if (stats[0]) stats[0].textContent = (s.product_count || prods?.length || 0) + '+';
+        }
+      } catch (e) {
+        console.warn('Error fetching dynamic supplier:', e);
+      }
+    }
+  });
+</script>
 </body></html>
