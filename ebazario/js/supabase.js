@@ -256,8 +256,28 @@ async function updateOrderStatus(orderId, status, extra = {}) {
     .from('orders')
     .update({ status, ...extra, updated_at: new Date().toISOString() })
     .eq('id', orderId)
-    .select()
+    .select('*, seller_profiles(company_name)')
     .single();
+
+  if (!error && data) {
+    // Notify Buyer
+    const statusLabels = {
+      shipped: 'Order Shipped! 🚚',
+      confirmed: 'Order Confirmed! ✅',
+      processing: 'Processing Started ⚙️',
+      delivered: 'Order Delivered! 📦',
+      disputed: 'Dispute Received ⚖️',
+      cancelled: 'Order Cancelled ✕'
+    };
+
+    await sb.from('notifications').insert({
+      user_id: data.buyer_id,
+      type: 'order_update',
+      title: statusLabels[status] || 'Order Status Updated',
+      body: `Your order ${data.order_number} from ${data.seller_profiles?.company_name || 'Seller'} is now ${status}.`,
+      icon: '📦'
+    });
+  }
   return { data, error };
 }
 
@@ -400,15 +420,30 @@ async function adminApproveProduct(productId, adminId) {
     .from('products')
     .update({ status: 'approved', reviewed_by: adminId, reviewed_at: new Date().toISOString() })
     .eq('id', productId)
-    .select()
+    .select('*, seller_profiles(user_id)')
     .single();
-  // Log action
-  await sb.from('audit_log').insert({
-    user_id: adminId,
-    action: 'product_approved',
-    entity_type: 'product',
-    entity_id: productId
-  });
+
+  if (!error && data) {
+    // Log action
+    await sb.from('audit_log').insert({
+      user_id: adminId,
+      action: 'product_approved',
+      entity_type: 'product',
+      entity_id: productId
+    });
+
+    // Notify Seller
+    const sellerUserId = data.seller_profiles?.user_id || data.seller_id;
+    if (sellerUserId) {
+      await sb.from('notifications').insert({
+        user_id: sellerUserId,
+        type: 'system',
+        title: 'Product Approved! ✅',
+        body: `Your product "${data.title}" has been approved and is now live.`,
+        icon: '📦'
+      });
+    }
+  }
   return { data, error };
 }
 
@@ -423,15 +458,30 @@ async function adminRejectProduct(productId, adminId, reason, notes) {
       reviewed_at: new Date().toISOString()
     })
     .eq('id', productId)
-    .select()
+    .select('*, seller_profiles(user_id)')
     .single();
-  await sb.from('audit_log').insert({
-    user_id: adminId,
-    action: 'product_rejected',
-    entity_type: 'product',
-    entity_id: productId,
-    new_data: { reason, notes }
-  });
+
+  if (!error && data) {
+    await sb.from('audit_log').insert({
+      user_id: adminId,
+      action: 'product_rejected',
+      entity_type: 'product',
+      entity_id: productId,
+      new_data: { reason, notes }
+    });
+
+    // Notify Seller
+    const sellerUserId = data.seller_profiles?.user_id || data.seller_id;
+    if (sellerUserId) {
+      await sb.from('notifications').insert({
+        user_id: sellerUserId,
+        type: 'system',
+        title: 'Product Rejected ✕',
+        body: `Your product "${data.title}" was not approved. Reason: ${reason}`,
+        icon: '⚠️'
+      });
+    }
+  }
   return { data, error };
 }
 
@@ -451,12 +501,63 @@ async function adminApproveSeller(sellerProfileId, adminId) {
     .eq('id', sellerProfileId)
     .select()
     .single();
-  await sb.from('audit_log').insert({
-    user_id: adminId,
-    action: 'seller_approved',
-    entity_type: 'seller_profiles',
-    entity_id: sellerProfileId
-  });
+
+  if (!error && data) {
+    await sb.from('audit_log').insert({
+      user_id: adminId,
+      action: 'seller_approved',
+      entity_type: 'seller_profiles',
+      entity_id: sellerProfileId
+    });
+
+    // Notify Seller
+    if (data.user_id) {
+      await sb.from('notifications').insert({
+        user_id: data.user_id,
+        type: 'system',
+        title: 'Application Approved! 🎊',
+        body: 'Welcome to Ebazario! Your seller application has been approved. You can now list products.',
+        icon: '🏪'
+      });
+    }
+  }
+  return { data, error };
+}
+
+async function adminRejectSeller(sellerProfileId, adminId, reason, notes) {
+  const { data, error } = await sb
+    .from('seller_profiles')
+    .update({ 
+      status: 'rejected', 
+      rejection_reason: reason, 
+      rejection_notes: notes,
+      reviewed_by: adminId,
+      reviewed_at: new Date().toISOString() 
+    })
+    .eq('id', sellerProfileId)
+    .select()
+    .single();
+
+  if (!error && data) {
+    await sb.from('audit_log').insert({
+      user_id: adminId,
+      action: 'seller_rejected',
+      entity_type: 'seller_profiles',
+      entity_id: sellerProfileId,
+      new_data: { reason, notes }
+    });
+
+    // Notify Seller
+    if (data.user_id) {
+      await sb.from('notifications').insert({
+        user_id: data.user_id,
+        type: 'system',
+        title: 'Application Rejected ✕',
+        body: `Your seller application was not approved. Reason: ${reason}`,
+        icon: '⚠️'
+      });
+    }
+  }
   return { data, error };
 }
 
@@ -519,6 +620,75 @@ async function adminProcessPayout(payoutId, adminId, reference) {
     .eq('id', payoutId)
     .select()
     .single();
+  return { data, error };
+}
+
+async function adminApproveDocument(docId, adminId) {
+  const { data, error } = await sb
+    .from('seller_documents')
+    .update({ status: 'approved', reviewed_by: adminId, reviewed_at: new Date().toISOString() })
+    .eq('id', docId)
+    .select()
+    .single();
+
+  if (!error && data) {
+    await sb.from('audit_log').insert({
+      user_id: adminId,
+      action: 'document_approved',
+      entity_type: 'seller_documents',
+      entity_id: docId
+    });
+
+    // Notify Seller
+    const { data: sp } = await sb.from('seller_profiles').select('user_id').eq('id', data.seller_id).single();
+    if (sp?.user_id) {
+      await sb.from('notifications').insert({
+        user_id: sp.user_id,
+        type: 'system',
+        title: 'Document Verified! ✅',
+        body: `Your document "${data.name}" has been verified and approved.`,
+        icon: '📋'
+      });
+    }
+  }
+  return { data, error };
+}
+
+async function adminRejectDocument(docId, adminId, reason, notes) {
+  const { data, error } = await sb
+    .from('seller_documents')
+    .update({ 
+      status: 'rejected', 
+      rejection_reason: reason, 
+      reviewer_notes: notes, 
+      reviewed_by: adminId, 
+      reviewed_at: new Date().toISOString() 
+    })
+    .eq('id', docId)
+    .select()
+    .single();
+
+  if (!error && data) {
+    await sb.from('audit_log').insert({
+      user_id: adminId,
+      action: 'document_rejected',
+      entity_type: 'seller_documents',
+      entity_id: docId,
+      new_data: { reason, notes }
+    });
+
+    // Notify Seller
+    const { data: sp } = await sb.from('seller_profiles').select('user_id').eq('id', data.seller_id).single();
+    if (sp?.user_id) {
+      await sb.from('notifications').insert({
+        user_id: sp.user_id,
+        type: 'system',
+        title: 'Document Rejected ✕',
+        body: `Your document "${data.name}" was not approved. Reason: ${reason}. ${notes}`,
+        icon: '⚠️'
+      });
+    }
+  }
   return { data, error };
 }
 
@@ -651,6 +821,33 @@ async function submitRFQ(buyerId, rfqData) {
     })
     .select()
     .single();
+
+  if (!error && data) {
+    // Notify sellers in this category
+    try {
+      // Find sellers who have products in this category
+      const { data: sellers } = await sb
+        .from('products')
+        .select('seller_profiles(user_id)')
+        .eq('category_id', data.category_id)
+        .not('seller_profiles', 'is', null);
+      
+      if (sellers && sellers.length > 0) {
+        // Unique user IDs
+        const userIds = [...new Set(sellers.map(s => s.seller_profiles.user_id))];
+        
+        const notifs = userIds.map(uid => ({
+          user_id: uid,
+          type: 'system',
+          title: 'New RFQ in your Category! 📋',
+          body: `A buyer is looking for "${data.title}". Submit your quote now!`,
+          icon: '📋'
+        }));
+
+        await sb.from('notifications').insert(notifs);
+      }
+    } catch(e) { console.error('RFQ Broadcast Error:', e); }
+  }
   return { data, error };
 }
 

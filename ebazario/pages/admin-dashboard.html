@@ -1267,26 +1267,7 @@ function showToast(msg, type) {
 async function approveProduct(btn, name, productId, sellerId) {
   if (productId && typeof sb !== 'undefined') {
     try {
-      await sb.from('products').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', productId);
-      
-      // Audit Log
-      await sb.from('audit_log').insert({
-        admin_id: window._adminId,
-        action: 'Approved Product: ' + name,
-        entity_type: 'product',
-        entity_id: productId
-      });
-
-      // Notify Seller
-      if (sellerId) {
-        await sb.from('notifications').insert({
-          user_id: sellerId,
-          type: 'system',
-          title: 'Product Approved! ✅',
-          body: 'Your product "' + name + '" has been approved and is now live on the marketplace.',
-          icon: '📦'
-        });
-      }
+      await adminApproveProduct(productId, window._adminId);
     } catch(e) { console.error('Error approving product:', e); }
   }
 
@@ -1304,34 +1285,11 @@ async function approveProduct(btn, name, productId, sellerId) {
 
 async function rejectProduct(reason, notes) {
   const productId = window._rejectProdId;
-  const sellerId  = window._rejectSellerId;
   const name      = window._rejectProdName;
 
   if (productId && typeof sb !== 'undefined') {
     try {
-      await sb.from('products').update({ 
-        status: 'rejected', 
-        rejection_reason: reason, 
-        rejection_notes: notes 
-      }).eq('id', productId);
-
-      // Audit Log
-      await sb.from('audit_log').insert({
-        action: 'Rejected Product: ' + name,
-        entity_type: 'product',
-        entity_id: productId
-      });
-
-      // Notify Seller
-      if (sellerId) {
-        await sb.from('notifications').insert({
-          user_id: sellerId,
-          type: 'system',
-          title: 'Product Rejected ✕',
-          body: 'Your product "' + name + '" was not approved. Reason: ' + reason,
-          icon: '⚠️'
-        });
-      }
+      await adminRejectProduct(productId, window._adminId, reason, notes);
     } catch(e) { console.error('Error rejecting product:', e); }
   }
 
@@ -1346,28 +1304,11 @@ async function rejectProduct(reason, notes) {
 }
 
 // ── SELLER APPROVAL ─────────────────────────────────────────
-async function approveSeller(btn, name, sellerId) {
+async function approveSeller(btn, name, sellerProfileId) {
   var row = btn ? btn.closest('tr') : null;
-  if (sellerId && typeof sb !== 'undefined') {
+  if (sellerProfileId && typeof sb !== 'undefined') {
     try {
-      await sb.from('seller_profiles').update({ status: 'active', approved_at: new Date().toISOString() }).eq('user_id', sellerId);
-      
-      // Audit Log
-      await sb.from('audit_log').insert({
-        admin_id: window._adminId,
-        action: 'Approved Seller: ' + name,
-        entity_type: 'seller',
-        entity_id: sellerId
-      });
-
-      // Notify Seller
-      await sb.from('notifications').insert({
-        user_id: sellerId,
-        type: 'system',
-        title: 'Application Approved! 🎊',
-        body: 'Welcome to Ebazario! Your seller application has been approved. You can now list products and receive orders.',
-        icon: '🏪'
-      });
+      await adminApproveSeller(sellerProfileId, window._adminId);
     } catch(e) { console.error('Error approving seller:', e); }
   }
   if (row) { row.style.transition='opacity .3s'; row.style.opacity='0'; setTimeout(function(){ if(row.parentNode)row.remove(); },300); }
@@ -1516,7 +1457,7 @@ async function loadDashboardStats() {
             <td><strong>${s.company_name}</strong><br><span style="font-size:11px;color:var(--muted)">${email}</span></td>
             <td>${s.country}</td>
             <td><span class="pill p-warn">Pending Review</span></td>
-            <td><button class="btn btn-ok btn-sm" onclick="approveSeller(this, '${s.company_name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}', '${s.user_id}')">Approve</button></td>
+            <td><button class="btn btn-ok btn-sm" onclick="approveSeller(this, '${s.company_name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}', '${s.id}')">Approve</button></td>
           </tr>`;
         }).join('');
       } else {

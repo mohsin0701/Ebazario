@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -303,8 +303,7 @@ async function doApproveDoc(id) {
   showToast('Document approved! Seller notified.', 'ok');
   if (_configured && window._adminId) {
     try {
-      await sb.from('seller_documents').update({ status: 'approved', reviewed_by: window._adminId, reviewed_at: new Date().toISOString() }).eq('id', id);
-      await sb.from('audit_log').insert({ user_id: window._adminId, action: 'document_approved', entity_type: 'seller_documents', entity_id: id });
+      await adminApproveDocument(id, window._adminId);
     } catch(e) { console.error(e); }
   }
 }
@@ -334,7 +333,7 @@ async function doRejectCurrentDoc() {
   showToast('Document rejected. Seller notified.', 'warn');
   if (_configured && window._adminId) {
     try {
-      await sb.from('seller_documents').update({ status: 'rejected', rejection_reason: reason, reviewer_notes: notes, reviewed_by: window._adminId, reviewed_at: new Date().toISOString() }).eq('id', id);
+      await adminRejectDocument(id, window._adminId, reason, notes);
     } catch(e) { console.error(e); }
   }
 }

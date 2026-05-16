@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -344,11 +344,10 @@ async function doRejectCurrentSeller() {
   if (card) { card.style.transition='all .35s'; card.style.opacity='0'; card.style.transform='translateX(-24px)'; setTimeout(function(){ if(card.parentNode)card.remove(); },350); }
   var count = document.getElementById('count-pending');
   if (count) count.textContent = Math.max(0, parseInt(count.textContent||0) - 1);
-  showToast('Seller application rejected. Email sent with reason.', 'warn');
+  showToast('Seller application rejected. Seller notified.', 'warn');
   if (_configured && window._adminId) {
     try {
-      await sb.from('seller_profiles').update({ status: 'rejected', rejection_reason: reason, rejection_notes: notes }).eq('id', id);
-      await sb.from('audit_log').insert({ user_id: window._adminId, action: 'seller_rejected', entity_type: 'seller_profiles', entity_id: id, new_data: {reason, notes} });
+      await adminRejectSeller(id, window._adminId, reason, notes);
     } catch(e) { console.error(e); }
   }
 }

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -360,65 +360,7 @@ async function loadProducts() {
   }
 }
 
-async function doApproveProduct(id, name) {
-  if (!_configured || !window._adminId) {
-    demoRemoveCard(id, name, 'approved');
-    return;
-  }
 
-  try {
-    const res = await moderateProduct(id, window._adminId, 'approved');
-    if (res.error) throw res.error;
-    
-    // Notification for seller
-    await sb.from('notifications').insert({
-      user_id: res.data.seller_id,
-      type: 'order_update',
-      title: 'Product Approved! 🎉',
-      body: 'Your product "' + (name || 'Product') + '" has been approved and is now live.',
-      icon: '✅'
-    });
-
-    demoRemoveCard(id, name, 'approved');
-    showToast('Product approved!', 'ok');
-  } catch(e) {
-    showToast('Error: ' + e.message, 'danger');
-  }
-}
-
-async function doRejectCurrentProduct() {
-  const id = rejectProductId;
-  const reason = document.getElementById('reject-reason').value;
-  const notes = document.getElementById('reject-notes').value;
-  
-  if (!notes.trim()) { alert('Please provide feedback for the seller.'); return; }
-  
-  if (!_configured || !window._adminId) {
-    closeModal('modal-reject');
-    demoRemoveCard(id, 'Product', 'rejected');
-    return;
-  }
-
-  try {
-    const res = await moderateProduct(id, window._adminId, 'rejected', notes);
-    if (res.error) throw res.error;
-
-    // Notification for seller
-    await sb.from('notifications').insert({
-      user_id: res.data.seller_id,
-      type: 'order_update',
-      title: 'Product Rejected ❌',
-      body: 'Your product submission was rejected. Reason: ' + reason,
-      icon: '⚠️'
-    });
-
-    closeModal('modal-reject');
-    demoRemoveCard(id, 'Product', 'rejected');
-    showToast('Product rejected.', 'warn');
-  } catch(e) {
-    showToast('Error: ' + e.message, 'danger');
-  }
-}
 
 function demoRemoveCard(id, name, status) {
   var card = document.getElementById('prc-' + id);
