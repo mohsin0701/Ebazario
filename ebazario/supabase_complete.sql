@@ -1353,51 +1353,51 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- Enable RLS on storage.objects
-ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+-- ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
 
 -- Drop existing policies if any
-DROP POLICY IF EXISTS "Public access to product-images" ON storage.objects;
-DROP POLICY IF EXISTS "Public access to product-media" ON storage.objects;
-DROP POLICY IF EXISTS "Authenticated users can upload product images" ON storage.objects;
-DROP POLICY IF EXISTS "Authenticated users can upload product media" ON storage.objects;
-DROP POLICY IF EXISTS "Sellers can manage own documents" ON storage.objects;
-DROP POLICY IF EXISTS "Buyers can manage own dispute evidence" ON storage.objects;
-DROP POLICY IF EXISTS "Admins can access all storage objects" ON storage.objects;
+-- DROP POLICY IF EXISTS "Public access to product-images" ON storage.objects;
+-- DROP POLICY IF EXISTS "Public access to product-media" ON storage.objects;
+-- DROP POLICY IF EXISTS "Authenticated users can upload product images" ON storage.objects;
+-- DROP POLICY IF EXISTS "Authenticated users can upload product media" ON storage.objects;
+-- DROP POLICY IF EXISTS "Sellers can manage own documents" ON storage.objects;
+-- DROP POLICY IF EXISTS "Buyers can manage own dispute evidence" ON storage.objects;
+-- DROP POLICY IF EXISTS "Admins can access all storage objects" ON storage.objects;
 
 -- Create Storage policies
 -- 1. Public Access Policies for image/media buckets
-CREATE POLICY "Public access to product-images" ON storage.objects 
-  FOR SELECT USING (bucket_id = 'product-images');
+-- CREATE POLICY "Public access to product-images" ON storage.objects 
+--   FOR SELECT USING (bucket_id = 'product-images');
 
-CREATE POLICY "Public access to product-media" ON storage.objects 
-  FOR SELECT USING (bucket_id = 'product-media');
+-- CREATE POLICY "Public access to product-media" ON storage.objects 
+--   FOR SELECT USING (bucket_id = 'product-media');
 
 -- 2. Upload policies for image/media
-CREATE POLICY "Authenticated users can upload product images" ON storage.objects 
-  FOR INSERT WITH CHECK (bucket_id = 'product-images' AND auth.role() = 'authenticated');
+-- CREATE POLICY "Authenticated users can upload product images" ON storage.objects 
+--   FOR INSERT WITH CHECK (bucket_id = 'product-images' AND auth.role() = 'authenticated');
 
-CREATE POLICY "Authenticated users can upload product media" ON storage.objects 
-  FOR INSERT WITH CHECK (bucket_id = 'product-media' AND auth.role() = 'authenticated');
+-- CREATE POLICY "Authenticated users can upload product media" ON storage.objects 
+--   FOR INSERT WITH CHECK (bucket_id = 'product-media' AND auth.role() = 'authenticated');
 
 -- 3. Document / Verification uploads (private)
-CREATE POLICY "Sellers can manage own documents" ON storage.objects 
-  FOR ALL USING (
-    bucket_id = 'seller-documents' AND 
-    (owner = auth.uid()::text OR (storage.foldername(name))[1] = auth.uid()::text)
-  );
+-- CREATE POLICY "Sellers can manage own documents" ON storage.objects 
+--   FOR ALL USING (
+--     bucket_id = 'seller-documents' AND 
+--     (owner = auth.uid()::text OR (storage.foldername(name))[1] = auth.uid()::text)
+--   );
 
 -- 4. Dispute evidence uploads (private)
-CREATE POLICY "Buyers can manage own dispute evidence" ON storage.objects 
-  FOR ALL USING (
-    bucket_id = 'dispute-evidence' AND 
-    (owner = auth.uid()::text OR (storage.foldername(name))[1] = auth.uid()::text)
-  );
+-- CREATE POLICY "Buyers can manage own dispute evidence" ON storage.objects 
+--   FOR ALL USING (
+--     bucket_id = 'dispute-evidence' AND 
+--     (owner = auth.uid()::text OR (storage.foldername(name))[1] = auth.uid()::text)
+--   );
 
 -- 5. Admin override access
-CREATE POLICY "Admins can access all storage objects" ON storage.objects 
-  FOR ALL USING (
-    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
-  );
+-- CREATE POLICY "Admins can access all storage objects" ON storage.objects 
+--   FOR ALL USING (
+--     EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+--   );
 
 -- ============================================================
 -- FINAL COUNT
