@@ -270,6 +270,32 @@ if (typeof showToast === 'undefined') {
   };
 }
 
+// ── INQUIRY HANDLER ──
+async function handleInquiry(productTitle, productId = null, sellerId = null) {
+  if (typeof _configured === 'undefined' || !_configured) {
+    showToast('Inquiry for "' + productTitle + '" simulated! Log in to send real inquiries.', 'ok');
+    return;
+  }
+  try {
+    const session = await getSession();
+    if (!session || !session.user) {
+      showToast('Please log in to contact the seller.', 'warn');
+      const root = window.location.pathname.includes('/pages/') ? '' : 'pages/';
+      setTimeout(() => { window.location.href = root + 'login-customer.html'; }, 1500);
+      return;
+    }
+    const root = window.location.pathname.includes('/pages/') ? '' : 'pages/';
+    if (!productId) {
+      showToast('Redirecting to product details...', 'ok');
+      setTimeout(() => { window.location.href = root + 'categories/electronics.html'; }, 800);
+      return;
+    }
+    window.location.href = root + 'products/product.html?id=' + productId + '#inquiry';
+  } catch(e) {
+    console.warn('[Ebazario] Inquiry Error:', e);
+  }
+}
+
 // ── INIT ──
 document.addEventListener("DOMContentLoaded", function() {
   // Search enter key

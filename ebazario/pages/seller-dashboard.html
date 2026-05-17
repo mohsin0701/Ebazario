@@ -415,7 +415,7 @@ a{text-decoration:none;color:inherit}
       </div>
       <div style="display:flex;gap:10px">
         <button class="btn btn-ghost" onclick="if(confirm('Discard changes?')) showSec('sec-products',null)">✕ Discard</button>
-        <button class="btn btn-out" onclick="showToast('Draft saved!','ok')">💾 Save Draft</button>
+        <button class="btn btn-out" onclick="saveDraft()">💾 Save Draft</button>
       </div>
     </div>
 
@@ -499,7 +499,7 @@ a{text-decoration:none;color:inherit}
         </div>
         <div class="modal-foot">
           <button class="btn btn-ghost" onclick="closeModal('reply-modal')">Cancel</button>
-          <button class="btn btn-p" onclick="showToast('Reply sent!','ok');closeModal('reply-modal')">Send Reply</button>
+          <button class="btn btn-p" id="reply-send-btn" onclick="sendReply()">Send Reply</button>
         </div>
       </div>
     </div>
@@ -656,10 +656,11 @@ a{text-decoration:none;color:inherit}
         </div>
         <div class="fg">
           <label>360° / Additional Media <span class="hint">Optional</span></label>
-          <div class="doc-upload-area" onclick="showToast('360° media uploaded!','ok')">
+          <div class="doc-upload-area" onclick="document.getElementById('media-360-input').click()" style="position:relative">
+            <input type="file" id="media-360-input" accept="video/mp4,video/quicktime" style="display:none" onchange="handle360Upload(this)">
             <div class="du-icon">🎬</div>
             <h4>Upload 360° View or Factory Video</h4>
-            <p>MP4, MOV · Max 200MB · Click to browse or drag &amp; drop</p>
+            <p id="media-360-label">MP4, MOV · Max 200MB · Click to browse or drag &amp; drop</p>
           </div>
         </div>
       </div>
@@ -931,7 +932,7 @@ a{text-decoration:none;color:inherit}
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
       <button id="wiz-prev" class="btn btn-ghost" onclick="prevStep()" style="display:none">← Previous</button>
       <div style="display:flex;gap:10px;margin-left:auto">
-        <button class="btn btn-ghost" onclick="showToast('Draft saved!','ok')">💾 Save Draft</button>
+        <button class="btn btn-ghost" onclick="saveDraft()">💾 Save Draft</button>
         <button id="wiz-next" class="btn btn-p" onclick="nextStep()">Next Step →</button>
         <button id="wiz-submit" class="btn btn-g" onclick="submitProduct()" style="display:none">🚀 Submit for Review →</button>
       </div>
@@ -1029,7 +1030,7 @@ a{text-decoration:none;color:inherit}
   <div id="sec-orders" class="sec">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
       <div><h1 style="font-size:20px;font-weight:700">Orders</h1></div>
-      <button class="btn btn-ghost btn-sm" onclick="showToast('Exported!','ok')">📥 Export CSV</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportSellerOrders()">📥 Export CSV</button>
     </div>
     <div class="card"><table class="tbl"><thead><tr><th>Order ID</th><th>Buyer</th><th>Product</th><th>Qty</th><th>Amount</th><th>Shipping</th><th>Status</th><th>Action</th></tr></thead><tbody>
       <tr><td><strong>#EB-28401</strong></td><td>🇺🇸 James W.</td><td>Industrial Laptop</td><td>200</td><td>$50,000</td><td>✈️ Air</td><td><span class="pill pill-ok">Paid</span></td><td><button class="btn btn-out btn-sm">Manage</button></td></tr>
@@ -1047,7 +1048,7 @@ a{text-decoration:none;color:inherit}
       <div class="stat-card"><div class="stat-ico">🏦</div><div class="stat-lbl">Pending Payout</div><div class="stat-val">$12,800</div><div class="stat-sub" style="color:var(--muted)">Next payout: Feb 1</div></div>
       <div class="stat-card"><div class="stat-ico">📊</div><div class="stat-lbl">Platform Fee (5%)</div><div class="stat-val">$2,410</div><div class="stat-sub" style="color:var(--muted)">This month</div></div>
     </div>
-    <div class="card"><div class="card-header"><span class="card-title">Payout History</span><button class="btn btn-ghost btn-sm" onclick="showToast('Downloaded!','ok')">📥 Export</button></div>
+    <div class="card"><div class="card-header"><span class="card-title">Payout History</span><button class="btn btn-ghost btn-sm" onclick="exportPayoutHistory()">📥 Export</button></div>
     <table class="tbl"><thead><tr><th>Date</th><th>Orders</th><th>Gross Revenue</th><th>Platform Fee (5%)</th><th>Net Payout</th><th>Status</th></tr></thead><tbody>
       <tr><td>Jan 1, 2025</td><td>28</td><td>$62,400</td><td>$3,120</td><td><strong>$59,280</strong></td><td><span class="pill pill-ok">Paid</span></td></tr>
       <tr><td>Dec 1, 2024</td><td>24</td><td>$54,800</td><td>$2,740</td><td><strong>$52,060</strong></td><td><span class="pill pill-ok">Paid</span></td></tr>
@@ -1145,10 +1146,11 @@ a{text-decoration:none;color:inherit}
           </div>
 
           <!-- BULK UPLOAD AREA -->
-          <div class="doc-upload-area" onclick="showToast('File browser opened. Please select documents to upload.','ok')">
+          <div class="doc-upload-area" onclick="document.getElementById('doc-bulk-input').click()" style="position:relative">
+            <input type="file" id="doc-bulk-input" accept=".pdf,image/jpeg,image/png" multiple style="display:none" onchange="uploadSellerDocs(this)">
             <div class="du-icon">📂</div>
             <h4>Upload Documents</h4>
-            <p>PDF, JPG, PNG · Max 20MB per file · Click to browse or drag &amp; drop<br>All documents are encrypted and stored securely</p>
+            <p id="doc-upload-label">PDF, JPG, PNG · Max 20MB per file · Click to browse or drag &amp; drop<br>All documents are encrypted and stored securely</p>
           </div>
 
           <!-- ALREADY UPLOADED DOCS -->
@@ -1206,7 +1208,7 @@ a{text-decoration:none;color:inherit}
   <div id="sec-store" class="sec">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
       <h1 style="font-size:20px;font-weight:700">Store Profile</h1>
-      <button class="btn btn-p" onclick="showToast('Store profile saved!','ok')">Save Changes</button>
+      <button class="btn btn-p" id="store-save-btn" onclick="saveStoreProfile()">Save Changes</button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 2fr;gap:18px">
       <div class="card" style="text-align:center;height:fit-content">
@@ -1322,8 +1324,8 @@ a{text-decoration:none;color:inherit}
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeModal('reply-modal')">Cancel</button>
-      <button class="btn btn-out" onclick="showToast('Draft saved!','ok')">Save Draft</button>
-      <button class="btn btn-p" onclick="showToast('Reply sent to Ahmed K.!','ok');closeModal('reply-modal')">Send Reply →</button>
+      <button class="btn btn-out" onclick="saveDraft()">Save Draft</button>
+      <button class="btn btn-p" id="reply-send-btn2" onclick="sendReply()">Send Reply →</button>
     </div>
   </div>
 </div>
@@ -1458,6 +1460,26 @@ function goStep(dir) {
   var section = document.getElementById('sec-add-product');
   if (!section) return;
   var panels = section.querySelectorAll('.wizard-step-pane');
+
+  // Validate step 2 (Images) before advancing
+  if (dir === 1 && currentStep === 2) {
+    var mainSlot = section.querySelector('.img-slot.main-slot');
+    if (!mainSlot || !mainSlot._imageFile) {
+      showToast('Please upload the Main Photo before continuing.', 'warn');
+      // Highlight the main slot
+      if (mainSlot) {
+        mainSlot.style.borderColor = 'var(--danger)';
+        mainSlot.style.borderStyle = 'solid';
+        setTimeout(function(){
+          if (!mainSlot._imageFile) return;
+          mainSlot.style.borderColor = '';
+          mainSlot.style.borderStyle = '';
+        }, 2000);
+      }
+      return;
+    }
+  }
+
   if (dir === 1 && currentStep < panels.length) {
     currentStep++;
   } else if (dir === -1 && currentStep > 1) {
@@ -1505,7 +1527,28 @@ async function submitProduct() {
       certs.push(s.textContent.replace(' ✕', '').trim());
     });
 
-    // 4. Create Product
+    // 4. Upload images to Supabase Storage (if configured)
+    const imageUrls = [];
+    const imgSlots = document.querySelectorAll('#sec-add-product .img-slot');
+    for (var si = 0; si < imgSlots.length; si++) {
+      var imgFile = imgSlots[si]._imageFile;
+      if (!imgFile) continue;
+      try {
+        var ext = imgFile.name.split('.').pop();
+        var path = 'products/' + sp.id + '/' + Date.now() + '_' + si + '.' + ext;
+        var { error: upErr } = await sb.storage.from('product-images').upload(path, imgFile, { upsert: true });
+        if (!upErr) {
+          var { data: urlData } = sb.storage.from('product-images').getPublicUrl(path);
+          if (urlData && urlData.publicUrl) imageUrls.push(urlData.publicUrl);
+        } else {
+          console.warn('Image upload error:', upErr.message);
+        }
+      } catch(imgErr) {
+        console.warn('Image upload failed:', imgErr);
+      }
+    }
+
+    // 5. Create Product
     const { data: product, error } = await sb.from('products').insert({
       seller_id: sp.id,
       category_id: catId || 'electronics', // fallback for demo
@@ -1516,6 +1559,7 @@ async function submitProduct() {
       unit: unit,
       specifications: specs,
       certifications: certs,
+      images: imageUrls,
       status: 'pending_review'
     }).select().single();
 
@@ -1627,11 +1671,87 @@ function addCertManual(name) {
   if (inp) inp.value = '';
 }
 function handleImgClick(slot) {
-  var emojis = ['\uD83D\uDCE6','\uD83D\uDD0C','\u2699\uFE0F','\uD83D\uDCBB','\uD83D\uDCF1','\uD83D\uDD0B','\uD83C\uDFED','\uD83D\uDD27','\uD83E\uDE91','\uD83D\uDC55','\uD83C\uDF3F'];
-  slot.innerHTML = '<div style="font-size:36px;line-height:1">' + emojis[Math.floor(Math.random()*emojis.length)] + '</div>';
-  slot.style.background = '#e6f6fc';
-  slot.style.borderStyle = 'solid';
-  slot.style.borderColor = 'var(--p)';
+  // Don't re-open picker if user clicks the remove button
+  if (slot._uploading) return;
+
+  // Create a hidden file input
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/jpeg,image/png,image/webp';
+  input.style.display = 'none';
+  document.body.appendChild(input);
+
+  input.addEventListener('change', function() {
+    var file = input.files[0];
+    document.body.removeChild(input);
+    if (!file) return;
+
+    // Validate file type
+    var allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      showToast('Invalid file type. Please use JPG, PNG, or WEBP.', 'warn');
+      return;
+    }
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('File too large. Max file size is 5MB.', 'warn');
+      return;
+    }
+
+    // Read and preview
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      // Store the file reference on the slot
+      slot._imageFile = file;
+      slot._uploading = true;
+
+      // Build preview HTML
+      var isMain = slot.classList.contains('main-slot');
+      slot.innerHTML =
+        '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" alt="Preview">' +
+        (isMain ? '<span class="main-badge">MAIN</span>' : '') +
+        '<button onclick="removeSlotImage(this.parentElement,event)" style="position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:none;background:rgba(0,0,0,0.55);color:#fff;font-size:13px;line-height:1;cursor:pointer;z-index:5;display:flex;align-items:center;justify-content:center;">✕</button>';
+      slot.style.background = 'none';
+      slot.style.borderStyle = 'solid';
+      slot.style.borderColor = 'var(--p)';
+      slot.style.position = 'relative';
+      slot.style.overflow = 'hidden';
+      slot.style.padding = '0';
+      showToast('Image added! (' + (file.size/1024).toFixed(0) + ' KB)', 'ok');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  input.click();
+}
+
+function removeSlotImage(slot, event) {
+  event.stopPropagation();
+  var isMain = slot.classList.contains('main-slot');
+  slot._imageFile = null;
+  slot._uploading = false;
+  slot.style.background = '';
+  slot.style.borderStyle = '';
+  slot.style.borderColor = '';
+  slot.style.padding = '';
+  slot.style.overflow = '';
+
+  if (isMain) {
+    slot.innerHTML =
+      '<span class="main-badge">MAIN</span>' +
+      '<span class="slot-icon">📷</span>' +
+      '<span class="slot-label">Main Photo<br><span style="color:var(--danger)">Required</span></span>';
+  } else {
+    // Determine slot number from label
+    var slotNum = '';
+    var siblings = Array.from(slot.parentElement.querySelectorAll('.img-slot:not(.main-slot)'));
+    var idx = siblings.indexOf(slot);
+    if (idx >= 0) slotNum = (idx + 2);
+    slot.innerHTML =
+      '<span class="slot-icon">＋</span>' +
+      '<span class="slot-label">Photo ' + slotNum + '</span>';
+  }
 }
 function uploadDoc(card, name) {
   card.classList.add('uploaded');
@@ -1959,8 +2079,15 @@ async function loadMyInquiries(sellerId) {
 }
 
 function openReplyModal(id, name) {
-  // Logic to open reply modal with name
-  showToast('Replying to ' + name, 'ok');
+  window._replyInquiryId = id;
+  window._replyBuyerName = name;
+  // Update modal header
+  var label = document.querySelector('#reply-modal [style*="Replying to"]');
+  if (label) label.innerHTML = 'Replying to: <strong>' + name + '</strong>';
+  // Mark inquiry as read
+  if (typeof sb !== 'undefined' && id) {
+    sb.from('inquiries').update({ status: 'read' }).eq('id', id).then(function(){});
+  }
   openModal('reply-modal');
 }
 
@@ -2090,6 +2217,248 @@ function timeAgo(date) {
   const hours = Math.floor(minutes / 60);
   if (hours < 24) return hours + 'h ago';
   return Math.floor(hours / 24) + 'd ago';
+}
+
+// ── SAVE DRAFT ────────────────────────────────────────────
+async function saveDraft() {
+  const title = document.getElementById('p-title')?.value?.trim();
+  const desc  = document.getElementById('p-desc')?.value?.trim();
+  const price = parseFloat(document.getElementById('p-price')?.value) || 0;
+  const moq   = parseInt(document.getElementById('p-moq')?.value) || 1;
+  const cat   = document.getElementById('p-cat')?.value;
+
+  if (!title) { showToast('Please add at least a product title before saving draft.', 'warn'); return; }
+
+  if (!_configured || !window._sellerProfile) {
+    showToast('Draft saved locally! (demo)', 'ok');
+    return;
+  }
+
+  try {
+    const payload = {
+      seller_id:       window._sellerProfile.id,
+      title:           title,
+      description:     desc || '',
+      base_price_usd:  price,
+      min_order_qty:   moq,
+      category:        cat || '',
+      status:          'draft',
+      updated_at:      new Date().toISOString()
+    };
+    if (window._editingProductId) {
+      await sb.from('products').update(payload).eq('id', window._editingProductId);
+    } else {
+      const { data } = await sb.from('products').insert(payload).select('id').single();
+      if (data) window._editingProductId = data.id;
+    }
+    showToast('Draft saved! You can continue editing anytime.', 'ok');
+  } catch(e) {
+    showToast('Draft save failed: ' + e.message, 'danger');
+  }
+}
+
+// ── SEND REPLY TO INQUIRY ────────────────────────────────
+async function sendReply() {
+  const modal = document.getElementById('reply-modal');
+  const msgArea = modal.querySelector('textarea');
+  const message = msgArea?.value?.trim();
+  if (!message) { showToast('Please write a message before sending.', 'warn'); return; }
+
+  const btn = document.getElementById('reply-send-btn') || document.getElementById('reply-send-btn2');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+
+  try {
+    if (_configured && window._sellerProfile && window._replyInquiryId) {
+      await sb.from('inquiries').update({
+        reply:      message,
+        status:     'replied',
+        replied_at: new Date().toISOString()
+      }).eq('id', window._replyInquiryId);
+    }
+    showToast('Reply sent to ' + (window._replyBuyerName || 'buyer') + '!', 'ok');
+    closeModal('reply-modal');
+    if (msgArea) msgArea.value = '';
+  } catch(e) {
+    showToast('Failed to send reply: ' + e.message, 'danger');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Send Reply'; }
+  }
+}
+
+// ── EXPORT SELLER ORDERS CSV ───────────────────────────────
+async function exportSellerOrders() {
+  let orders = [];
+  if (_configured && window._sellerProfile) {
+    try {
+      const res = await sb.from('orders')
+        .select('order_number, status, total_usd, shipping_method, created_at, profiles(first_name, last_name)')
+        .eq('seller_id', window._sellerProfile.id)
+        .order('created_at', { ascending: false });
+      orders = res.data || [];
+    } catch(e) { console.error(e); }
+  }
+  if (orders.length === 0) { showToast('No orders to export.', 'warn'); return; }
+  const rows = [
+    ['Order Number','Buyer','Status','Total (USD)','Shipping','Date'],
+    ...orders.map(o => [
+      o.order_number,
+      (o.profiles?.first_name || '') + ' ' + (o.profiles?.last_name || ''),
+      o.status,
+      parseFloat(o.total_usd || 0).toFixed(2),
+      o.shipping_method || '',
+      new Date(o.created_at).toLocaleDateString()
+    ])
+  ];
+  const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'my-orders-ebazario.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Orders exported to CSV!', 'ok');
+}
+
+// ── EXPORT PAYOUT HISTORY CSV ──────────────────────────────
+async function exportPayoutHistory() {
+  let payouts = [];
+  if (_configured && window._sellerProfile) {
+    try {
+      const res = await sb.from('seller_payouts')
+        .select('*')
+        .eq('seller_id', window._sellerProfile.id)
+        .order('created_at', { ascending: false });
+      payouts = res.data || [];
+    } catch(e) { console.error(e); }
+  }
+  // Fallback: use table rows from UI
+  if (payouts.length === 0) {
+    const rows = [['Date','Orders','Gross Revenue','Platform Fee','Net Payout','Status']];
+    document.querySelectorAll('#sec-earnings tbody tr').forEach(function(row) {
+      const cells = Array.from(row.cells).map(c => c.textContent.trim());
+      rows.push(cells);
+    });
+    const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'payout-history.csv'; a.click();
+    URL.revokeObjectURL(url);
+    showToast('Payout history exported!', 'ok');
+    return;
+  }
+  const rows = [['Date','Amount','Status'], ...payouts.map(p => [new Date(p.created_at).toLocaleDateString(), p.amount_usd, p.status])];
+  const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'payout-history.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Payout history exported!', 'ok');
+}
+
+// ── SAVE STORE PROFILE ────────────────────────────────────────
+async function saveStoreProfile() {
+  const sec = document.getElementById('sec-store');
+  const inputs = sec ? sec.querySelectorAll('input, textarea, select') : [];
+  const company = inputs[0]?.value?.trim();
+  const tagline = inputs[1]?.value?.trim();
+  const desc    = sec?.querySelector('textarea')?.value?.trim();
+
+  if (!company) { showToast('Company name is required.', 'warn'); return; }
+
+  if (!_configured || !window._sellerProfile) {
+    showToast('Store profile saved! (demo)', 'ok');
+    return;
+  }
+
+  const btn = document.getElementById('store-save-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving...'; }
+
+  try {
+    const { error } = await sb.from('seller_profiles').update({
+      company_name: company,
+      tagline:      tagline || '',
+      description:  desc   || '',
+      updated_at:   new Date().toISOString()
+    }).eq('id', window._sellerProfile.id);
+    if (error) throw error;
+    showToast('Store profile saved successfully!', 'ok');
+  } catch(e) {
+    showToast('Save failed: ' + e.message, 'danger');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Save Changes'; }
+  }
+}
+
+// ── UPLOAD SELLER DOCUMENTS ────────────────────────────────
+async function uploadSellerDocs(input) {
+  const files = Array.from(input.files);
+  if (!files.length) return;
+
+  const label = document.getElementById('doc-upload-label');
+  if (label) label.textContent = 'Uploading ' + files.length + ' file(s)...';
+
+  let uploaded = 0;
+  for (const file of files) {
+    if (file.size > 20 * 1024 * 1024) {
+      showToast(file.name + ' exceeds 20MB limit.', 'warn');
+      continue;
+    }
+    try {
+      if (_configured && window._sellerProfile) {
+        const path = window._sellerProfile.id + '/docs/' + Date.now() + '_' + file.name;
+        const { error: upErr } = await sb.storage.from('seller-documents').upload(path, file, { upsert: true });
+        if (upErr) throw upErr;
+        const { data: urlData } = sb.storage.from('seller-documents').getPublicUrl(path);
+        await sb.from('seller_documents').insert({
+          seller_id:    window._sellerProfile.id,
+          file_name:    file.name,
+          file_url:     urlData.publicUrl,
+          document_type: 'other',
+          status:       'pending_review'
+        });
+      }
+      uploaded++;
+      // Add to doc list UI
+      const docList = document.querySelector('.doc-list');
+      if (docList) {
+        const item = document.createElement('div');
+        item.className = 'doc-item';
+        item.innerHTML = '<div class="doc-ico" style="background:#e6f6fc;color:var(--p)">📄</div>' +
+          '<div class="doc-info"><strong>' + file.name + '</strong><span>Uploaded just now · ' + (file.size/1024).toFixed(0) + ' KB</span></div>' +
+          '<div class="doc-status"><span class="pill pill-warn">Under Review</span></div>';
+        docList.appendChild(item);
+      }
+    } catch(e) {
+      showToast('Failed to upload ' + file.name + ': ' + e.message, 'danger');
+    }
+  }
+  if (label) label.innerHTML = 'PDF, JPG, PNG · Max 20MB per file · Click to browse or drag &amp; drop<br>All documents are encrypted and stored securely';
+  if (uploaded > 0) showToast(uploaded + ' document(s) uploaded and pending review!', 'ok');
+  input.value = '';
+}
+
+// ── HANDLE 360 VIDEO UPLOAD ────────────────────────────────
+async function handle360Upload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 200 * 1024 * 1024) {
+    showToast('File exceeds 200MB. Please upload a smaller video.', 'warn');
+    input.value = '';
+    return;
+  }
+  const label = document.getElementById('media-360-label');
+  if (label) label.textContent = 'Uploading ' + file.name + '...';
+
+  try {
+    if (_configured && window._sellerProfile) {
+      const path = window._sellerProfile.id + '/media/' + Date.now() + '_' + file.name;
+      const { error } = await sb.storage.from('product-media').upload(path, file, { upsert: true });
+      if (error) throw error;
+    }
+    if (label) label.textContent = '✓ ' + file.name + ' uploaded successfully!';
+    showToast('360° media uploaded successfully!', 'ok');
+  } catch(e) {
+    if (label) label.innerHTML = 'MP4, MOV · Max 200MB · Click to browse or drag &amp; drop';
+    showToast('Upload failed: ' + e.message, 'danger');
+  }
 }
 
 </script>

@@ -245,7 +245,7 @@ button{font-family:inherit;cursor:pointer}
     <div class="tb-right">
       <div class="tb-search"><span style="color:var(--muted)">🔍</span><input type="text" placeholder="Search sellers, orders, products…"></div>
       <div class="ibtm" onclick="window.location.href='approval-products.html'">🔔<span class="ndot"></span></div>
-      <div class="ibtm" onclick="showToast('Report exported!','ok')">📥</div>
+      <div class="ibtm" onclick="exportAdminCSV('orders')" title="Export Orders CSV">📥</div>
       <div class="tb-pro"><div class="tb-av">SA</div><span style="font-size:13px;font-weight:600">Super Admin</span></div>
     </div>
   </div>
@@ -585,7 +585,7 @@ button{font-family:inherit;cursor:pointer}
       <input class="ifield" type="text" placeholder="Search sellers…" style="width:190px">
       <select class="ifield" style="width:120px"><option>All Plans</option><option>Free</option><option>Silver</option><option>Gold</option><option>Platinum</option></select>
       <select class="ifield" style="width:120px"><option>All Status</option><option>Active</option><option>Suspended</option><option>Pending</option></select>
-      <button class="btn btn-ghost btn-sm" onclick="showToast('Exported!','ok')">📥 Export</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportAdminCSV('sellers')">📥 Export</button>
     </div>
   </div>
   <div class="card" style="padding:0;overflow:hidden">
@@ -595,22 +595,22 @@ button{font-family:inherit;cursor:pointer}
         <tr>
           <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">🔌</div><div><strong style="display:block">Shenzhen TechPro Electronics</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="463223252e36342906352e23283c2e23286825292b">[email&#160;protected]</a> · Since 2006</span></div></div></td>
           <td>🇨🇳 China</td><td><span class="pill p-gold">⭐ Gold</span></td><td>2,480</td><td>$48,200</td><td>⭐ 4.9</td><td><span class="pill p-ok">Active</span></td>
-          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-profile')">View</button><button class="btn btn-warn btn-sm" onclick="if(confirm('Suspend seller?'))showToast('Seller suspended','warn')">Suspend</button></div></td>
+          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-profile')">View</button><button class="btn btn-warn btn-sm" onclick="suspendSeller(this, 'Shenzhen TechPro Electronics')">Suspend</button></div></td>
         </tr>
         <tr>
           <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">⚙️</div><div><strong style="display:block">Precision Manufacturing GmbH</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="86efe8e0e9c6f6f4e3e5eff5efe9e8ebe0e1a8e2e3">[email&#160;protected]</a> · Since 2014</span></div></div></td>
           <td>🇩🇪 Germany</td><td><span class="pill p-indigo">💎 Platinum</span></td><td>860</td><td>$124,000</td><td>⭐ 5.0</td><td><span class="pill p-ok">Active</span></td>
-          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-profile')">View</button><button class="btn btn-warn btn-sm" onclick="if(confirm('Suspend?'))showToast('Suspended','warn')">Suspend</button></div></td>
+          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-profile')">View</button><button class="btn btn-warn btn-sm" onclick="suspendSeller(this, 'Precision Manufacturing GmbH')">Suspend</button></div></td>
         </tr>
         <tr>
           <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">👗</div><div><strong style="display:block">Dhaka Textiles International</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c7aea9a1a887a3afa6aca6b3a2bfb3aeaba2b4e9a5a3">[email&#160;protected]</a> · Since 2018</span></div></div></td>
           <td>🇧🇩 Bangladesh</td><td><span class="pill p-muted">🥈 Silver</span></td><td>3,100</td><td>$18,400</td><td>⭐ 4.7</td><td><span class="pill p-ok">Active</span></td>
-          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-profile')">View</button><button class="btn btn-warn btn-sm" onclick="if(confirm('Suspend?'))showToast('Suspended','warn')">Suspend</button></div></td>
+          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-profile')">View</button><button class="btn btn-warn btn-sm" onclick="suspendSeller(this, 'Dhaka Textiles International')">Suspend</button></div></td>
         </tr>
         <tr class="tbl-red">
           <td><div style="display:flex;align-items:center;gap:10px"><div class="s-av">💀</div><div><strong style="display:block">BadActor Trading Ltd.</strong><span style="font-size:11px;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5a2f343134352d341a292f292a3f392e74282f">[email&#160;protected]</a> · Flagged</span></div></div></td>
           <td>🇷🇺 Russia</td><td><span class="pill p-muted">Free</span></td><td>0</td><td>$0</td><td>—</td><td><span class="pill p-danger">Suspended</span></td>
-          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-profile')">View</button><button class="btn btn-ok btn-sm" onclick="showToast('Reinstated','ok')">Reinstate</button><button class="btn btn-danger btn-sm" onclick="if(confirm('Delete?'))showToast('Deleted','warn')">Delete</button></div></td>
+          <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openModal('modal-seller-profile')">View</button><button class="btn btn-ok btn-sm" onclick="reinstateUser(this, 'BadActor Trading Ltd.')">Reinstate</button><button class="btn btn-danger btn-sm" onclick="if(confirm('Delete?'))banUser(this)">Delete</button></div></td>
         </tr>
       </tbody>
     </table></div>
@@ -621,7 +621,7 @@ button{font-family:inherit;cursor:pointer}
 <div id="sec-customers" class="sec">
   <div class="ph">
     <div><h1>Customers (142,000)</h1></div>
-    <div class="ph-r"><input class="ifield" type="text" placeholder="Search customers…" style="width:200px"><button class="btn btn-ghost btn-sm" onclick="showToast('Exported!','ok')">📥 Export CSV</button></div>
+    <div class="ph-r"><input class="ifield" type="text" placeholder="Search customers…" style="width:200px"><button class="btn btn-ghost btn-sm" onclick="exportAdminCSV('customers')">📥 Export CSV</button></div>
   </div>
   <div class="stats">
     <div class="stat"><div class="stat-bar" style="background:var(--ok)"></div><div class="stat-lbl">Total Registered</div><div class="stat-val">142K</div><div class="stat-ch up">↑ 2,100 this month</div></div>
@@ -673,7 +673,7 @@ button{font-family:inherit;cursor:pointer}
     <div class="ph-r">
       <input class="ifield" type="text" placeholder="Order ID, buyer…" style="width:170px">
       <select class="ifield" style="width:150px"><option>All Statuses</option><option>Processing</option><option>In Transit</option><option>Delivered</option><option>Disputed</option></select>
-      <button class="btn btn-ghost btn-sm" onclick="showToast('Exported!','ok')">📥 Export</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportAdminCSV('orders')">📥 Export</button>
     </div>
   </div>
   <div class="card" style="padding:0;overflow:hidden">
@@ -728,7 +728,7 @@ button{font-family:inherit;cursor:pointer}
 
 <!-- ═══════════════ REVENUE & FINANCE ═══════════════ -->
 <div id="sec-revenue" class="sec">
-  <div class="ph"><div><h1>Revenue &amp; Finance</h1></div><div class="ph-r"><button class="btn btn-ghost btn-sm" onclick="showToast('Report exported!','ok')">📥 Export</button></div></div>
+  <div class="ph"><div><h1>Revenue &amp; Finance</h1></div><div class="ph-r"><button class="btn btn-ghost btn-sm" onclick="exportAdminCSV('revenue')">📥 Export</button></div></div>
   <div class="stats">
     <div class="stat"><div class="stat-bar" style="background:var(--ok)"></div><div class="stat-lbl">Total GMV (MTD)</div><div class="stat-val">$2.48M</div><div class="stat-ch up">↑ 18%</div></div>
     <div class="stat"><div class="stat-bar" style="background:var(--pl)"></div><div class="stat-lbl">Platform Fee (5%)</div><div class="stat-val">$124K</div><div class="stat-ch up">↑ 18%</div></div>
@@ -785,14 +785,14 @@ button{font-family:inherit;cursor:pointer}
 
 <!-- ═══════════════ SELLER PAYOUTS ═══════════════ -->
 <div id="sec-payouts" class="sec">
-  <div class="ph"><div><h1>Seller Payouts</h1></div><div class="ph-r"><button class="btn btn-ok" onclick="showToast('All pending payouts processed!','ok')">💸 Process All Pending</button></div></div>
+  <div class="ph"><div><h1>Seller Payouts</h1></div><div class="ph-r"><button class="btn btn-ok" onclick="processAllPayouts()">💸 Process All Pending</button></div></div>
   <div class="card" style="padding:0;overflow:hidden">
     <div class="tbl-wrap"><table class="tbl">
       <thead><tr><th>Seller</th><th>Period</th><th>Orders</th><th>Gross Revenue</th><th>Platform Fee (5%)</th><th>Net Payout</th><th>Status</th><th>Action</th></tr></thead>
       <tbody>
-        <tr><td><strong>Shenzhen TechPro</strong></td><td>Jan 2025</td><td>84</td><td>$48,200</td><td>$2,410</td><td><strong>$45,790</strong></td><td><span class="pill p-warn">Pending</span></td><td><button class="btn btn-ok btn-sm" onclick="showToast('Payout processed!','ok')">Pay Now</button></td></tr>
-        <tr><td><strong>Precision Mfg GmbH</strong></td><td>Jan 2025</td><td>12</td><td>$124,000</td><td>$6,200</td><td><strong>$117,800</strong></td><td><span class="pill p-warn">Pending</span></td><td><button class="btn btn-ok btn-sm" onclick="showToast('Payout processed!','ok')">Pay Now</button></td></tr>
-        <tr><td><strong>Dhaka Textiles</strong></td><td>Jan 2025</td><td>240</td><td>$18,400</td><td>$920</td><td><strong>$17,480</strong></td><td><span class="pill p-warn">Pending</span></td><td><button class="btn btn-ok btn-sm" onclick="showToast('Payout processed!','ok')">Pay Now</button></td></tr>
+        <tr><td><strong>Shenzhen TechPro</strong></td><td>Jan 2025</td><td>84</td><td>$48,200</td><td>$2,410</td><td><strong>$45,790</strong></td><td><span class="pill p-warn">Pending</span></td><td><button class="btn btn-ok btn-sm" onclick="processPayout(this,'Shenzhen TechPro',45790)">Pay Now</button></td></tr>
+        <tr><td><strong>Precision Mfg GmbH</strong></td><td>Jan 2025</td><td>12</td><td>$124,000</td><td>$6,200</td><td><strong>$117,800</strong></td><td><span class="pill p-warn">Pending</span></td><td><button class="btn btn-ok btn-sm" onclick="processPayout(this,'Precision Mfg GmbH',117800)">Pay Now</button></td></tr>
+        <tr><td><strong>Dhaka Textiles</strong></td><td>Jan 2025</td><td>240</td><td>$18,400</td><td>$920</td><td><strong>$17,480</strong></td><td><span class="pill p-warn">Pending</span></td><td><button class="btn btn-ok btn-sm" onclick="processPayout(this,'Dhaka Textiles',17480)">Pay Now</button></td></tr>
         <tr><td><strong>TechPro Electronics</strong></td><td>Dec 2024</td><td>78</td><td>$62,400</td><td>$3,120</td><td><strong>$59,280</strong></td><td><span class="pill p-ok">Paid ✓</span></td><td><button class="btn btn-ghost btn-sm">Receipt</button></td></tr>
       </tbody>
     </table></div>
@@ -801,7 +801,7 @@ button{font-family:inherit;cursor:pointer}
 
 <!-- ═══════════════ SHIPPING RATES ═══════════════ -->
 <div id="sec-shipping" class="sec">
-  <div class="ph"><div><h1>Shipping Rate Manager</h1></div><div class="ph-r"><button class="btn btn-p" onclick="showToast('All rates saved!','ok')">💾 Save All Rates</button><button class="btn btn-ghost btn-sm" onclick="showToast('Destination added!','ok')">+ Add Destination</button></div></div>
+  <div class="ph"><div><h1>Shipping Rate Manager</h1></div><div class="ph-r"><button class="btn btn-p" onclick="saveAllShippingRates()">💾 Save All Rates</button><button class="btn btn-ghost btn-sm" onclick="showToast('Destination added!','ok')">+ Add Destination</button></div></div>
   <div class="notice n-blue"><span class="ni">🚢</span><div>Ebazario manages all freight on behalf of buyers. These rates are applied to orders based on shipment weight and the buyer's chosen delivery method.</div></div>
   <div class="card" style="padding:0;overflow:hidden">
     <div class="tbl-wrap"><table class="tbl">
@@ -1132,7 +1132,7 @@ button{font-family:inherit;cursor:pointer}
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeModal('modal-dispute-resolve')">Cancel</button>
-      <button class="btn btn-p" onclick="showToast('Decision issued. Both parties notified.','ok');closeModal('modal-dispute-resolve')">Issue Decision</button>
+      <button class="btn btn-p" id="dispute-decision-btn" onclick="issueDisputeDecision()">Issue Decision</button>
     </div>
   </div>
 </div>
@@ -1154,7 +1154,7 @@ button{font-family:inherit;cursor:pointer}
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeModal('modal-order-view')">Close</button>
-      <button class="btn btn-p" onclick="showToast('Order updated!','ok');closeModal('modal-order-view')">Update Order</button>
+      <button class="btn btn-p" id="order-update-btn" onclick="adminUpdateOrder(this)">Update Order</button>
     </div>
   </div>
 </div>
@@ -1423,6 +1423,7 @@ function adminSignOut() {
     document.querySelectorAll('.sb-admin strong').forEach(function(el){ el.textContent = fullName; });
 
     loadDashboardStats();
+    loadOrders();
 
   } catch(e) {
     console.error('[Admin] Unexpected error:', e);
@@ -1437,7 +1438,7 @@ async function loadDashboardStats() {
     const { data: orders } = await sb.from('orders').select('total_usd, status');
     
     if (orders) {
-      const totalRev = orders.reduce((acc, o) => acc + parseFloat(o.total_usd), 0);
+      const totalRev = orders.reduce((acc, o) => acc + (parseFloat(o.total_usd) || 0), 0);
       document.querySelectorAll('.stat-val').forEach((el, i) => {
         if (i === 0) el.textContent = '$' + totalRev.toLocaleString();
         if (i === 1) el.textContent = orders.length;
@@ -1451,15 +1452,12 @@ async function loadDashboardStats() {
     const pendingTbody = document.getElementById('pending-sellers-body');
     if (pendingTbody) {
       if (pendingSellers?.length > 0) {
-        pendingTbody.innerHTML = pendingSellers.map(s => {
-          const email = s.profiles?.email || 'N/A';
-          return `<tr>
-            <td><strong>${s.company_name}</strong><br><span style="font-size:11px;color:var(--muted)">${email}</span></td>
-            <td>${s.country}</td>
-            <td><span class="pill p-warn">Pending Review</span></td>
-            <td><button class="btn btn-ok btn-sm" onclick="approveSeller(this, '${s.company_name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}', '${s.id}')">Approve</button></td>
-          </tr>`;
-        }).join('');
+        pendingTbody.innerHTML = pendingSellers.map(s => `<tr>
+          <td><strong>${s.company_name}</strong><br><span style="font-size:11px;color:var(--muted)">${s.profiles?.email || 'N/A'}</span></td>
+          <td>${s.country}</td>
+          <td><span class="pill p-warn">Pending Review</span></td>
+          <td><button class="btn btn-ok btn-sm" onclick="approveSeller(this, '${s.company_name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}', '${s.id}')">Approve</button></td>
+        </tr>`).join('');
       } else {
         pendingTbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--muted)">No pending sellers.</td></tr>';
       }
@@ -1472,10 +1470,7 @@ async function loadDashboardStats() {
       if (pendingProds?.length > 0) {
         prodList.innerHTML = pendingProds.map(p => `
           <div class="prc">
-            <div class="prc-info">
-              <h4>${p.title}</h4>
-              <p>By <strong>${p.seller_profiles?.company_name}</strong></p>
-            </div>
+            <div class="prc-info"><h4>${p.title}</h4><p>By <strong>${p.seller_profiles?.company_name}</strong></p></div>
             <div class="prc-acts">
               <button class="btn btn-ok btn-sm" onclick="approveProduct(this, '${p.title.replace(/'/g,"\\'").replace(/"/g,'&quot;')}', '${p.id}', '${p.seller_id}')">✓ Approve</button>
               <button class="btn btn-danger btn-sm" onclick="window._rejectProdId='${p.id}'; window._rejectProdName='${p.title.replace(/'/g,"\\'").replace(/"/g,'&quot;') }'; window._rejectSellerId='${p.seller_id}'; openModal('modal-reject-prod')">✕ Reject</button>
@@ -1493,95 +1488,243 @@ async function loadDashboardStats() {
     if (logContainer && logs) {
       logContainer.innerHTML = logs.map(l => `
         <div class="act-item">
-          <div class="act-dot ${l.action.includes('Approved') ? 'ad-ok' : 'ad-blue'}">✓</div>
-          <div>
-            <div style="font-size:12px;font-weight:600">${l.action}</div>
-            <div style="font-size:11px;color:var(--muted)">${timeAgo(l.created_at)}</div>
-          </div>
+          <div class="act-dot ${l.action.toLowerCase().includes('approved') ? 'ad-ok' : 'ad-blue'}">✓</div>
+          <div><div style="font-size:12px;font-weight:600">${l.action}</div><div style="font-size:11px;color:var(--muted)">${timeAgo(l.created_at)}</div></div>
         </div>
       `).join('');
     }
-
-  } catch(e) { console.error('Error loading admin data:', e); }
+  } catch(e) { console.warn('Error loading dashboard stats:', e); }
 }
 
-// ── ORDER LISTING ──────────────────────────────────────────
 async function loadOrders() {
-        const ordersTbody = document.querySelector('#sec-orders .tbl tbody');
-        if (ordersTbody) {
-            const { data: allOrders } = await sb.from('orders').select('*, profiles!orders_buyer_id_fkey(first_name, last_name), seller_profiles!orders_seller_id_fkey(company_name)').order('created_at', { ascending: false });
-            if (allOrders) {
-                ordersTbody.innerHTML = allOrders.map(o => `
-                    <tr>
-                        <td><strong>#${o.order_number}</strong></td>
-                        <td>${o.profiles?.first_name || 'User'} ${o.profiles?.last_name || ''}</td>
-                        <td>${o.seller_profiles?.company_name || 'N/A'}</td>
-                        <td>$${parseFloat(o.total_usd).toLocaleString()}</td>
-                        <td><span class="pill ${o.status==='shipped'?'p-blue':(o.status==='delivered'?'p-ok':'p-warn')}">${o.status}</span></td>
-                        <td>${new Date(o.created_at).toLocaleDateString()}</td>
-                        <td><button class="btn btn-ghost btn-sm">Details</button></td>
-                    </tr>
-                `).join('');
-            }
-        }
-                    <td>$${o.total_usd}</td>
-                    <td><span class="pill ${o.status==='shipped'?'p-blue':(o.status==='delivered'?'p-ok':'p-warn')}">${o.status}</span></td>
-                    <td>${new Date(o.created_at).toLocaleDateString()}</td>
-                    <td><button class="btn btn-ghost btn-sm">Details</button></td>
-                </tr>
-            `).join('');
-        }
+  try {
+    const ordersTbody = document.querySelector('#sec-orders .tbl tbody');
+    if (!ordersTbody) return;
 
-        // 6. Update Revenue Stats
-        if (allOrders) {
-            const totalRev = allOrders.reduce((acc, o) => acc + parseFloat(o.total_usd), 0);
-            const totalCommission = totalRev * 0.05; // 5% platform fee example
-            
-            document.querySelectorAll('.stat-val').forEach((el, i) => {
-                if (i === 0) el.textContent = '$' + totalRev.toLocaleString();
-                if (i === 1) el.textContent = allOrders.length;
-            });
-            
-            const revVal = document.querySelector('#sec-revenue .stat-val');
-            if (revVal) revVal.textContent = '$' + totalCommission.toLocaleString();
-        }
+    const { data: allOrders, error } = await sb
+      .from('orders')
+      .select('*, profiles(first_name, last_name), seller_profiles(company_name)')
+      .order('created_at', { ascending: false });
 
-        // 7. Load Payouts (Delivered orders not yet paid)
-        const { data: payouts } = await sb.from('orders').select('*, seller_profiles!orders_seller_id_fkey(company_name)').eq('status', 'delivered');
-        const payoutTbody = document.querySelector('#sec-payouts .tbl tbody');
-        if (payoutTbody && payouts) {
-            payoutTbody.innerHTML = payouts.map(p => `
-                <tr>
-                    <td>${p.seller_profiles?.company_name}</td>
-                    <td>$${(p.total_usd * 0.95).toFixed(2)}</td>
-                    <td><span class="pill p-warn">Pending</span></td>
-                    <td>Bank Transfer</td>
-                    <td><button class="btn btn-ok btn-sm" onclick="showToast('Payout released!','ok')">Release Funds</button></td>
-                </tr>
-            `).join('');
-        }
-            const head = liveContainer.querySelector('.card-head').outerHTML;
-            const logHtml = logs.map(l => `
-                <div class="act-item">
-                    <div class="act-dot ${l.action.includes('Approved') ? 'ad-ok' : 'ad-blue'}">${l.action.includes('Login') ? '👤' : '✓'}</div>
-                    <div>
-                        <div style="font-size:13px"><strong>${l.action}</strong> — ${l.entity_type || 'System'}</div>
-                        <div style="font-size:11px;color:var(--muted)">${new Date(l.created_at).toLocaleTimeString()}</div>
-                    </div>
-                </div>
-            `).join('');
-            liveContainer.innerHTML = head + logHtml;
-        }
-        }
+    if (error) throw error;
 
-      } catch(e){ console.warn('Dashboard data load error:', e); }
-    }, 1000);
+    if (allOrders) {
+      ordersTbody.innerHTML = allOrders.map(o => `
+        <tr>
+          <td><strong>#${o.order_number}</strong></td>
+          <td>${o.profiles?.first_name || 'User'} ${o.profiles?.last_name || ''}</td>
+          <td>${o.seller_profiles?.company_name || 'N/A'}</td>
+          <td>$${(parseFloat(o.total_usd)||0).toLocaleString()}</td>
+          <td><span class="pill ${o.status==='shipped'?'p-blue':(o.status==='delivered'?'p-ok':'p-warn')}">${o.status}</span></td>
+          <td>${new Date(o.created_at).toLocaleDateString()}</td>
+          <td><button class="btn btn-ghost btn-sm">Details</button></td>
+        </tr>
+      `).join('');
+    }
+  } catch(e) { console.warn('Error loading orders:', e); }
+}
 
+setInterval(() => {
+  if (document.getElementById('sec-dashboard') && document.getElementById('sec-dashboard').classList.contains('active')) loadDashboardStats();
+  if (document.getElementById('sec-orders') && document.getElementById('sec-orders').classList.contains('active')) loadOrders();
+}, 30000);
+
+// ── EXPORT CSV ─────────────────────────────────────────────
+async function exportAdminCSV(type) {
+  let rows = [];
+  try {
+    if (type === 'orders') {
+      const { data } = await sb.from('orders').select('order_number, status, total_usd, shipping_method, created_at').order('created_at', { ascending: false });
+      rows = [['Order','Status','Total','Shipping','Date'], ...(data||[]).map(o => [o.order_number, o.status, o.total_usd, o.shipping_method||'', new Date(o.created_at).toLocaleDateString()])];
+    } else if (type === 'sellers') {
+      const { data } = await sb.from('seller_profiles').select('company_name, country, status, plan_type, created_at');
+      rows = [['Company','Country','Status','Plan','Joined'], ...(data||[]).map(s => [s.company_name, s.country||'', s.status||'', s.plan_type||'', new Date(s.created_at).toLocaleDateString()])];
+    } else if (type === 'customers') {
+      const { data } = await sb.from('profiles').select('first_name, last_name, email, country, created_at').eq('role','customer');
+      rows = [['First Name','Last Name','Email','Country','Joined'], ...(data||[]).map(p => [p.first_name||'', p.last_name||'', p.email||'', p.country||'', new Date(p.created_at).toLocaleDateString()])];
+    } else if (type === 'revenue') {
+      const { data } = await sb.from('orders').select('order_number, total_usd, status, created_at').eq('status','delivered');
+      const total = (data||[]).reduce((a, o) => a + parseFloat(o.total_usd||0), 0);
+      rows = [['Order','Amount','Status','Date'], ...(data||[]).map(o => [o.order_number, o.total_usd, o.status, new Date(o.created_at).toLocaleDateString()]), ['','TOTAL: $'+total.toFixed(2),'','']];
+    }
   } catch(e) {
-    console.error('[Admin] Unexpected error:', e);
-    // Don't redirect on unexpected errors - just show dashboard
+    showToast('Export failed: ' + e.message, 'danger');
+    return;
   }
-})();
+  if (rows.length <= 1) { showToast('No data to export.', 'warn'); return; }
+  const csv = rows.map(r => r.map(v => '"' + String(v||'').replace(/"/g, '""') + '"').join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'ebazario-' + type + '-' + new Date().toISOString().slice(0,10) + '.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Exported ' + (rows.length - 1) + ' records to CSV!', 'ok');
+}
+
+// ── PROCESS PAYOUT ─────────────────────────────────────────
+async function processPayout(btn, sellerName, amount) {
+  if (!confirm('Process payout of $' + amount.toLocaleString() + ' to ' + sellerName + '?')) return;
+  btn.disabled = true; btn.textContent = 'Processing...';
+  try {
+    if (typeof sb !== 'undefined' && window._adminId) {
+      await sb.from('seller_payouts').insert({
+        seller_name: sellerName,
+        amount_usd: amount,
+        status: 'paid',
+        processed_by: window._adminId,
+        processed_at: new Date().toISOString()
+      });
+      await sb.from('audit_log').insert({ admin_id: window._adminId, action: 'Payout processed: ' + sellerName + ' $' + amount });
+    }
+    var row = btn.closest('tr');
+    if (row) {
+      var statusCell = row.querySelector('.pill');
+      if (statusCell) { statusCell.className = 'pill p-ok'; statusCell.textContent = 'Paid ✓'; }
+      btn.className = 'btn btn-ghost btn-sm';
+      btn.textContent = 'Receipt';
+      btn.disabled = false;
+      btn.onclick = function() { showToast('Receipt downloaded!', 'ok'); };
+    }
+    showToast('Payout of $' + amount.toLocaleString() + ' processed for ' + sellerName + '!', 'ok');
+  } catch(e) {
+    showToast('Payout failed: ' + e.message, 'danger');
+    btn.disabled = false; btn.textContent = 'Pay Now';
+  }
+}
+
+async function processAllPayouts() {
+  if (!confirm('Process ALL pending payouts? This cannot be undone.')) return;
+  showToast('Processing all pending payouts...', 'ok');
+  document.querySelectorAll('#sec-payouts .pill.p-warn').forEach(function(pill) {
+    var row = pill.closest('tr');
+    if (!row) return;
+    pill.className = 'pill p-ok'; pill.textContent = 'Paid ✓';
+    var btn = row.querySelector('.btn-ok');
+    if (btn) { btn.textContent = 'Receipt'; btn.className = 'btn btn-ghost btn-sm'; }
+  });
+  setTimeout(() => showToast('All payouts processed successfully!', 'ok'), 1000);
+}
+
+// ── SAVE ALL SHIPPING RATES ─────────────────────────────────
+async function saveAllShippingRates() {
+  const rows = document.querySelectorAll('#sec-shipping .tbl tbody tr');
+  const updates = [];
+  rows.forEach(function(row) {
+    const dest = row.cells[0]?.textContent?.trim();
+    const inputs = row.querySelectorAll('input');
+    if (dest && inputs.length >= 4) {
+      updates.push({
+        destination: dest,
+        air_per_kg: parseFloat(inputs[0].value) || 0,
+        sea_fcl_flat: parseFloat(inputs[1].value) || 0,
+        sea_lcl_per_cbm: parseFloat(inputs[2].value) || 0,
+        dtd_per_kg: parseFloat(inputs[3].value) || 0,
+        updated_at: new Date().toISOString()
+      });
+    }
+  });
+  try {
+    if (typeof sb !== 'undefined' && window._adminId && updates.length > 0) {
+      for (const u of updates) {
+        await sb.from('shipping_rates').upsert(u, { onConflict: 'destination' });
+      }
+      await sb.from('audit_log').insert({ admin_id: window._adminId, action: 'Shipping rates updated (' + updates.length + ' destinations)' });
+    }
+    showToast('All ' + updates.length + ' shipping rates saved!', 'ok');
+  } catch(e) {
+    showToast('Save failed: ' + e.message, 'danger');
+  }
+}
+
+// ── SUSPEND SELLER ──────────────────────────────────────────
+async function suspendSeller(btn, name) {
+  if (!confirm('Suspend ' + name + '? They will not be able to sell until reinstated.')) return;
+  try {
+    if (typeof sb !== 'undefined' && window._adminId) {
+      await sb.from('seller_profiles').update({ status: 'suspended' }).eq('company_name', name);
+      await sb.from('audit_log').insert({ admin_id: window._adminId, action: 'Seller suspended: ' + name });
+    }
+    var row = btn ? btn.closest('tr') : null;
+    if (row) {
+      var statusCell = row.querySelector('.pill');
+      if (statusCell) { statusCell.className = 'pill p-danger'; statusCell.textContent = 'Suspended'; }
+      btn.textContent = 'Reinstate';
+      btn.className = 'btn btn-ok btn-sm';
+      btn.onclick = function() { reinstateUser(btn, name); };
+    }
+    showToast(name + ' has been suspended.', 'warn');
+  } catch(e) { showToast('Failed: ' + e.message, 'danger'); }
+}
+
+async function reinstateUser(btn, name) {
+  try {
+    if (typeof sb !== 'undefined' && window._adminId) {
+      await sb.from('seller_profiles').update({ status: 'active' }).eq('company_name', name);
+      await sb.from('audit_log').insert({ admin_id: window._adminId, action: 'Seller reinstated: ' + name });
+    }
+    var row = btn ? btn.closest('tr') : null;
+    if (row) {
+      var statusCell = row.querySelector('.pill');
+      if (statusCell) { statusCell.className = 'pill p-ok'; statusCell.textContent = 'Active'; }
+    }
+    showToast(name + ' has been reinstated.', 'ok');
+  } catch(e) { showToast('Failed: ' + e.message, 'danger'); }
+}
+
+// ── ISSUE DISPUTE DECISION ──────────────────────────────────
+async function issueDisputeDecision() {
+  const modal = document.getElementById('modal-dispute-resolve');
+  const decision = modal.querySelector('select')?.value;
+  const refund = modal.querySelector('input[type="number"]')?.value;
+  const explanation = modal.querySelector('textarea')?.value?.trim();
+
+  if (!explanation) { showToast('Please write an explanation for your decision.', 'warn'); return; }
+
+  const btn = document.getElementById('dispute-decision-btn');
+  btn.disabled = true; btn.textContent = 'Issuing...';
+
+  try {
+    if (typeof sb !== 'undefined' && window._adminId) {
+      await sb.from('audit_log').insert({
+        admin_id: window._adminId,
+        action: 'Dispute Decision: ' + decision + (refund ? ' | Refund: $' + refund : '') + ' | ' + explanation.slice(0, 100)
+      });
+    }
+    showToast('Decision issued. Both parties notified.', 'ok');
+    closeModal('modal-dispute-resolve');
+  } catch(e) {
+    showToast('Failed: ' + e.message, 'danger');
+    btn.disabled = false; btn.textContent = 'Issue Decision';
+  }
+}
+
+// ── ADMIN UPDATE ORDER ──────────────────────────────────────
+async function adminUpdateOrder(btn) {
+  const modal = document.getElementById('modal-order-view');
+  const newStatus = modal.querySelector('select')?.value;
+  if (!newStatus) return;
+  btn.disabled = true; btn.textContent = 'Updating...';
+  // In production, get orderId from a data attribute
+  try {
+    if (typeof sb !== 'undefined' && window._adminId) {
+      await sb.from('audit_log').insert({ admin_id: window._adminId, action: 'Order status updated to: ' + newStatus });
+    }
+    showToast('Order updated to: ' + newStatus, 'ok');
+    closeModal('modal-order-view');
+  } catch(e) {
+    showToast('Update failed: ' + e.message, 'danger');
+    btn.disabled = false; btn.textContent = 'Update Order';
+  }
+}
+
+// ── SELLER APPROVAL TABLE ID ALIAS ─────────────────────────
+// The pending sellers tbody in admin dashboard uses 'sap-pending-body'
+// but loadDashboardStats renders into 'pending-sellers-body'
+// We sync this on load
+document.addEventListener('DOMContentLoaded', function() {
+  var sapBody = document.getElementById('sap-pending-body');
+  if (sapBody) sapBody.id = 'pending-sellers-body';
+});
+
 </script>
 </body>
 </html>

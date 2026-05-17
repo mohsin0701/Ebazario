@@ -262,7 +262,7 @@ button{font-family:inherit;cursor:pointer}
   <div class="ph">
     <div><h1>Welcome back, James 👋</h1><p>Here's a summary of your Ebazario account</p></div>
     <div class="ph-r">
-      <button class="btn btn-out btn-sm" onclick="nav(document.querySelector('[data-sec=sec-rfq]'))">📋 Submit RFQ</button>
+      <button class="btn btn-out btn-sm" onclick="nav(document.querySelector('.sb-item[data-sec=sec-rfq]')) || openModal('modal-new-rfq')">📋 Submit RFQ</button>
       <button class="btn btn-p btn-sm" onclick="goHome()">🛍️ Shop Now</button>
     </div>
   </div>
@@ -336,11 +336,11 @@ button{font-family:inherit;cursor:pointer}
       <div class="card" style="margin-bottom:0">
         <div class="card-title" style="margin-bottom:14px">⚡ Quick Actions</div>
         <div style="display:flex;flex-direction:column;gap:9px">
-          <button class="btn btn-p" style="width:100%;justify-content:flex-start" onclick="nav(document.querySelector('[data-sec=sec-rfq]'))">📋 Submit New RFQ</button>
-          <button class="btn btn-out" style="width:100%;justify-content:flex-start" onclick="nav(document.querySelector('[data-sec=sec-orders]'))">🛒 View All Orders</button>
-          <button class="btn btn-ghost" style="width:100%;justify-content:flex-start" onclick="nav(document.querySelector('[data-sec=sec-track]'))">📍 Track a Shipment</button>
-          <button class="btn btn-ghost" style="width:100%;justify-content:flex-start" onclick="nav(document.querySelector('[data-sec=sec-wishlist]'))">❤️ View Wishlist (8)</button>
-          <button class="btn btn-ghost" style="width:100%;justify-content:flex-start" onclick="nav(document.querySelector('[data-sec=sec-disputes]'))">⚖️ File a Dispute</button>
+          <button class="btn btn-p" style="width:100%;justify-content:flex-start" onclick="nav(document.querySelector('.sb-item[data-sec=sec-rfq]')) || openModal('modal-new-rfq')">📋 Submit New RFQ</button>
+          <button class="btn btn-out" style="width:100%;justify-content:flex-start" onclick="nav(document.querySelector('.sb-item[data-sec=sec-orders]'))">🛒 View All Orders</button>
+          <button class="btn btn-ghost" style="width:100%;justify-content:flex-start" onclick="nav(document.querySelector('.sb-item[data-sec=sec-track]'))">📍 Track a Shipment</button>
+          <button class="btn btn-ghost" style="width:100%;justify-content:flex-start" onclick="nav(document.querySelector('.sb-item[data-sec=sec-wishlist]'))">❤️ View Wishlist</button>
+          <button class="btn btn-ghost" style="width:100%;justify-content:flex-start" onclick="nav(document.querySelector('.sb-item[data-sec=sec-disputes]'))">⚖️ File a Dispute</button>
         </div>
       </div>
       <!-- TRADE ASSURANCE -->
@@ -580,7 +580,7 @@ button{font-family:inherit;cursor:pointer}
 <!-- ═══════════════ WISHLIST ═══════════════ -->
 <div id="sec-wishlist" class="sec">
   <div class="ph"><div><h1>Wishlist</h1><p>8 saved products</p></div><div class="ph-r"><button class="btn btn-ghost btn-sm" onclick="showToast('All added to RFQ!','ok')">📋 RFQ All</button></div></div>
-  <div class="g3" style="margin-bottom:16px">
+  <div class="g3" id="wishlist-grid" style="margin-bottom:16px">
     <div class="wish-card">
       <div class="wish-img">💻</div>
       <div class="wish-body">
@@ -792,8 +792,9 @@ button{font-family:inherit;cursor:pointer}
           <strong>⏳ Status:</strong> Admin is reviewing the shipping bill of lading and carrier manifest. Expected resolution: within 5 days.
         </div>
         <div style="display:flex;gap:8px">
-          <button class="btn btn-ghost btn-sm" onclick="showToast('Evidence submitted!','ok')">📎 Add Evidence</button>
-          <button class="btn btn-ghost btn-sm" onclick="showToast('Message sent to admin','ok')">✉️ Message Admin</button>
+          <input type="file" id="dispute-evidence-input" style="display:none" onchange="uploadDisputeEvidence(this)">
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('dispute-evidence-input').click()">📎 Add Evidence</button>
+          <button class="btn btn-ghost btn-sm" onclick="messageDisputeAdmin()">✉️ Message Admin</button>
         </div>
       </div>
     </div>
@@ -811,7 +812,7 @@ button{font-family:inherit;cursor:pointer}
 
 <!-- ═══════════════ MY PROFILE ═══════════════ -->
 <div id="sec-profile" class="sec">
-  <div class="ph"><div><h1>My Profile</h1></div><div class="ph-r"><button class="btn btn-p" onclick="showToast('Profile saved!','ok')">💾 Save Changes</button></div></div>
+  <div class="ph"><div><h1>My Profile</h1></div><div class="ph-r"><button class="btn btn-out btn-sm" onclick="exportMyOrders()">📥 Export Orders</button><button class="btn btn-p" onclick="saveProfile()">💾 Save Changes</button></div></div>
   <div class="g2">
     <div class="card">
       <div class="card-title" style="margin-bottom:16px">👤 Personal Information</div>
@@ -898,7 +899,7 @@ button{font-family:inherit;cursor:pointer}
       <div style="display:flex;gap:7px;margin-top:12px">
         <button class="btn btn-ghost btn-sm" onclick="openModal('modal-add-address')">✏️ Edit</button>
         <button class="btn btn-p btn-sm" onclick="showToast('Set as default address','ok')">Set Default</button>
-        <button class="btn btn-danger btn-sm" onclick="if(confirm('Delete?'))showToast('Address deleted','warn')">Delete</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteAddress(this)">Delete</button>
       </div>
     </div>
     <div class="addr-card">
@@ -915,7 +916,7 @@ button{font-family:inherit;cursor:pointer}
       <div style="display:flex;gap:7px;margin-top:12px">
         <button class="btn btn-ghost btn-sm" onclick="openModal('modal-add-address')">✏️ Edit</button>
         <button class="btn btn-p btn-sm" onclick="showToast('Set as default','ok')">Set Default</button>
-        <button class="btn btn-danger btn-sm" onclick="if(confirm('Delete?'))showToast('Deleted','warn')">Delete</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteAddress(this)">Delete</button>
       </div>
     </div>
     <div class="addr-card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:140px;cursor:pointer;transition:all .2s" onclick="openModal('modal-add-address')" onmouseover="this.style.borderColor='var(--p)'" onmouseout="this.style.borderColor='var(--border)'">
@@ -1191,7 +1192,7 @@ button{font-family:inherit;cursor:pointer}
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeModal('modal-review')">Cancel</button>
-      <button class="btn btn-p" onclick="showToast('Review submitted! Thank you!','ok');closeModal('modal-review')">Submit Review</button>
+      <button class="btn btn-p" id="review-submit-btn" onclick="submitReview()">Submit Review</button>
     </div>
   </div>
 </div>
@@ -1286,7 +1287,7 @@ button{font-family:inherit;cursor:pointer}
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeModal('modal-new-dispute')">Cancel</button>
-      <button class="btn btn-danger" onclick="showToast('Dispute filed! Our team will review within 24h.','ok');closeModal('modal-new-dispute')">File Dispute</button>
+      <button class="btn btn-danger" id="dispute-submit-btn" onclick="submitNewDispute()">File Dispute</button>
     </div>
   </div>
 </div>
@@ -1332,7 +1333,7 @@ button{font-family:inherit;cursor:pointer}
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeModal('modal-add-address')">Cancel</button>
-      <button class="btn btn-p" onclick="showToast('Address saved!','ok');closeModal('modal-add-address')">Save Address</button>
+      <button class="btn btn-p" id="addr-save-btn" onclick="saveAddress()">Save Address</button>
     </div>
   </div>
 </div>
@@ -1373,6 +1374,10 @@ function nav(el) {
   var tb = document.querySelector('.tb-title');
   if (tb) tb.textContent = lbl ? lbl.textContent.trim() : 'My Account';
   window.scrollTo(0,0);
+
+  if (id === 'sec-wishlist') {
+    loadWishlist();
+  }
 }
 
 // ── TABS ────────────────────────────────────────────────────
@@ -1394,7 +1399,21 @@ function goHome(){ window.location.href='../index.html'; }
 function trackShipment(){
   var v = document.getElementById('tracking-input');
   if (!v || !v.value.trim()){ showToast('Please enter a tracking number','warn'); return; }
-  showToast('Searching for ' + v.value.trim() + '...','ok');
+  var num = v.value.trim();
+  // Search orders by tracking number
+  if (typeof sb !== 'undefined' && window._session) {
+    sb.from('orders').select('order_number,status,tracking_number,shipping_method').eq('buyer_id', window._session.user.id).ilike('tracking_number', '%' + num + '%')
+      .then(function(res) {
+        if (res.data && res.data.length > 0) {
+          var o = res.data[0];
+          showToast('Found: Order ' + o.order_number + ' · Status: ' + o.status, 'ok');
+        } else {
+          showToast('No order found for tracking: ' + num, 'warn');
+        }
+      });
+  } else {
+    showToast('Searching for ' + num + '... (Connect to Supabase for live results)', 'ok');
+  }
 }
 function setRating(n){
   document.querySelectorAll('#star-rating button').forEach(function(b,i){
@@ -1788,10 +1807,166 @@ function renderRFQs(rfqs) {
 }
 
 async function acceptQuote(quoteId, rfqId) {
-  showToast('Processing selection...', 'ok');
-  // In a real app, this would create an order and close the RFQ.
-  // For demo, we just toast.
-  setTimeout(() => showToast('Quote accepted! Order created.', 'ok'), 1500);
+  if (!confirm('Are you sure you want to accept this quote and create an order?')) return;
+  showToast('Processing acceptance...', 'ok');
+  try {
+    // 1. Fetch quote details
+    const { data: quote, error: qErr } = await sb
+      .from('rfq_quotes')
+      .select('*, rfqs(*)')
+      .eq('id', quoteId)
+      .single();
+    if (qErr || !quote) throw new Error(qErr?.message || 'Quote not found');
+
+    const rfq = quote.rfqs;
+    if (!rfq) throw new Error('RFQ details not found');
+
+    // 2. Fetch default address
+    const { data: addr } = await sb
+      .from('addresses')
+      .select('id')
+      .eq('user_id', window._session.user.id)
+      .limit(1);
+    const addressId = addr && addr.length > 0 ? addr[0].id : null;
+
+    // 3. Create items array
+    const subtotal = parseFloat(quote.unit_price_usd) * parseInt(rfq.quantity || 1);
+    const platformFee = subtotal * 0.05;
+    const total = subtotal + platformFee;
+    const items = [{
+      product_id: null,
+      title: rfq.title,
+      quantity: parseInt(rfq.quantity || 1),
+      price: parseFloat(quote.unit_price_usd)
+    }];
+
+    // 4. Insert order
+    const orderNum = 'EB-' + Math.random().toString(36).substring(2, 7).toUpperCase();
+    const { data: order, error: ordErr } = await sb
+      .from('orders')
+      .insert({
+        order_number: orderNum,
+        buyer_id: window._session.user.id,
+        seller_id: quote.seller_id,
+        items: items,
+        subtotal_usd: subtotal,
+        platform_fee_usd: platformFee,
+        total_usd: total,
+        status: 'pending',
+        shipping_address_id: addressId,
+        shipping_method: 'standard',
+        payment_status: 'pending'
+      })
+      .select()
+      .single();
+
+    if (ordErr) throw ordErr;
+
+    // 5. Update RFQ status to closed
+    await sb.from('rfqs').update({ status: 'closed' }).eq('id', rfqId);
+
+    // 6. Notify seller
+    const { data: sp } = await sb.from('seller_profiles').select('user_id').eq('id', quote.seller_id).single();
+    if (sp && sp.user_id) {
+      await sb.from('notifications').insert({
+        user_id: sp.user_id,
+        type: 'order_update',
+        title: 'Quote Accepted! 🎉',
+        body: `Buyer accepted your quote for RFQ ${rfq.rfq_number}. Order ${orderNum} has been created.`,
+        icon: '🛒'
+      });
+    }
+
+    showToast('Quote accepted! Order ' + orderNum + ' created.', 'ok');
+    
+    // Reload RFQs & Orders
+    loadRFQs(window._session.user.id);
+    const ordRes = await sb.from('orders').select('*, seller_profiles(company_name)').eq('buyer_id', window._session.user.id).order('created_at', { ascending: false }).limit(20);
+    renderOrders(ordRes.data || []);
+  } catch(e) {
+    console.error('Accept quote error:', e);
+    showToast('Failed to accept quote: ' + e.message, 'danger');
+  }
+}
+
+async function loadWishlist() {
+  const container = document.getElementById('wishlist-grid');
+  if (!container) return;
+  
+  const subtitle = document.querySelector('#sec-wishlist .ph p');
+  
+  if (!_configured || !window._session) {
+    if (subtitle) subtitle.textContent = '5 saved products (Demo Mode)';
+    return; // Leave mock items in demo mode
+  }
+  
+  try {
+    const { data: list, error } = await sb
+      .from('wishlists')
+      .select('id, product_id, products(id, title, base_price_usd, images, seller_profiles(company_name))')
+      .eq('user_id', window._session.user.id);
+      
+    if (error) throw error;
+    
+    if (subtitle) subtitle.textContent = (list || []).length + ' saved product(s)';
+    
+    // Update badge
+    var wb = document.querySelector('[data-sec=sec-wishlist] .sb-bdg');
+    if (wb) wb.textContent = (list || []).length;
+    
+    if (!list || list.length === 0) {
+      container.innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--muted)">
+          <div style="font-size: 48px; margin-bottom: 12px">❤️</div>
+          <h3>Your wishlist is empty</h3>
+          <p>Save products you like to view them later.</p>
+        </div>
+      `;
+      return;
+    }
+    
+    container.innerHTML = list.map(item => {
+      const p = item.products || {};
+      const img = (p.images && p.images.length) ? p.images[0] : '💻';
+      const isUrl = img.startsWith('http');
+      const imgEl = isUrl ? `<img src="${img}" style="width: 100%; height: 100%; object-fit: cover;">` : `<div style="font-size: 32px">${img}</div>`;
+      
+      return `
+        <div class="wish-card" data-id="${item.id}">
+          <div class="wish-img" style="display:flex; align-items:center; justify-content:center; overflow:hidden">${imgEl}</div>
+          <div class="wish-body">
+            <div class="wish-name">${p.title || 'Untitled Product'}</div>
+            <div class="wish-price">$${parseFloat(p.base_price_usd || 0).toLocaleString()}<span style="font-size:11px;color:var(--muted);font-weight:400">/unit</span></div>
+            <div class="wish-seller">${p.seller_profiles?.company_name || 'Verified Seller'}</div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-p btn-sm" style="flex:1" onclick="addToCart('${p.id}')">Add to Cart</button>
+              <button class="btn btn-ghost btn-sm" onclick="removeFromWishlist('${item.id}', '${(p.title || '').replace(/'/g, "\\'")}')">✕</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch(e) {
+    console.error('Wishlist error:', e);
+    showToast('Failed to load wishlist: ' + e.message, 'danger');
+  }
+}
+
+async function removeFromWishlist(wishlistId, title) {
+  if (!confirm('Remove "' + title + '" from wishlist?')) return;
+  try {
+    if (_configured) {
+      await sb.from('wishlists').delete().eq('id', wishlistId);
+    }
+    showToast('Removed from wishlist', 'warn');
+    loadWishlist();
+  } catch(e) {
+    showToast('Failed to remove: ' + e.message, 'danger');
+  }
+}
+
+function addToCart(productId) {
+  showToast('Added to cart! Total updated.', 'ok');
 }
 
 // ── MAIN INIT ────────────────────────────────────────────────
@@ -1971,6 +2146,252 @@ async function submitNewRFQ() {
   }
 }
 
+
+// ── SUBMIT REVIEW ─────────────────────────────────────────
+async function submitReview() {
+  const modal = document.getElementById('modal-review');
+  const rating = Array.from(document.querySelectorAll('#star-rating button')).findIndex(b => b.classList.contains('btn-p')) + 1;
+  const reviewText = modal.querySelector('textarea').value.trim();
+  const productTitle = modal.querySelector('strong') ? modal.querySelector('strong').textContent : 'Product';
+
+  if (!reviewText) { showToast('Please write a review before submitting.', 'warn'); return; }
+  if (!rating) { showToast('Please select a star rating.', 'warn'); return; }
+
+  if (!_configured || !window._session) {
+    showToast('Review submitted! Thank you! (demo)', 'ok');
+    closeModal('modal-review');
+    return;
+  }
+
+  const btn = document.getElementById('review-submit-btn');
+  btn.disabled = true; btn.textContent = 'Submitting...';
+
+  try {
+    const { error } = await sb.from('reviews').insert({
+      buyer_id: window._session.user.id,
+      rating: rating || 5,
+      comment: reviewText,
+      product_title: productTitle
+    });
+    if (error) throw error;
+    showToast('Review submitted! Thank you!', 'ok');
+    closeModal('modal-review');
+  } catch(e) {
+    showToast('Failed to submit review: ' + e.message, 'danger');
+    btn.disabled = false; btn.textContent = 'Submit Review';
+  }
+}
+
+// ── SAVE PROFILE ───────────────────────────────────────────
+async function saveProfile() {
+  if (!_configured || !window._session) {
+    showToast('Profile saved! (demo)', 'ok');
+    return;
+  }
+  const sec = document.getElementById('sec-profile');
+  const inputs = sec.querySelectorAll('input');
+  const firstName = inputs[0]?.value?.trim();
+  const lastName  = inputs[1]?.value?.trim();
+  const phone     = inputs[3]?.value?.trim();
+
+  try {
+    const { error } = await sb.from('profiles').update({
+      first_name: firstName,
+      last_name:  lastName,
+      phone:      phone,
+      updated_at: new Date().toISOString()
+    }).eq('id', window._session.user.id);
+    if (error) throw error;
+    showToast('Profile saved successfully!', 'ok');
+  } catch(e) {
+    showToast('Failed to save profile: ' + e.message, 'danger');
+  }
+}
+
+// ── SAVE ADDRESS ───────────────────────────────────────────
+async function saveAddress() {
+  const modal = document.getElementById('modal-add-address');
+  const inputs = modal.querySelectorAll('input, select');
+  const label    = inputs[0]?.value?.trim();
+  const type     = inputs[1]?.value;
+  const fname    = inputs[2]?.value?.trim();
+  const lname    = inputs[3]?.value?.trim();
+  const company  = inputs[4]?.value?.trim();
+  const street   = inputs[5]?.value?.trim();
+  const city     = inputs[6]?.value?.trim();
+  const state    = inputs[7]?.value?.trim();
+  const zip      = inputs[8]?.value?.trim();
+  const country  = inputs[9]?.value;
+  const phone    = inputs[10]?.value?.trim();
+  const isDefault = modal.querySelector('input[type="checkbox"]')?.checked;
+
+  if (!street || !city) { showToast('Please fill in Street and City.', 'warn'); return; }
+
+  if (!_configured || !window._session) {
+    showToast('Address saved! (demo)', 'ok');
+    closeModal('modal-add-address');
+    return;
+  }
+
+  const btn = document.getElementById('addr-save-btn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+
+  try {
+    const { error } = await sb.from('addresses').insert({
+      user_id:    window._session.user.id,
+      label:      label || 'My Address',
+      type:       type || 'Commercial',
+      first_name: fname,
+      last_name:  lname,
+      company:    company,
+      street:     street,
+      city:       city,
+      state:      state,
+      zip:        zip,
+      country:    country,
+      phone:      phone,
+      is_default: isDefault || false
+    });
+    if (error) throw error;
+    showToast('Address saved!', 'ok');
+    closeModal('modal-add-address');
+  } catch(e) {
+    showToast('Failed to save address: ' + e.message, 'danger');
+    btn.disabled = false; btn.textContent = 'Save Address';
+  }
+}
+
+// ── DELETE ADDRESS ─────────────────────────────────────────
+function deleteAddress(btn) {
+  if (!confirm('Delete this address?')) return;
+  var card = btn.closest('.addr-card');
+  // In a real app we'd get the address ID from a data-attribute
+  // For now just remove the UI element
+  if (card) {
+    card.style.transition = 'opacity .3s';
+    card.style.opacity = '0';
+    setTimeout(function(){ if(card.parentNode) card.remove(); }, 300);
+  }
+  showToast('Address deleted.', 'warn');
+}
+
+// ── FILE DISPUTE ───────────────────────────────────────────
+async function submitNewDispute() {
+  const modal = document.getElementById('modal-new-dispute');
+  const selects = modal.querySelectorAll('select');
+  const textarea = modal.querySelector('textarea');
+  const issueType = selects[1]?.value;
+  const description = textarea?.value?.trim();
+  const resolution = selects[2]?.value;
+
+  if (!description) { showToast('Please describe the issue.', 'warn'); return; }
+
+  if (!_configured || !window._session) {
+    showToast('Dispute filed! Our team will review within 24h. (demo)', 'ok');
+    closeModal('modal-new-dispute');
+    return;
+  }
+
+  const btn = document.getElementById('dispute-submit-btn');
+  btn.disabled = true; btn.textContent = 'Filing...';
+
+  try {
+    const { error } = await sb.from('disputes').insert({
+      buyer_id:        window._session.user.id,
+      reason:          issueType,
+      description:     description,
+      resolution_requested: resolution,
+      status:          'open'
+    });
+    if (error) throw error;
+    showToast('Dispute filed! Our team will review within 24h.', 'ok');
+    closeModal('modal-new-dispute');
+  } catch(e) {
+    showToast('Failed to file dispute: ' + e.message, 'danger');
+    btn.disabled = false; btn.textContent = 'File Dispute';
+  }
+}
+
+// ── EXPORT ORDERS CSV ──────────────────────────────────────
+async function exportMyOrders() {
+  let orders = [];
+  if (_configured && window._session) {
+    try {
+      const res = await sb.from('orders')
+        .select('order_number, status, total_usd, shipping_method, created_at, seller_profiles(company_name)')
+        .eq('buyer_id', window._session.user.id)
+        .order('created_at', { ascending: false });
+      orders = res.data || [];
+    } catch(e) { console.error(e); }
+  }
+  if (orders.length === 0) {
+    showToast('No orders to export.', 'warn');
+    return;
+  }
+  const rows = [
+    ['Order Number','Status','Total (USD)','Shipping','Seller','Date'],
+    ...orders.map(o => [
+      o.order_number,
+      o.status,
+      parseFloat(o.total_usd).toFixed(2),
+      o.shipping_method || '',
+      o.seller_profiles?.company_name || '',
+      new Date(o.created_at).toLocaleDateString()
+    ])
+  ];
+  const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'my-orders-ebazario.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Orders exported to CSV!', 'ok');
+}
+
+// ── DISPUTE EVIDENCE & ADMIN MESSAGE ───────────────────────
+async function uploadDisputeEvidence(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 20 * 1024 * 1024) {
+    showToast('File exceeds 20MB limit.', 'warn');
+    input.value = '';
+    return;
+  }
+  showToast('Uploading evidence...', 'ok');
+  try {
+    if (_configured && window._session) {
+      const path = window._session.user.id + '/evidence/' + Date.now() + '_' + file.name;
+      const { error } = await sb.storage.from('dispute-evidence').upload(path, file, { upsert: true });
+      if (error) throw error;
+      const { data: urlData } = sb.storage.from('dispute-evidence').getPublicUrl(path);
+      await sb.from('audit_log').insert({
+        user_id: window._session.user.id,
+        action: 'Dispute evidence uploaded: ' + file.name + ' | Url: ' + urlData.publicUrl
+      });
+    }
+    showToast('Evidence "' + file.name + '" uploaded successfully!', 'ok');
+  } catch(e) {
+    showToast('Evidence upload failed: ' + e.message, 'danger');
+  } finally {
+    input.value = '';
+  }
+}
+
+async function messageDisputeAdmin() {
+  const msg = prompt('Enter your message to the Ebazario Admin team:');
+  if (!msg || !msg.trim()) return;
+  try {
+    if (_configured && window._session) {
+      await sb.from('audit_log').insert({
+        user_id: window._session.user.id,
+        action: 'Dispute message to admin: ' + msg.trim().slice(0, 200)
+      });
+    }
+    showToast('Message sent to admin successfully!', 'ok');
+  } catch(e) {
+    showToast('Failed to send message: ' + e.message, 'danger');
+  }
+}
 
 </script>
 </body>

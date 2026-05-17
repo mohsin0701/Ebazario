@@ -598,9 +598,9 @@ CREATE TABLE IF NOT EXISTS wishlists (
 CREATE INDEX IF NOT EXISTS wishlists_user_idx ON wishlists(user_id);
 
 -- ============================================================
--- TABLE 22: PRODUCT INQUIRIES (Contact Seller)
+-- TABLE 22: INQUIRIES (Contact Seller)
 -- ============================================================
-CREATE TABLE IF NOT EXISTS product_inquiries (
+CREATE TABLE IF NOT EXISTS inquiries (
   id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   product_id          UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
   buyer_id            UUID NOT NULL REFERENCES profiles(id),
@@ -612,11 +612,12 @@ CREATE TABLE IF NOT EXISTS product_inquiries (
   status              TEXT DEFAULT 'open',      -- open, replied, closed
   seller_reply        TEXT,
   seller_replied_at   TIMESTAMPTZ,
+  product_title       TEXT,
   created_at          TIMESTAMPTZ DEFAULT NOW(),
   updated_at          TIMESTAMPTZ DEFAULT NOW()
 );
-CREATE INDEX IF NOT EXISTS inquiries_seller_idx ON product_inquiries(seller_id);
-CREATE INDEX IF NOT EXISTS inquiries_buyer_idx  ON product_inquiries(buyer_id);
+CREATE INDEX IF NOT EXISTS inquiries_seller_idx ON inquiries(seller_id);
+CREATE INDEX IF NOT EXISTS inquiries_buyer_idx  ON inquiries(buyer_id);
 
 -- ============================================================
 -- TABLE 23: SELLER PAYOUTS
@@ -1330,6 +1331,66 @@ DROP POLICY IF EXISTS "subs_seller_own" ON subscriptions;
 DROP POLICY IF EXISTS "subs_all_admin"  ON subscriptions;
 CREATE POLICY "subs_seller_own" ON subscriptions FOR SELECT USING (seller_id = my_seller_id());
 CREATE POLICY "subs_all_admin"  ON subscriptions FOR ALL USING (is_admin());
+
+-- ============================================================
+-- STORAGE BUCKETS & RLS POLICIES
+-- ============================================================
+
+-- Create storage buckets if they do not exist
+INSERT INTO storage.buckets (id, name, public)
+VALUES 
+  ('product-images', 'product-images', true),
+  ('product-media', 'product-media', true),
+  ('seller-documents', 'seller-documents', false),
+  ('dispute-evidence', 'dispute-evidence', false)
+ON CONFLICT (id) DO NOTHING;
+
+-- Enable RLS on storage.objects
+ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if any
+DROP POLICY IF EXISTS "Public access to product-images" ON storage.objects;
+DROP POLICY IF EXISTS "Public access to product-media" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated users can upload product images" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated users can upload product media" ON storage.objects;
+DROP POLICY IF EXISTS "Sellers can manage own documents" ON storage.objects;
+DROP POLICY IF EXISTS "Buyers can manage own dispute evidence" ON storage.objects;
+DROP POLICY IF EXISTS "Admins can access all storage objects" ON storage.objects;
+
+-- Create Storage policies
+-- 1. Public Access Policies for image/media buckets
+CREATE POLICY "Public access to product-images" ON storage.objects 
+  FOR SELECT USING (bucket_id = 'product-images');
+
+CREATE POLICY "Public access to product-media" ON storage.objects 
+  FOR SELECT USING (bucket_id = 'product-media');
+
+-- 2. Upload policies for image/media
+CREATE POLICY "Authenticated users can upload product images" ON storage.objects 
+  FOR INSERT WITH CHECK (bucket_id = 'product-images' AND auth.role() = 'authenticated');
+
+CREATE POLICY "Authenticated users can upload product media" ON storage.objects 
+  FOR INSERT WITH CHECK (bucket_id = 'product-media' AND auth.role() = 'authenticated');
+
+-- 3. Document / Verification uploads (private)
+CREATE POLICY "Sellers can manage own documents" ON storage.objects 
+  FOR ALL USING (
+    bucket_id = 'seller-documents' AND 
+    (owner = auth.uid()::text OR (storage.foldername(name))[1] = auth.uid()::text)
+  );
+
+-- 4. Dispute evidence uploads (private)
+CREATE POLICY "Buyers can manage own dispute evidence" ON storage.objects 
+  FOR ALL USING (
+    bucket_id = 'dispute-evidence' AND 
+    (owner = auth.uid()::text OR (storage.foldername(name))[1] = auth.uid()::text)
+  );
+
+-- 5. Admin override access
+CREATE POLICY "Admins can access all storage objects" ON storage.objects 
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+  );
 
 -- ============================================================
 -- FINAL COUNT
