@@ -619,6 +619,12 @@ CREATE TABLE IF NOT EXISTS inquiries (
 CREATE INDEX IF NOT EXISTS inquiries_seller_idx ON inquiries(seller_id);
 CREATE INDEX IF NOT EXISTS inquiries_buyer_idx  ON inquiries(buyer_id);
 
+-- Performance Scale Indexes
+CREATE INDEX IF NOT EXISTS products_category_status_idx ON products(category_id, status);
+CREATE INDEX IF NOT EXISTS orders_buyer_created_idx ON orders(buyer_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS inquiries_seller_status_idx ON inquiries(seller_id, status);
+CREATE INDEX IF NOT EXISTS product_views_product_created_idx ON product_views(product_id, created_at DESC);
+
 -- ============================================================
 -- TABLE 23: SELLER PAYOUTS
 -- Monthly payout processing
