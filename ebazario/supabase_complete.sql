@@ -1210,6 +1210,7 @@ DROP POLICY IF EXISTS "profiles_select_own"   ON profiles;
 DROP POLICY IF EXISTS "profiles_select_admin" ON profiles;
 DROP POLICY IF EXISTS "profiles_insert"       ON profiles;
 DROP POLICY IF EXISTS "profiles_update_own"   ON profiles;
+DROP POLICY IF EXISTS "profiles_update_admin" ON profiles;
 CREATE POLICY "profiles_select_own"   ON profiles FOR SELECT USING (auth.uid() = id);
 CREATE POLICY "profiles_select_admin" ON profiles FOR SELECT USING (is_admin());
 CREATE POLICY "profiles_insert"       ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
