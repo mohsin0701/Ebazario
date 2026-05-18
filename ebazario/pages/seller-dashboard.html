@@ -1520,6 +1520,12 @@ async function submitProduct() {
     const desc = document.getElementById('p-desc')?.value;
     const unit = document.getElementById('p-unit')?.value || 'unit';
 
+    if (!catId) {
+      showToast('Please select a Main Category.', 'warn');
+      if (btn) btn.disabled = false;
+      return;
+    }
+
     // 2. Gather Specs
     const specs = {};
     document.querySelectorAll('#spec-tbody tr').forEach(tr => {
