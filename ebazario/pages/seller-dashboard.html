@@ -526,16 +526,16 @@ a{text-decoration:none;color:inherit}
             <label>Category <span class="req">*</span></label>
             <select id="p-cat">
               <option value="">-- Select Main Category --</option>
-              <option value="electronics">Electronics &amp; Electrical</option>
-              <option>Machinery &amp; Equipment</option>
-              <option>Apparel &amp; Fashion</option>
-              <option>Food &amp; Agriculture</option>
-              <option>Chemicals &amp; Plastics</option>
-              <option>Construction &amp; Real Estate</option>
-              <option>Auto Parts &amp; Vehicles</option>
-              <option>Health &amp; Medical</option>
-              <option>Furniture &amp; Home</option>
-              <option>Tools &amp; Hardware</option>
+              <option value="electronics">Electronics & Electrical</option>
+              <option value="machinery">Machinery & Equipment</option>
+              <option value="apparel">Apparel & Fashion</option>
+              <option value="food-agri">Food & Agriculture</option>
+              <option value="chemicals">Chemicals & Plastics</option>
+              <option value="construction">Construction & Real Estate</option>
+              <option value="auto-parts">Auto Parts & Vehicles</option>
+              <option value="healthcare">Health & Medical</option>
+              <option value="furniture">Furniture & Home</option>
+              <option value="tools">Tools & Hardware</option>
             </select>
           </div>
           <div class="fg">
@@ -1556,10 +1556,20 @@ async function submitProduct() {
       }
     }
 
-    // 5. Create Product
+    // 5. Look up Category UUID
+    let realCategoryId = null;
+    if (catId) {
+      const { data: catData, error: catErr } = await sb.from('categories')
+        .select('id')
+        .eq('slug', catId)
+        .single();
+      if (catData) realCategoryId = catData.id;
+    }
+
+    // 6. Create Product
     const { data: product, error } = await sb.from('products').insert({
       seller_id: sp.id,
-      category_id: catId || 'electronics', // fallback for demo
+      category_id: realCategoryId,
       title: title,
       description: desc,
       base_price_usd: basePrice,
